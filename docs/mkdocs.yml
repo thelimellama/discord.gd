@@ -1,5 +1,5 @@
-site_name: Discord.gd
-site_description: "A Discord Bot API wrapper for Godot. Make bots in 100% GDScript."
+site_name: Discord.gd Docs
+site_description: "A Godot plugin to interact with the Discord Bot API. Make Discord Bots in Godot!"
 site_author: "Delano Lourenco"
 repo_url: "https://github.com/3ddelano/discord.gd"
 copyright: Copyright &copy; 2022 Delano Lourenco
@@ -11,18 +11,8 @@ nav:
   - Simple Bot: simple-bot.md
   - Advanced Bot: advanced-bot.md
   - Classes:
-      DiscordBot: classes/discordbot.md
-      Message: classes/message.md
-      User: classes/user.md
-      Embed: classes/embed.md
-      Helpers: classes/helpers.md
-      MessageActionRow: classes/messageactionrow.md
-      MessageButton: classes/messagebutton.md
-      SelectMenu: classes/selectmenu.md
-      DiscordInteraction: classes/discordinteraction.md
-      ApplicationCommand: classes/applicationcommand.md
-      Bitfield: classes/bitfield.md
-      MessageFlags: classes/messageflags.md
+      DiscordRESTClient: classes/DiscordRESTClient.md
+      Application: classes/Application.md
 theme:
   name: "material"
   language: "en"
@@ -32,6 +22,7 @@ theme:
   features:
     - navigation.tracking
     - navigation.top
+    - navigation.expand
     - navigation.sections
     - search.highlight
     - search.share
@@ -76,36 +67,15 @@ extra:
     - icon: fontawesome/brands/youtube
       link: https://youtube.com/c/delanolourenco
       name: Youtube
-  # version:
-  #   provider: mike
-  # analytics:
-  #   provider: google
-  #   property: G-XXXXXXXXXX
-  #   feedback:
-  #     title: Was this page helpful?
-  #     ratings:
-  #       - icon: material/emoticon-happy-outline
-  #         name: This page was helpful
-  #         data: 1
-  #         note: >-
-  #           Thanks for your feedback!
-  #       - icon: material/emoticon-sad-outline
-  #         name: This page could be improved
-  #         data: 0
-  #         note: >-
-  #           Thanks for your feedback! Help us improve this page by
-  #           using our <a href="..." target=_blank>feedback form</a>.
-  # consent:
-  #   title: Cookie consent
-  #   description: >-
-  #     We use cookies to recognize your repeated visits and preferences, as well
-  #     as to measure the effectiveness of our documentation and whether users
-  #     find what they're searching for. With your consent, you're helping us to
-  #     make our documentation better.
 markdown_extensions:
   - meta
   - attr_list
   - md_in_html
+  - pymdownx.betterem
+  - pymdownx.superfences
+  - pymdownx.smartsymbols
+  - pymdownx.tasklist:
+      custom_checkbox: true
   - tables
   - pymdownx.emoji:
       emoji_index: !!python/name:materialx.emoji.twemoji
@@ -116,7 +86,7 @@ markdown_extensions:
       permalink: true
 plugins:
   - search:
-      separator: '[\s\-\._]'
+      separator: '[\s\-\.]'
   - minify:
       minify_html: true
       minify_js: true

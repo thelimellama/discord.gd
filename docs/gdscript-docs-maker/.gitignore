@@ -1,0 +1,8 @@
+# "make build" generated files
+build
+dist
+src/*.egg-info
+__pycache__/
+# generated .md files (by generated_reference script)
+export
+.pytest_cache
