@@ -43,8 +43,6 @@ class MkDocsFrontMatter:
     @classmethod
     def from_data(cls, gdscript: GDScriptClass, arguments: Namespace):
         name: str = gdscript.name
-        if "abstract" in gdscript.metadata:
-            name += " " + surround_with_html("(abstract)", "small")
         if "class" in gdscript.metadata:
             name: str = "Class " + name
 

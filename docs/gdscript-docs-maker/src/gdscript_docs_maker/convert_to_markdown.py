@@ -66,6 +66,8 @@ def _as_markdown(
     name: str = gdscript.name
     if "abstract" in gdscript.metadata:
         name += " " + surround_with_html("(abstract)", "small")
+    if "class" in gdscript.metadata:
+        name: str = "Class " + name
 
     if output_format == OutputFormats.MKDOCS:
         front_matter: MkDocsFrontMatter = MkDocsFrontMatter.from_data(
