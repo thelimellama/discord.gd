@@ -42,9 +42,8 @@ class MkDocsFrontMatter:
 
     @classmethod
     def from_data(cls, gdscript: GDScriptClass, arguments: Namespace):
-        name: str = gdscript.name
-        if "class" in gdscript.metadata:
-            name: str = "Class " + name
+        # name: str = gdscript.name
+        name: str = "Class " + gdscript.name
 
         return MkDocsFrontMatter(
             name,
