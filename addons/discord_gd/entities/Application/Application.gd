@@ -1,5 +1,4 @@
 # Represents a Discord Application
-# @tags Application
 class_name Application
 extends Dataclass
 

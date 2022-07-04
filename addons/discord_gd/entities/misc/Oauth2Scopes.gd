@@ -1,5 +1,4 @@
 # List of all the OAuth2 scopes that Discord supports. Some scopes require approval from Discord to use. Requesting them from a user without approval from Discord may cause errors or undocumented behavior in the OAuth2 flow.
-# @tags OAuth2Scopes
 class_name OAuth2Scopes
 
 const ACTIVITIES_READ = "activities.read" # Allows your app to fetch data from a user's "Now Playing/Recently Played" list - requires Discord approval

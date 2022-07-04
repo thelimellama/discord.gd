@@ -1,5 +1,4 @@
 # Represents a bitfield of Discord permissions.
-# @tags Permissions
 #
 # `CREATE_INSTANT_INVITE`: Allows creation of instant invites
 #

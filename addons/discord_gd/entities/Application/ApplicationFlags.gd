@@ -1,5 +1,4 @@
 # Represents a bitfield of Discord Application flags.
-# @tags ApplicationFlags
 #
 # `GATEWAY_PRESENCE`: Intent required for bots in 100 or more servers to receive presence_update events
 #

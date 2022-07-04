@@ -1,7 +1,5 @@
 # Represents a Discord Application Install Params object
-# @tags ApplicationInstallParams
-class_name ApplicationInstallParams
-extends Dataclass
+class_name ApplicationInstallParams extends Dataclass
 
 func _init().("ApplicationInstallParams"): return self
 

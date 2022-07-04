@@ -1,5 +1,4 @@
 # Represents a bitfield of Discord message flags.
-# @tags MessageFlags
 #
 # `CROSSPOSTED`: This message has been published to subscribed channels (via Channel Following)
 #

@@ -1,11 +1,9 @@
 """Functions to format the markdown output for the static website engine mkdocs.
 """
-import datetime
 from argparse import Namespace
 from dataclasses import dataclass
 from typing import List
-from .make_markdown import surround_with_html
-from .config import MKDOCS_FRONT_MATTER, LOGGER
+from .config import MKDOCS_FRONT_MATTER
 from .gdscript_objects import GDScriptClass
 
 
@@ -42,13 +40,21 @@ class MkDocsFrontMatter:
 
     @classmethod
     def from_data(cls, gdscript: GDScriptClass, arguments: Namespace):
-        # name: str = gdscript.name
         name: str = "Class " + gdscript.name
+        tags: list[str] = gdscript.metadata["tags"] if "tags" in gdscript.metadata else []
+        
+        if gdscript.name not in tags:
+            tags.append(gdscript.name)
 
+        lines: list = gdscript.description.split("\n")
+        first_line: str = gdscript.description.replace("\n", "\\n")
+        if len(lines) > 0:
+            first_line = lines[0]
+            
         return MkDocsFrontMatter(
             name,
-            gdscript.description.replace("\n", "\\n"),
-            gdscript.metadata["tags"] if "tags" in gdscript.metadata else [],
+            first_line, #.replace("\n", "\\n"),
+            tags
         )
 
 
