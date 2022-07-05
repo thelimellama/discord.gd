@@ -52,3 +52,20 @@ func from_dict(p_dict: Dictionary):
 		member = ThreadMember.new().from_dict(p_dict.member)
 
 	return self
+
+
+# @hidden
+func to_dict() -> Dictionary:
+	var dict = .to_dict()
+
+	if dict.has("permission_overwrites") and dict.permission_overwrites != null:
+		for i in dict.permission_overwrites.size():
+			dict.permission_overwrites[i] = dict.permission_overwrites[i].to_dict()
+	if dict.has("recipients") and dict.recipients != null:
+		for i in dict.recipients.size():
+			dict.recipients[i] = dict.recipients[i].to_dict()
+	if dict.has("thread_metadata") and dict.thread_metadata != null:
+		dict.thread_metadata = dict.thread_metadata.to_dict()
+	if dict.has("member") and dict.member != null:
+		dict.member = dict.member.to_dict()
+	return dict
