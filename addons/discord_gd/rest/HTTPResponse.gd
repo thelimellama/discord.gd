@@ -1,3 +1,4 @@
+# Represents a HTTP response
 class_name HTTPResponse
 extends Reference
 
@@ -6,6 +7,11 @@ var response_code: int
 var headers: PoolStringArray
 var body: PoolByteArray
 
+# API Error
+var code: int
+var errors: Array
+var message: String
+
 
 func is_error():
 	return response_code < 200 or response_code > 299 or result != OK
@@ -13,6 +19,10 @@ func is_error():
 
 func is_no_content():
 	return response_code == 204 and result == OK
+
+
+func is_api_error():
+	return response_code >= 400 and response_code < 500 and result == OK
 
 
 func is_unauthorized_error():
@@ -50,8 +60,13 @@ func get_class() -> String:
 func _to_string() -> String:
 	var body_str = body.get_string_from_utf8()
 
-	if is_internal_server_error():
-		return "HTTPResponse::InternalServerError()"
+	if is_api_error():
+		var json = parse_json(body_str)
+		if json is Dictionary:
+			code = DiscordUitls.get_or_default(json, "code", 0)
+			errors = DiscordUitls.get_or_default(json, "errors", [])
+			message = DiscordUitls.get_or_default(json, "message", "")
+			return "HTTPResponse::APIError(code=%s, message=%s, errors=%s)" % [code, message, errors]
 
 	return "HTTPResponse(result=%s, response_code=%s, headers=%s, body=%s)" % [result, response_code, headers, body.get_string_from_utf8()]
 

@@ -1,4 +1,4 @@
-# Represents a bitfield of Discord message flags.
+# Represents a bitfield of Discord message flags
 #
 # `CROSSPOSTED`: This message has been published to subscribed channels (via Channel Following)
 #

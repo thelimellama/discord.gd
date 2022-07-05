@@ -31,18 +31,11 @@ func _init().("Application"): return self
 func from_dict(p_dict: Dictionary):
 	.from_dict(p_dict)
 
-	icon = DiscordUitls.get_or_default(p_dict, "icon", null)
-	rpc_origins = DiscordUitls.get_or_default(p_dict, "rpc_origins", null)
-	terms_of_service_url = DiscordUitls.get_or_default(p_dict, "terms_of_service_url", null)
-	privacy_policy_url = DiscordUitls.get_or_default(p_dict, "privacy_policy_url", null)
-	if p_dict.has("owner"):	owner = User.new().from_dict(p_dict.owner)
-	if p_dict.has("team"): team = Team.new().from_dict(p_dict.team) 
-	guild_id = DiscordUitls.get_or_default(p_dict, "guild_id", null)
-	primary_sku_id = DiscordUitls.get_or_default(p_dict, "primary_sku_id", null)
-	slug = DiscordUitls.get_or_default(p_dict, "slug", null)
-	cover_image = DiscordUitls.get_or_default(p_dict, "cover_image", null)
-	if p_dict.has("flags"):	flags = ApplicationFlags.new(p_dict.flags)
-	tags = DiscordUitls.get_or_default(p_dict, "tags", null)
-	install_params = DiscordUitls.get_or_default(p_dict, "install_params", null)
-	custom_install_url = DiscordUitls.get_or_default(p_dict, "custom_install_url", null)
+	if p_dict.has("owner"):
+		owner = User.new().from_dict(p_dict.owner)
+	if p_dict.has("team"):
+		team = Team.new().from_dict(p_dict.team)
+	if p_dict.has("flags"):
+		flags = ApplicationFlags.new(p_dict.flags)
 
+	return self

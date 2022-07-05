@@ -1,3 +1,5 @@
+# Represents the OAuth2Scopes that Discord supports
+#
 # List of all the OAuth2 scopes that Discord supports. Some scopes require approval from Discord to use. Requesting them from a user without approval from Discord may cause errors or undocumented behavior in the OAuth2 flow.
 class_name OAuth2Scopes
 

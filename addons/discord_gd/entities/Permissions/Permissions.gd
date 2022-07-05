@@ -1,4 +1,4 @@
-# Represents a bitfield of Discord permissions.
+# Represents a bitfield of Discord permissions
 #
 # `CREATE_INSTANT_INVITE`: Allows creation of instant invites
 #
@@ -125,6 +125,7 @@ enum FLAGS {
 	USE_PRIVATE_THREADS = 1 << 36,
 	USE_EXTERNAL_STICKERS = 1 << 37,
 }
+
 
 # @hidden
 func _init(bits = default_bit).(bits): return self

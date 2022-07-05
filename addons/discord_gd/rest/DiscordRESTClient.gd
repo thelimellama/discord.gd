@@ -1,3 +1,4 @@
+# Class managing REST actions of the Discord API.
 class_name DiscordRESTClient
 extends Node
 
@@ -5,21 +6,32 @@ extends Node
 func set_token(token: String) -> void:
 	_auth_header = "Authorization: Bot %s" % token
 
+# Returns an [AuditLog] for the guild. Requires the `VIEW_AUDIT_LOG` permission.
+func get_guild_audit_log(p_guild_id: String, params: GetGuildAuditLogParams) -> AuditLog:
+	var data = yield(_send_request(ENDPOINTS.GUILD_AUDIT_LOGS % p_guild_id), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return AuditLog.new().from_dict(data)
+
+
 # @hidden
 const ENDPOINTS: Dictionary = {
-	# Clubs
-	CLUBS = "/clubs/",
+	# Audit Log
+	GUILD_AUDIT_LOGS = "/guilds/%s/audit-logs",
 }
 
 var _base_url: String
 var _auth_header = ""
 var _headers = [
-	"User-Agent: DiscordBot (https://github.com/3ddelano/discord.gd Godot:%s)" % Engine.get_version_info()["string"]
+	"user-agent: DiscordBot (%s %s, Godot:%s)" % [DiscordMetadata.LIBRARY, DiscordMetadata.LIBRARY_URL, Engine.get_version_info()["string"]],
+	"accept: application/json"
 ]
 
 
+# @hidden
 func _init() -> void:
 	pause_mode = PAUSE_MODE_PROCESS
+	_base_url = DiscordMetadata.REST_URL % DiscordMetadata.REST_VERSION
 
 
 # @hidden
@@ -47,18 +59,20 @@ func _send_delete_request(slug: String, payload: Dictionary):
 
 
 # @hidden
-func _send_request(slug: String, payload := {}, method := HTTPClient.METHOD_GET) -> HTTPResponse:
+func _send_request(slug: String, payload = null, method := HTTPClient.METHOD_GET) -> HTTPResponse:
 	var headers = _headers.duplicate(true)
 
 	if not _auth_header == "":
 		headers.append(_auth_header)
 
-	if not payload.empty():
-		headers.append("Content-Type: application/json; charset=UTF-8")
-
 	var http_request = HTTPRequest.new()
 	add_child(http_request)
-	http_request.call_deferred("request", _base_url + slug, headers, true, method, JSON.print(payload))
+
+	var request_string = ""
+	if payload != null and not payload.empty():
+		headers.append("content-type: application/json")
+		request_string = JSON.print(payload)
+	http_request.call_deferred("request", _base_url + slug, headers, true, method, request_string)
 
 	var data = yield(http_request, "request_completed")
 	http_request.queue_free()
