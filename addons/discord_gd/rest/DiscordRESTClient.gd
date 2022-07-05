@@ -8,13 +8,18 @@ func set_token(token: String) -> void:
 	_auth_header = "Authorization: Bot %s" % token
 
 
-# Returns an [AuditLog] for the guild. Requires the `VIEW_AUDIT_LOG` permission.
+#! ----------
+#! AuditLog
+#! ----------
+
+
+# Get the audit logs for the given guild. Requires the `VIEW_AUDIT_LOG` permission
+# @returns [AuditLog] | [HTTPResponse] if error
 func get_guild_audit_log(p_guild_id: String, params: GetGuildAuditLogParams) -> AuditLog:
 	var endpoint = ENDPOINTS.GUILD_AUDIT_LOGS % p_guild_id
 	var query_string = DiscordUtils.query_string_from_dict(params.to_dict())
 	if query_string:
 		endpoint += "?" + query_string
-	print(endpoint)
 
 	var data = yield(_send_request(endpoint), "completed")
 	if data is HTTPResponse and data.is_error():
@@ -22,10 +27,70 @@ func get_guild_audit_log(p_guild_id: String, params: GetGuildAuditLogParams) -> 
 	return AuditLog.new().from_dict(data)
 
 
+#! ----------
+#! AutoModeration
+#! ----------
+
+
+# Get a list of auto moderation rules for the given guild. Requires the `MANAGE_GUILD` permission
+# @returns [Array] of [AutoModerationRule] | [HTTPResponse] if error
+func get_guild_auto_moderation_rules(p_guild_id: String) -> Array:
+	var data = yield(_send_request(ENDPOINTS.GUILD_AUTO_MODERATION_RULES % p_guild_id), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	var ret = []
+	for elm in data:
+		ret.append(AutoModerationRule.new().from_dict(elm))
+	return ret
+
+
+# Get a single auto moderation rule. Requires the `MANAGE_GUILD` permission
+# @returns [AutoModerationRule] | [HTTPResponse] if error
+func get_guild_auto_moderation_rule(p_guild_id: String, p_rule_id: String) -> Array:
+	var data = yield(_send_request(ENDPOINTS.GUILD_AUTO_MODERATION_RULE % [p_guild_id, p_rule_id]), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return AutoModerationRule.new().from_dict(data)
+
+
+# Creates a new auto moderation rule. Requires the `MANAGE_GUILD` permission
+# @returns [AutoModerationRule] | [HTTPResponse] if error
+func create_guild_auto_moderation_rule(p_guild_id: String, params: CreateGuildAutoModerationRuleParams) -> AutoModerationRule:
+	var data = yield(_send_post_request(ENDPOINTS.GUILD_AUTO_MODERATION_RULES % p_guild_id, params.to_dict()), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return AutoModerationRule.new().from_dict(data)
+
+
+# Modify an existing auto moderation rule. Requires the `MANAGE_GUILD` permission
+# @returns [AutoModerationRule] | [HTTPResponse] if error
+func modify_guild_auto_moderation_rule(p_guild_id: String, p_rule_id: String, params: ModifyGuildAutoModerationRuleParams) -> AutoModerationRule:
+	var data = yield(_send_patch_request(ENDPOINTS.GUILD_AUTO_MODERATION_RULE % [p_guild_id, p_rule_id], params.to_dict()), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return AutoModerationRule.new().from_dict(data)
+
+
+# Deletes an existing auto moderation rule. Requires the `MANAGE_GUILD` permission
+# @returns bool | [HTTPResponse] if error
+func delete_guild_auto_moderation_rule(p_guild_id: String, p_rule_id: String) -> bool:
+	var data = yield(_send_delete_request(ENDPOINTS.GUILD_AUTO_MODERATION_RULE % [p_guild_id, p_rule_id]), "completed")
+	if data is HTTPResponse:
+		if data.is_error():
+			return data
+		return data.is_no_content()
+	return false
+
+
+
 # @hidden
 const ENDPOINTS: Dictionary = {
-	# Audit Log
+	# AuditLog
 	GUILD_AUDIT_LOGS = "/guilds/%s/audit-logs",
+
+	# AutoModeration
+	GUILD_AUTO_MODERATION_RULES = "/guilds/%s/auto-moderation/rules",
+	GUILD_AUTO_MODERATION_RULE = "/guilds/%s/auto-moderation/rules/%s",
 }
 
 var _base_url: String
@@ -52,17 +117,17 @@ func _to_string() -> String:
 
 
 # @hidden
-func _send_post_request(slug: String, payload: Dictionary):
+func _send_post_request(slug: String, payload = {}):
 	return _send_request(slug, payload, HTTPClient.METHOD_POST)
 
 
 # @hidden
-func _send_patch_request(slug: String, payload: Dictionary):
+func _send_patch_request(slug: String, payload = {}):
 	return _send_request(slug, payload, HTTPClient.METHOD_PATCH)
 
 
 # @hidden
-func _send_delete_request(slug: String, payload: Dictionary):
+func _send_delete_request(slug: String, payload = null):
 	return _send_request(slug, payload, HTTPClient.METHOD_DELETE)
 
 

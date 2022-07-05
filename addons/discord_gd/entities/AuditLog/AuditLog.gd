@@ -55,9 +55,10 @@ func from_dict(p_dict: Dictionary):
 
 	return self
 
+
 # @hidden
 func to_dict() -> Dictionary:
-	var dict = .to_dict()
+	var dict = .to_dict().duplicate(true)
 	if dict.has("audit_log_entries"):
 		for i in dict.audit_log_entries.size():
 			dict.audit_log_entries[i] = dict.audit_log_entries[i].to_dict()

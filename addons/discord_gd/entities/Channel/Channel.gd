@@ -41,7 +41,7 @@ func from_dict(p_dict: Dictionary):
 	if p_dict.has("permission_overwrites"):
 		permission_overwrites = []
 		for data in p_dict.permission_overwrites:
-			permission_overwrites.append(Overwrite.new().from_dict(data)) 
+			permission_overwrites.append(Overwrite.new().from_dict(data))
 	if p_dict.has("recipients"):
 		recipients = []
 		for data in p_dict.recipients:
@@ -56,7 +56,7 @@ func from_dict(p_dict: Dictionary):
 
 # @hidden
 func to_dict() -> Dictionary:
-	var dict = .to_dict()
+	var dict = .to_dict().duplicate(true)
 
 	if dict.has("permission_overwrites") and dict.permission_overwrites != null:
 		for i in dict.permission_overwrites.size():

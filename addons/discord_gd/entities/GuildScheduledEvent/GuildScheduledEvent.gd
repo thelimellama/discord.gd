@@ -37,7 +37,7 @@ func from_dict(p_dict: Dictionary):
 
 # @hidden
 func to_dict() -> Dictionary:
-	var dict = .to_dict()
+	var dict = .to_dict().duplicate(true)
 
 	if dict.has("entity_metadata"):
 		dict.entity_metadata = dict.entity_metadata.to_dict()

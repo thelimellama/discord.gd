@@ -23,7 +23,7 @@ func from_dict(p_dict: Dictionary):
 
 # @hidden
 func to_dict() -> Dictionary:
-	var dict = .to_dict()
+	var dict = .to_dict().duplicate(true)
 
 	dict.allow = dict.allow.bitfield
 	dict.deny = dict.deny.bitfield

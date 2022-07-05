@@ -31,7 +31,7 @@ func from_dict(p_dict: Dictionary):
 
 # @hidden
 func to_dict() -> Dictionary:
-	var dict = .to_dict()
+	var dict = .to_dict().duplicate(true)
 
 	dict.trigger_metadata = dict.trigger_metadata.to_dict()
 	if dict.has("actions") and dict.actions != null:

@@ -32,7 +32,7 @@ func from_dict(p_dict: Dictionary):
 
 # @hidden
 func to_dict() -> Dictionary:
-	var dict = .to_dict()
+	var dict = .to_dict().duplicate(true)
 
 	if dict.has("changes"):
 		for i in dict.changes.size():

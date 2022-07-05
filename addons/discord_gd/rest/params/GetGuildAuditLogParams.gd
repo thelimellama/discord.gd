@@ -7,4 +7,5 @@ var before = null # [String] Entries that preceded a specific audit log entry ID
 var limit = null # [int] Maximum number of entries (between 1-100) to return, defaults to 50
 
 
+# @hidden
 func _init().("GetGuildAuditLogParams", {include_null_in_dict = false}): return self

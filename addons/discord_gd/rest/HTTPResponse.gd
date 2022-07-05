@@ -9,7 +9,7 @@ var body: PoolByteArray
 
 # API Error
 var code: int
-var errors: Array
+var errors: Dictionary
 var message: String
 
 
@@ -64,7 +64,7 @@ func _to_string() -> String:
 		var json = parse_json(body_str)
 		if json is Dictionary:
 			code = DiscordUtils.get_or_default(json, "code", 0)
-			errors = DiscordUtils.get_or_default(json, "errors", [])
+			errors = DiscordUtils.get_or_default(json, "errors", {})
 			message = DiscordUtils.get_or_default(json, "message", "")
 			return "HTTPResponse::APIError(code=%s, message=%s, errors=%s)" % [code, message, errors]
 

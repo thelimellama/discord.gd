@@ -21,7 +21,7 @@ func from_dict(p_dict: Dictionary):
 
 # @hidden
 func to_dict() -> Dictionary:
-	var dict = .to_dict()
+	var dict = .to_dict().duplicate(true)
 
 	if dict.has("metadata") and dict.metadata != null:
 		dict.metadata = dict.metadata.to_dict()
