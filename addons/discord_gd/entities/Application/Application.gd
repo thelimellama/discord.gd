@@ -37,5 +37,23 @@ func from_dict(p_dict: Dictionary):
 		team = Team.new().from_dict(p_dict.team)
 	if p_dict.has("flags"):
 		flags = ApplicationFlags.new(p_dict.flags)
+	if p_dict.has("install_params"):
+		install_params = ApplicationInstallParams.new().from_dict(p_dict.install_params)
 
 	return self
+
+
+# @hidden
+func to_dict() -> Dictionary:
+	var dict = .to_dict()
+
+	if dict.owner != null:
+		dict.owner = owner.to_dict()
+	if dict.team != null:
+		dict.team = team.to_dict()
+	if dict.flags != null:
+		dict.flags = flags.bitfield
+	if dict.install_params != null:
+		dict.install_params = install_params.to_dict()
+
+	return dict

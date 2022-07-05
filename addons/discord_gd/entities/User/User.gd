@@ -20,3 +20,21 @@ var public_flags = null # [int] The public flags on a user's account
 
 # @hidden
 func _init().("User"): return self
+
+
+# @hidden
+func from_dict(p_dict: Dictionary):
+	.from_dict(p_dict)
+
+	if p_dict.has("flags"):
+		flags = UserFlags.new(p_dict.flags)
+	return self
+
+
+# @hidden
+func to_dict() ->Dictionary:
+	var dict = .to_dict()
+
+	if dict.has("flags"):
+		dict.flags = flags.bitfield
+	return dict

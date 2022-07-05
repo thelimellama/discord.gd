@@ -63,9 +63,9 @@ func _to_string() -> String:
 	if is_api_error():
 		var json = parse_json(body_str)
 		if json is Dictionary:
-			code = DiscordUitls.get_or_default(json, "code", 0)
-			errors = DiscordUitls.get_or_default(json, "errors", [])
-			message = DiscordUitls.get_or_default(json, "message", "")
+			code = DiscordUtils.get_or_default(json, "code", 0)
+			errors = DiscordUtils.get_or_default(json, "errors", [])
+			message = DiscordUtils.get_or_default(json, "message", "")
 			return "HTTPResponse::APIError(code=%s, message=%s, errors=%s)" % [code, message, errors]
 
 	return "HTTPResponse(result=%s, response_code=%s, headers=%s, body=%s)" % [result, response_code, headers, body.get_string_from_utf8()]

@@ -2,13 +2,21 @@
 class_name DiscordRESTClient
 extends Node
 
+
 # Sets the authorization token of the bot
 func set_token(token: String) -> void:
 	_auth_header = "Authorization: Bot %s" % token
 
+
 # Returns an [AuditLog] for the guild. Requires the `VIEW_AUDIT_LOG` permission.
 func get_guild_audit_log(p_guild_id: String, params: GetGuildAuditLogParams) -> AuditLog:
-	var data = yield(_send_request(ENDPOINTS.GUILD_AUDIT_LOGS % p_guild_id), "completed")
+	var endpoint = ENDPOINTS.GUILD_AUDIT_LOGS % p_guild_id
+	var query_string = DiscordUtils.query_string_from_dict(params.to_dict())
+	if query_string:
+		endpoint += "?" + query_string
+	print(endpoint)
+
+	var data = yield(_send_request(endpoint), "completed")
 	if data is HTTPResponse and data.is_error():
 		return data
 	return AuditLog.new().from_dict(data)

@@ -15,6 +15,8 @@ var webhooks: Array # [Array] of [Webhook] List of webhooks referenced in the au
 # @hidden
 func _init().("AuditLog"): return self
 
+
+# @hidden
 func from_dict(p_dict: Dictionary):
 	audit_log_entries = []
 	if p_dict.has("audit_log_entries"):
@@ -44,7 +46,6 @@ func from_dict(p_dict: Dictionary):
 	users = []
 	if p_dict.has("users"):
 		for data in p_dict.users:
-			print("has users : ", data)
 			users.append(User.new().from_dict(data))
 
 	webhooks = []
@@ -53,3 +54,22 @@ func from_dict(p_dict: Dictionary):
 			webhooks.append(Webhook.new().from_dict(data))
 
 	return self
+
+# @hidden
+func to_dict() -> Dictionary:
+	var dict = .to_dict()
+	for i in audit_log_entries.size():
+		audit_log_entries[i] = audit_log_entries[i].to_dict()
+	for i in auto_moderation_rules.size():
+		auto_moderation_rules[i] = auto_moderation_rules[i].to_dict()
+	for i in guild_scheduled_events.size():
+		guild_scheduled_events[i] = guild_scheduled_events[i].to_dict()
+	for i in integrations.size():
+		integrations[i] = integrations[i].to_dict()
+	for i in threads.size():
+		threads[i] = threads[i].to_dict()
+	for i in users.size():
+		users[i] = users[i].to_dict()
+	for i in webhooks.size():
+		webhooks[i] = webhooks[i].to_dict()
+	return dict

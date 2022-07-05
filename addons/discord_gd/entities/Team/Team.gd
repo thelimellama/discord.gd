@@ -10,3 +10,27 @@ var owner_user_id: String # The user id of the current team owner
 
 # @hidden
 func _init().("Team"): return self
+
+
+# @hidden
+func from_dict(p_dict: Dictionary):
+	.from_dict(p_dict)
+	
+	members = []
+	if p_dict.has("members"):
+		for data in p_dict.members:
+			members.append(TeamMember.new().from_dict(data))
+
+	return self
+
+
+# @hidden
+func to_dict() -> Dictionary:
+	var dict = .to_dict()
+
+	if dict.has("members"):
+		for i in dict.members.size():
+			dict.members[i] = dict.members[i].to_dict()
+
+	return dict
+	
