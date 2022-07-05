@@ -17,3 +17,13 @@ func from_dict(p_dict: Dictionary):
 		metadata = AutoModerationActionMetadata.new().from_dict(p_dict.metadata)
 
 	return self
+
+
+# @hidden
+func to_dict() -> Dictionary:
+	var dict = .to_dict()
+
+	if dict.has("metadata") and dict.metadata != null:
+		dict.metadata = dict.metadata.to_dict()
+
+	return dict

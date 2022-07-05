@@ -27,3 +27,15 @@ func from_dict(p_dict: Dictionary):
 		for data in p_dict.actions:
 			actions.append(AutoModerationAction.new().from_dict(data))
 	return self
+
+
+# @hidden
+func to_dict() -> Dictionary:
+	var dict = .to_dict()
+
+	dict.trigger_metadata = dict.trigger_metadata.to_dict()
+	if dict.has("actions") and dict.actions != null:
+		for i in dict.actions.size():
+			dict.actions[i] = dict.actions[i].to_dict()
+
+	return dict
