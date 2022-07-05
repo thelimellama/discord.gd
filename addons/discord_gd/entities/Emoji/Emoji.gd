@@ -23,3 +23,13 @@ func from_dict(p_dict: Dictionary):
 		user = User.new().from_dict(p_dict.user)
 
 	return self
+
+
+# @hidden
+func to_dict() -> Dictionary:
+	var dict = .to_dict()
+
+	if dict.has("user") and dict.user != null:
+		dict.user = dict.user.to_dict()
+
+	return dict
