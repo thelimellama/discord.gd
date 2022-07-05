@@ -1,4 +1,4 @@
-class_name MessageButton
+#class_name MessageButton
 """
 Represents a Discord message button.
 """

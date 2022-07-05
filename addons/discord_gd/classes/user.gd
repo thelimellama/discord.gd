@@ -1,4 +1,4 @@
-class_name User
+#class_name User
 """
 Represents a Discord User.
 """

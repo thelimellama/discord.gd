@@ -1,4 +1,4 @@
-class_name Message
+#class_name Message
 """
 Represents a Discord Message.
 """

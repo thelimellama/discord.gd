@@ -1,4 +1,4 @@
-class_name Embed
+#class_name Embed
 """
 Stores data about a Discord Embed
 and has functions to add, modify and edit

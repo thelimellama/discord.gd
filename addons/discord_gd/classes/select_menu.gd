@@ -1,4 +1,4 @@
-class_name SelectMenu
+#class_name SelectMenu
 """
 Represents a Discord select menu.
 """

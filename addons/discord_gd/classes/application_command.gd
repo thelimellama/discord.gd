@@ -1,4 +1,4 @@
-class_name ApplicationCommand
+#class_name ApplicationCommand
 """
 Represents a Discord application command.
 """

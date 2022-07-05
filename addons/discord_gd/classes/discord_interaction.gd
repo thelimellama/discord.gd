@@ -1,4 +1,4 @@
-class_name DiscordInteraction
+#class_name DiscordInteraction
 """
 Represents a Discord interaction.
 """

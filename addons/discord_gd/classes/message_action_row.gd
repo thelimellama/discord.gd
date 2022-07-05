@@ -1,4 +1,4 @@
-class_name MessageActionRow
+#class_name MessageActionRow
 """
 Represnts a Discord message action row which has components
 """
