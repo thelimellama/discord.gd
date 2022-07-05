@@ -22,4 +22,4 @@ enum FLAGS {
 
 
 # @hidden
-func _init(bits = default_bit).(bits): return self
+func _init(bits = default_bit).("SystemChannelFlags", bits): return self

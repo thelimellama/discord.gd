@@ -155,7 +155,9 @@ func get_default_bit() -> int:
 
 # @param bits: BitFieldResolvable Bit(s) to set
 # @returns self
-func _init(bits = get_default_bit()):
+func _init(p_name: String, bits = get_default_bit()):
+	__name__ = p_name
+
 	if bits == null:
 		bits = get_default_bit()
 	bitfield = resolve(bits)
@@ -177,5 +179,7 @@ func _to_dict():
 		return str(bitfield)
 
 
+var __name__: String
+
 func _to_string():
-	return str(bitfield)
+	return __name__ + "(" + str(bitfield) + ")"

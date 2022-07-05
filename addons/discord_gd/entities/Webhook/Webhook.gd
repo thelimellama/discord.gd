@@ -28,4 +28,19 @@ func from_dict(p_dict: Dictionary):
 		source_guild = Guild.new().from_dict(p_dict.source_guild)
 	if p_dict.has("source_channel"):
 		source_channel = Channel.new().from_dict(p_dict.source_channel)
+
 	return self
+
+
+# @hidden
+func to_dict() -> Dictionary:
+	var dict = .to_dict()
+
+	if dict.has("user"):
+		dict.user = dict.user.to_dict()
+	if dict.has("source_guild"):
+		dict.source_guild = dict.source_guild.to_dict()
+	if dict.has("source_channel"):
+		dict.source_channel = dict.source_channel.to_dict()
+
+	return dict

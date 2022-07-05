@@ -16,3 +16,23 @@ var tags = null # [RoleTags] The tags this role has
 
 # @hidden
 func _init().("Role"): return self
+
+
+# @hidden
+func from_dict(p_dict: Dictionary):
+	.from_dict(p_dict)
+
+	if p_dict.has("tags"):
+		tags = RoleTags.new().from_dict(p_dict.tags)
+
+	return self
+
+
+# @hidden
+func to_dict() -> Dictionary:
+	var dict = .to_dict()
+
+	if dict.has("tags"):
+		dict.tags = dict.tags.to_dict()
+
+	return dict
