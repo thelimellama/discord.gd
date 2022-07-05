@@ -17,14 +17,14 @@ var widget_enabled = null # [bool] True if the server widget is enabled
 var widget_channel_id = null # [String] The channel id that the widget will generate an invite to, or null if set to no invite
 var verification_level: int # [GuildVerificationLevel] Verification level required for the guild
 var default_message_notifications: int # [DefaultMessageNotificationLevel] Default message notifications level
-var explicit_content_filter: int # Explicit content filter level
+var explicit_content_filter: int # [ExplicitContentFilterLevel] Explicit content filter level
 var roles: Array # [Array] of [Role] Roles in the guild
 var emojis: Array # [Array] of [Emoji] Custom guild emojis
 var features: Array # [Array] of [GuildFeatures] Enabled guild features
 var mfa_level: int # [MFALevel] Required MFA level for the guild
 var application_id = null # [String] Application id of the guild creator if it is bot-created
 var system_channel_id = null # [String] The id of the channel where guild notices such as welcome messages and boost events are posted
-var system_channel_flags: SystemChannelFlags # System channel flags
+var system_channel_flags: SystemChannelFlags # [SystemChannelFlags] System channel flags
 var rules_channel_id = null # [String] The id of the channel where Community guilds can display rules and/or guidelines
 var max_presences = null # [int] The maximum number of presences for the guild (null is always returned, apart from the largest of guilds)
 var max_members = null # [int] The maximum number of members for the guild
@@ -68,3 +68,23 @@ func from_dict(p_dict: Dictionary):
 		for data in p_dict.stickers:
 			stickers.append(Sticker.new().from_dict(data))
 	return self
+
+
+# @hidden
+func to_dict() -> Dictionary:
+	var dict = .to_dict()
+
+	if dict.has("roles"):
+		for i in dict.roles.size():
+			dict.roles[i] = dict.roles[i].to_dict()
+	if dict.has("emojis"):
+		for i in dict.emojis.size():
+			dict.emojis[i] = dict.emojis[i].to_dict()
+	dict.system_channel_flags = dict.system_channel_flags.bitfield
+	if dict.has("welcome_screen") and dict.welcome_screen != null:
+		dict.welcome_screen = dict.welcome_screen.to_dict()
+	if dict.has("stickers"):
+		for i in dict.stickers.size():
+			dict.stickers[i] = dict.stickers[i].to_dict()
+
+	return dict

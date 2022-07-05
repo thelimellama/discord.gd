@@ -19,3 +19,14 @@ func from_dict(p_dict: Dictionary):
 			welcome_channels.append(WelcomeScreenChannel.new().from_dict(data))
 
 	return self
+
+
+# @hidden
+func to_dict() -> Dictionary:
+	var dict = .to_dict()
+
+	if dict.has("welcome_channels"):
+		for i in dict.welcome_channels.size():
+			dict.welcome_channels[i] = dict.welcome_channels[i].to_dict()
+
+	return dict

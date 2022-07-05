@@ -32,5 +32,19 @@ func from_dict(p_dict: Dictionary):
 		account = IntegrationAccount.new().from_dict(p_dict.account)
 	if p_dict.has("application"):
 		application = Application.new().from_dict(p_dict.application)
-	
+
 	return self
+
+
+# @hidden
+func to_dict() -> Dictionary:
+	var dict = .to_dict()
+
+	if dict.has("user") and user != null:
+		dict.user = user.to_dict()
+	if dict.has("account") and account != null:
+		dict.account = account.to_dict()
+	if dict.has("application") and application != null:
+		dict.application = application.to_dict()
+
+	return dict

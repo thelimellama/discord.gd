@@ -9,3 +9,23 @@ var bot = null # [User] The bot associated with this application
 
 # @hidden
 func _init().("IntegrationApplication"): return self
+
+
+# @hidden
+func from_dict(p_dict: Dictionary):
+	.from_dict(p_dict)
+
+	if p_dict.has("bot"):
+		bot = User.new().from_dict(p_dict.bot)
+
+	return self
+
+
+# @hidden
+func to_dict() -> Dictionary:
+	var dict = .to_dict()
+
+	if dict.has("bot") and dict.bot != null:
+		dict.bot = bot.to_dict()
+
+	return dict
