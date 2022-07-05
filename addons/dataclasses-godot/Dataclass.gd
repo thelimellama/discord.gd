@@ -11,7 +11,7 @@ const __DEFAULT_OPTIONS__ = {
 	"sort_keys": true,
 
 	# Whether to include properties with null values in the to_dict() method
-	"include_null_in_dict": true,
+	"include_null_in_dict": false,
 
 	# Whether to include properties with null values when printing
 	"include_null_in_print": false,

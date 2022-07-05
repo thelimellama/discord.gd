@@ -33,3 +33,15 @@ func from_dict(p_dict: Dictionary):
 		creator = User.new().from_dict(p_dict.creator)
 
 	return self
+
+
+# @hidden
+func to_dict() -> Dictionary:
+	var dict = .to_dict()
+
+	if dict.has("entity_metadata"):
+		dict.entity_metadata = dict.entity_metadata.to_dict()
+	if dict.has("creator"):
+		dict.creator = dict.creator.to_dict()
+
+	return dict
