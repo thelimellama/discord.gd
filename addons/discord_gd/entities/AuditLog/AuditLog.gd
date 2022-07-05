@@ -58,18 +58,25 @@ func from_dict(p_dict: Dictionary):
 # @hidden
 func to_dict() -> Dictionary:
 	var dict = .to_dict()
-	for i in audit_log_entries.size():
-		audit_log_entries[i] = audit_log_entries[i].to_dict()
-	for i in auto_moderation_rules.size():
-		auto_moderation_rules[i] = auto_moderation_rules[i].to_dict()
-	for i in guild_scheduled_events.size():
-		guild_scheduled_events[i] = guild_scheduled_events[i].to_dict()
-	for i in integrations.size():
-		integrations[i] = integrations[i].to_dict()
-	for i in threads.size():
-		threads[i] = threads[i].to_dict()
-	for i in users.size():
-		users[i] = users[i].to_dict()
-	for i in webhooks.size():
-		webhooks[i] = webhooks[i].to_dict()
+	if dict.has("audit_log_entries"):
+		for i in dict.audit_log_entries.size():
+			dict.audit_log_entries[i] = dict.audit_log_entries[i].to_dict()
+	if dict.has("auto_moderation_rules"):
+		for i in dict.auto_moderation_rules.size():
+			dict.auto_moderation_rules[i] = dict.auto_moderation_rules[i].to_dict()
+	if dict.has("guild_scheduled_events"):
+		for i in dict.guild_scheduled_events.size():
+			dict.guild_scheduled_events[i] = dict.guild_scheduled_events[i].to_dict()
+	if dict.has("integrations"):
+		for i in dict.integrations.size():
+			dict.integrations[i] = dict.integrations[i].to_dict()
+	if dict.has("threads"):
+		for i in dict.threads.size():
+			dict.threads[i] = dict.threads[i].to_dict()
+	if dict.has("users"):
+		for i in dict.users.size():
+			dict.users[i] = dict.users[i].to_dict()
+	if dict.has("webhooks"):
+		for i in dict.webhooks.size():
+			dict.webhooks[i] = dict.webhooks[i].to_dict()
 	return dict

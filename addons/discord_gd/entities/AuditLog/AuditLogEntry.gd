@@ -28,3 +28,17 @@ func from_dict(p_dict: Dictionary):
 		options = OptionalAuditEntryInfo.new().from_dict(p_dict.options)
 
 	return self
+
+
+# @hidden
+func to_dict() -> Dictionary:
+	var dict = .to_dict()
+
+	if dict.has("changes"):
+		for i in dict.changes.size():
+			dict.changes[i] = changes[i].to_dict()
+	if dict.has("options"):
+		for i in dict.options.size():
+			dict.options[i] = options[i].to_dict()
+
+	return dict
