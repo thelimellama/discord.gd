@@ -29,6 +29,7 @@ var default_auto_archive_duration = null # [int] Default duration that the clien
 var permissions = null # [String] Computed permissions for the invoking user in the channel, including overwrites, only included when part of the resolved data received on a slash command interaction
 var flags = null # [int] Channel flags combined as a bitfield
 
+var total_message_sent = null # [int] (Undocumented)
 
 # @hidden
 func _init().("Channel"): return self
@@ -50,6 +51,8 @@ func from_dict(p_dict: Dictionary):
 		thread_metadata = ThreadMetadata.new().from_dict(p_dict.thread_metadata)
 	if p_dict.has("member"):
 		member = ThreadMember.new().from_dict(p_dict.member)
+	if p_dict.has("flags"):
+		flags = ChannelFlags.new(p_dict.flags)
 
 	return self
 
@@ -68,4 +71,7 @@ func to_dict() -> Dictionary:
 		dict.thread_metadata = dict.thread_metadata.to_dict()
 	if dict.has("member") and dict.member != null:
 		dict.member = dict.member.to_dict()
+	if dict.has("flags"):
+		dict.flags = dict.flags.bitfield
+
 	return dict

@@ -82,6 +82,21 @@ func delete_guild_auto_moderation_rule(p_guild_id: String, p_rule_id: String) ->
 	return false
 
 
+#! ----------
+#! Channel
+#! ----------
+
+
+# Get a channel.
+# If the channel is a thread, a [ThreadMember] object is included in the returned result.
+# @returns [Channel] | [HTTPResponse] if error
+func get_channel(p_channel_id: String) -> Channel:
+	var data = yield(_send_request(ENDPOINTS.CHANNEL % [p_channel_id]), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return Channel.new().from_dict(data)
+
+
 
 # @hidden
 const ENDPOINTS: Dictionary = {
@@ -91,6 +106,41 @@ const ENDPOINTS: Dictionary = {
 	# AutoModeration
 	GUILD_AUTO_MODERATION_RULES = "/guilds/%s/auto-moderation/rules",
 	GUILD_AUTO_MODERATION_RULE = "/guilds/%s/auto-moderation/rules/%s",
+
+	# Channel
+	CHANNEL = "/channels/%s",
+	CHANNEL_MESSAGES = "/channels/%s/messages",
+	CHANNEL_MESSAGE = "/channels/%s/messages/%s",
+	CHANNEL_MESSAGE_CROSSPOST = "/channels/%s/messages/%s/crosspost",
+	CHANNEL_MESSAGES_BULKDELETE = "/channels/%s/messages/bulk-delete",
+
+	REACTIONS = "/channels/%s/messages/%s/reactions",
+	REACTIONS_EMOJI = "/channels/%s/messages/%s/reactions/%s",
+	REACTIONS_EMOJI_USER = "/channels/%s/messages/%s/reactions/%s/%s",
+	REACTIONS_EMOJI_ME = "/channels/%s/messages/%s/reactions/%s/@me",
+
+	CHANNEL_PERMISSION = "/channels/%s/permissions/%s",
+
+	CHANNEL_INVITES = "/channels/%s/invites",
+
+	CHANNEL_FOLLOWERS = "/channels/%s/followers",
+
+	CHANNEL_TYPING = "/channels/%s/typing",
+
+	CHANNEL_PINS = "/channels/%s/pins",
+	CHANNEL_PIN = "/channels/%s/pins/%s",
+
+	CHANNEL_RECIPIENT = "/channels/%s/recipients/%s",
+
+	CHANNEL_THREADS = "/channels/%s/threads",
+	CHANNEL_MESSAGE_THREADS = "/channels/%s/messages/%s/threads",
+
+	CHANNEL_THREADMEMBERS = "/channels/%s/thread-members",
+	CHANNEL_THREADMEMBERS_USER = "/channels/%s/thread-members/%s",
+	CHANNEL_THREADMEMBERS_ME = "/channels/%s/thread-members/@me",
+	CHANNEL_THREADS_ARCHIVED_PUBLIC = "/channels/%s/threads/archived/public",
+	CHANNEL_THREADS_ARCHIVED_PRIVATE = "/channels/%s/threads/archived/private",
+	CHANNEL_ME_THREADS_ARCHIVED_PRIVATE = "/channels/%s/users/@me/threads/archived/private",
 }
 
 var _base_url: String
