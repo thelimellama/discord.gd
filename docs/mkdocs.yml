@@ -11,8 +11,26 @@ nav:
   - Simple Bot: simple-bot.md
   - Advanced Bot: advanced-bot.md
   - Classes:
-      DiscordRESTClient: classes/DiscordRESTClient.md
-      Application: classes/Application.md
+    - DiscordRESTClient: classes/DiscordRESTClient.md
+
+    - Application: classes/Application.md
+    - ApplicationFlags: classes/ApplicationFlags.md
+    - ApplicationInstallParams: classes/ApplicationInstallParams.md
+
+    - AuditLog: classes/AuditLog.md
+    - AuditLogChange: classes/AuditLogChange.md
+    - AuditLogEntry: classes/AuditLogEntry.md
+    - AuditLogEvent: classes/AuditLogEvent.md
+    - OptionalAuditEntryInfo: classes/OptionalAuditEntryInfo.md
+    
+    - AutoModerationAction: classes/AutoModerationAction.md
+    - AutoModerationActionMetadata: classes/AutoModerationActionMetadata.md
+    - AutoModerationActionTypes: classes/AutoModerationActionTypes.md
+    - AutoModerationEventTypes: classes/AutoModerationEventTypes.md
+    - AutoModerationKeywordPresetTypes: classes/AutoModerationKeywordPresetTypes.md
+    - AutoModerationRule: classes/AutoModerationRule.md
+    - AutoModerationTriggerMetdata: classes/AutoModerationTriggerMetdata.md
+    - AutoModerationTriggerTypes: classes/AutoModerationTriggerTypes.md
 theme:
   name: "material"
   language: "en"

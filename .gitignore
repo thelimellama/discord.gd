@@ -1,3 +1,5 @@
+.env
+
 # Test scene
 _Main.gd
 _Main.tscn

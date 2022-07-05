@@ -303,8 +303,8 @@ def _replace_references(
     """Finds and replaces references to other classes or methods in the
     `description`."""
     ERROR_MESSAGES = {
-        "class": "Class {} not found in the class index.",
-        "member": "Symbol {} not found in {}. The name might be incorrect.",
+        "class": "Class {} not found in the class index. ",
+        "member": "Symbol {} not found in {}. ",
     }
     ERROR_TAIL = "The name might be incorrect."
     stack = 0
@@ -347,10 +347,14 @@ def _replace_references(
                 )
                 continue
         elif member and member not in classes.class_index[gdscript.name]:
-            LOGGER.warning(
-                ERROR_MESSAGES["member"].format(member, gdscript.name) + ERROR_TAIL
-            )
-            continue
+            # Check if member is a builtin type eg. bool
+            if member in BUILTIN_CLASSES:
+                is_builtin_class = True
+            else:
+                LOGGER.warning(
+                    ERROR_MESSAGES["member"].format(member, gdscript.name) + ERROR_TAIL
+                )
+                continue
 
         display_text, path = "", "../"
         if class_name:
@@ -363,8 +367,9 @@ def _replace_references(
             path += "#" + member.replace("_", "-")
 
         if is_builtin_class:
-            display_text = class_name
-            path = GODOT_DOCS_URL.format(class_name.lower())
+            text: str = class_name if class_name else member
+            display_text = text
+            path = GODOT_DOCS_URL.format(text.lower())
 
         link: str = make_link(display_text, path)
         description = description.replace(reference, link, 1)
