@@ -3,10 +3,10 @@
 # Each audit log entry represents a single administrative action (or event) indicated by `action_type`.
 class_name AuditLogEntry extends Dataclass
 
-var target_id = null # [String] ID of the affected entity (webhook, user, role, etc.)
+var target_id = null # [String] Id of the affected entity (webhook, user, role, etc.)
 var changes = null # [Array] of [AuditLogChange] Changes made to the target_id
 var user_id = null # [String] User or app that made the changes
-var id: String # ID of the entry
+var id: String # Id of the entry
 var action_type: int # [AuditLogEvent] Type of action that occurred
 var options = null # [OptionalAuditEntryInfo] Additional info for certain event types
 var reason = null # [String] Reason for the change (1-512 characters)
