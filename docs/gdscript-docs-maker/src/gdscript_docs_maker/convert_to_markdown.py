@@ -359,12 +359,14 @@ def _replace_references(
         display_text, path = "", "../"
         if class_name:
             display_text, path = class_name, class_name
-        if class_name and member:
-            display_text += "."
-            path += "/"
+            if member:
+                display_text += "."
+                path += "/"
+        else:
+            path = ""
         if member:
             display_text += member
-            path += "#" + member.replace("_", "-")
+            path += "#" + member
 
         if is_builtin_class:
             text: str = class_name if class_name else member
