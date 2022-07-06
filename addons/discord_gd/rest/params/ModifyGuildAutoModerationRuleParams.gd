@@ -6,7 +6,7 @@ var event_type = null # [AutoModerationEventTypes] The event type
 var trigger_type = null # [AutoModerationTriggerTypes] The trigger type
 var trigger_metadata = null # [AutoModerationTriggerMetadata] The trigger metadata
 var actions = null # [Array] of [AutoModerationAction] The actions which will execute when the rule is triggered
-var enabled = null # Whether the rule is enabled (False by default)
+var enabled = null # [bool] Whether the rule is enabled (default is false)
 var exempt_roles = null # [Array] of [String] The role ids that should not be affected by the rule (Maximum of 20)
 var exempt_channels = null # [Array] of [String] The channel ids that should not be affected by the rule (Maximum of 50)
 

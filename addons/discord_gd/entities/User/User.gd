@@ -5,6 +5,7 @@ var id: String # The user's id
 var username: String # The user's username, not unique across the platform
 var discriminator: String # The user's 4-digit discord-tag
 var avatar = null # [String] The user's avatar hash
+var avatar_decoration = null # (Undocumented)
 var bot = null # [bool] Whether the user belongs to an OAuth2 application
 var system = null # [bool] Whether the user is an Official Discord System user (part of the urgent message system)
 var mfa_enabled = null # [bool] Whether the user has two factor enabled on their account

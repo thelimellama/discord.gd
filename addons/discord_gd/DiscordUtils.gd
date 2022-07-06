@@ -14,3 +14,7 @@ static func set_if_not_null(obj, property, value):
 
 static func query_string_from_dict(p_dict: Dictionary) -> String:
 	return HTTPClient.new().query_string_from_dict(p_dict)
+
+
+static func perror(p_var):
+	printerr(p_var)
