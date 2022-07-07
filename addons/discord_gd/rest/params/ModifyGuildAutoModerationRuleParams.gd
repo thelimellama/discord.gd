@@ -16,11 +16,26 @@ func _init().("ModifyGuildAutoModerationRuleParams", {include_null_in_dict = fal
 
 
 # @hidden
+func from_dict(p_dict: Dictionary):
+	.from_dict(p_dict)
+
+	if p_dict.has("trigger_metadata"):
+		trigger_metadata = AutoModerationTriggerMetadata.new().from_dict(p_dict.trigger_metadata)
+
+	if p_dict.has("actions"):
+		actions = []
+		for data in p_dict.actions:
+			actions.append(AutoModerationAction.new().from_dict(data))
+
+	return self
+
+
+# @hidden
 func to_dict() -> Dictionary:
 	var dict = .to_dict().duplicate(true)
 
 	if dict.has("trigger_metadata"):
-		dict.trigger_metadata = dict.trigger_metadat.to_dict()
+		dict.trigger_metadata = dict.trigger_metadata.to_dict()
 	if dict.has("actions"):
 		for i in dict.actions.size():
 			dict.actions[i] = dict.actions[i].to_dict()

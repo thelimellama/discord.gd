@@ -3,7 +3,7 @@ class_name ModifyChannelParams extends Dataclass
 
 var name = null # [String] 1-100 character channel name
 var icon = null # [String] Base64 encoded icon
-var type = null # [int] [ChannelTypes] The type of channel; Only conversion between text and news is supported and only in guilds with the "NEWS" feature
+var type = null # [ChannelTypes] The type of channel; Only conversion between text and news is supported and only in guilds with the "NEWS" feature
 var position = null # [int] The position of the channel in the left-hand listing
 var topic = null # [String]	0-1024 character channel topic
 var nsfw = null # [bool] Whether the channel is nsfw

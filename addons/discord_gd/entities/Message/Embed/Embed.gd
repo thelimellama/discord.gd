@@ -2,7 +2,7 @@
 class_name Embed extends Dataclass
 
 var title = null # [String] Title of embed
-var type = null # [EmbedTypes] Type of embed (always "rich" for webhook embeds)
+var type = EmbedTypes.RICH # [EmbedTypes] Type of embed (always "rich" for webhook embeds)
 var description = null # [String] Description of embed
 var url = null # [String] Url of embed
 var timestamp = null # [String] Timestamp of embed content

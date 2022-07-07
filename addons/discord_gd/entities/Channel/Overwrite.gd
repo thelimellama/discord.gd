@@ -2,7 +2,7 @@
 class_name Overwrite extends Dataclass
 
 var id: String # Role or user id
-var type: int # Either 0 (role) or 1 (member)
+var type: int # [OverwriteTypes] Either 0 (role) or 1 (member)
 var allow: Permissions # [Permissions] Permission bit set
 var deny: Permissions # [Permissions] Permission bit set
 

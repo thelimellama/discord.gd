@@ -24,7 +24,7 @@ var features: Array # [Array] of [GuildFeatures] Enabled guild features
 var mfa_level: int # [MFALevel] Required MFA level for the guild
 var application_id = null # [String] Application id of the guild creator if it is bot-created
 var system_channel_id = null # [String] The id of the channel where guild notices such as welcome messages and boost events are posted
-var system_channel_flags: SystemChannelFlags # [SystemChannelFlags] System channel flags
+var system_channel_flags = null # [SystemChannelFlags] System channel flags
 var rules_channel_id = null # [String] The id of the channel where Community guilds can display rules and/or guidelines
 var max_presences = null # [int] The maximum number of presences for the guild (null is always returned, apart from the largest of guilds)
 var max_members = null # [int] The maximum number of members for the guild
@@ -39,6 +39,7 @@ var max_video_channel_users = null # [int] The maximum amount of users in a vide
 var approximate_member_count = null # [int] Approximate number of members in this guild, returned from the GET /guilds/<id> endpoint when with_counts is true
 var approximate_presence_count = null # [int] Approximate number of non-offline members in this guild, returned from the GET /guilds/<id> endpoint when with_counts is true
 var welcome_screen = null # [WelcomeScreen] The welcome screen of a Community guild, shown to new members, returned in an Invite's guild object
+var nsfw = null # [bool] (Undocumented)
 var nsfw_level: int # [GuildNSFWlevel] Guild NSFW Level
 var stickers = null # [Array] of [Sticker] Custom guild stickers
 var premium_progress_bar_enabled: bool # Whether the guild has the boost progress bar enabled
@@ -60,7 +61,8 @@ func from_dict(p_dict: Dictionary):
 	if p_dict.has("emojis"):
 		for data in p_dict.emojis:
 			emojis.append(Emoji.new().from_dict(data))
-	system_channel_flags = SystemChannelFlags.new(p_dict.system_channel_flags)
+	if p_dict.has("system_channel_flags"):
+		system_channel_flags = SystemChannelFlags.new(p_dict.system_channel_flags)
 	if p_dict.has("welcome_screen"):
 		welcome_screen = WelcomeScreen.new().from_dict(p_dict.welcome_screen)
 	stickers = []
@@ -80,7 +82,8 @@ func to_dict() -> Dictionary:
 	if dict.has("emojis"):
 		for i in dict.emojis.size():
 			dict.emojis[i] = dict.emojis[i].to_dict()
-	dict.system_channel_flags = dict.system_channel_flags.bitfield
+	if dict.has("system_channel_flags") and dict.system_channel_flags != null:
+		dict.system_channel_flags = dict.system_channel_flags.bitfield
 	if dict.has("welcome_screen") and dict.welcome_screen != null:
 		dict.welcome_screen = dict.welcome_screen.to_dict()
 	if dict.has("stickers"):

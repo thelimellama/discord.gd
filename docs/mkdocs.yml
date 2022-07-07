@@ -22,7 +22,7 @@ nav:
     - AuditLogEntry: classes/AuditLogEntry.md
     - AuditLogEvent: classes/AuditLogEvent.md
     - OptionalAuditEntryInfo: classes/OptionalAuditEntryInfo.md
-    
+
     - AutoModerationAction: classes/AutoModerationAction.md
     - AutoModerationActionMetadata: classes/AutoModerationActionMetadata.md
     - AutoModerationActionTypes: classes/AutoModerationActionTypes.md
@@ -90,6 +90,7 @@ markdown_extensions:
   - attr_list
   - md_in_html
   - pymdownx.betterem
+  - pymdownx.details
   - pymdownx.superfences
   - pymdownx.smartsymbols
   - pymdownx.tasklist:

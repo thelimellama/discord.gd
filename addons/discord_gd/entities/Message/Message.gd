@@ -29,7 +29,7 @@ var interaction = null # [MessageInteraction] Sent if the message is a response 
 var thread = null # [Channel] The thread that was started from this message, includes [ThreadMember]
 var components = null # [Array] of [MessageActionRow] Sent if the message contains components like buttons, action rows, or other interactive components
 var sticker_items = null # [Array] of [MessageStickerItem] Sent if the message contains stickers
-var stickers = null # [Array] of Sticker (Deprecated) The stickers sent with the message
+var stickers = null # [Array] of Sticker (deprecated) The stickers sent with the message
 
 
 # @hidden
@@ -69,7 +69,7 @@ func from_dict(p_dict: Dictionary):
 		message_reference = MessageReference.new().from_dict(p_dict.message_reference)
 	if p_dict.has("flags"):
 		flags = MessageFlags.new(p_dict.flags)
-	if p_dict.has("referenced_message"):
+	if p_dict.has("referenced_message") and p_dict.referenced_message != null:
 		referenced_message = get_script().new().from_dict(p_dict.referenced_message) # TODO: check if get_script() works
 	if p_dict.has("interaction"):
 		interaction = MessageInteraction.new().from_dict(p_dict.interaction)
@@ -117,7 +117,7 @@ func to_dict() -> Dictionary:
 	if dict.has("message_reference") and dict.message_reference != null:
 		dict.message_reference = dict.message_reference.to_dict()
 	if dict.has("flags") and dict.flags != null:
-		dict.flags = dict.flags.to_dict()
+		dict.flags = dict.flags.bitfield
 	if dict.has("referenced_message") and dict.referenced_message != null:
 		dict.referenced_message = dict.referenced_message.to_dict()
 	if dict.has("interaction") and dict.interaction != null:
