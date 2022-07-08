@@ -11,8 +11,13 @@ var premium_since = null # [String] When the user started boosting the guild
 var deaf: bool # Whether the user is deafened in voice channels
 var mute: bool # Whether the user is muted in voice channels
 var pending = null # [bool] Whether the user has not yet passed the guild's Membership Screening requirements
-var permissions = null # [String] Total permissions of the member in the channel, including overwrites, returned when in the interaction object
+var permissions = null # [Permissions] Total permissions of the member in the channel, including overwrites, returned when in the interaction object
 var communication_disabled_until = null # [String] When the user's timeout will expire and the user will be able to communicate in the guild again, null or a time in the past if the user is not timed out
+
+var is_pending = null # [bool] (Undocumented)
+var flags = null # [int] (Undocumented)
+var bio = null # [String] (Undocumented)
+var banner = null # [String] (Undocumented)
 
 
 # @hidden
@@ -25,6 +30,8 @@ func from_dict(p_dict: Dictionary):
 
 	if p_dict.has("user") and p_dict.user != null:
 		user = User.new().from_dict(p_dict.user)
+	if p_dict.has("permissions") and p_dict.permissions != null:
+		permissions = Permissions.new(p_dict.permissions)
 
 	return self
 
@@ -35,5 +42,7 @@ func to_dict() -> Dictionary:
 
 	if dict.has("user") and dict.user != null:
 		dict.user = dict.user.to_dict()
+	if dict.has("permissions"):
+		dict.permissions = str(dict.permissions.bitfield)
 
 	return dict

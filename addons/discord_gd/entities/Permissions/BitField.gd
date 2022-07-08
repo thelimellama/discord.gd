@@ -153,6 +153,7 @@ func get_flags() -> Dictionary:
 func get_default_bit() -> int:
 	return get("default_bit")
 
+
 # @param bits: BitFieldResolvable Bit(s) to set
 # @returns self
 func _init(p_name: String, bits = get_default_bit()):
@@ -177,7 +178,6 @@ func _to_dict():
 		return bitfield
 	else:
 		return str(bitfield)
-
 
 var __name__: String
 

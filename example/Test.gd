@@ -143,4 +143,72 @@ func _on_rerun_btn_pressed() -> void:
 #	Print(yield(rest.delete_guild_emoji("369422519129604096", "994838400651755621"), "completed"))
 
 
+#	Print(yield(rest.get_guild("994852345970163712", true), "completed"))
+#	Print(yield(rest.get_guild_preview("994852345970163712"), "completed"))
+#	Print(yield(rest.create_guild({
+#		name = "TestGuild 001"
+#	}), "completed"))
+#	Print(yield(rest.modify_guild("994852345970163712", {
+#		name = "Edited guild name",
+#		description = "Edited guild desc"
+#	}), "completed"))
+#	Print(yield(rest.delete_guild("994852345970163712"), "completed"))
+
+#	Print(yield(rest.get_guild_channels("369422519129604096"), "completed"))
+#	Print(yield(rest.create_guild_channel("369422519129604096", {
+#		name = "test name",
+#		topic = "test topic",
+#	}), "completed"))
+#	Print(yield(rest.modify_guild_channels("369422519129604096", ModifyGuildChannelsParams.new().from_dict({
+#		modifications = [
+#			GuildChannelModification.new().from_dict({
+#				id = "374137299811696640",
+#				position = 3
+#			}).to_dict()
+#		]
+#	})), "completed"))
+
+#	Print(yield(rest.get_active_guild_threads("369422519129604096"), "completed"))
+
+#	Print(yield(rest.get_guild_members("369422519129604096", {limit = 100}), "completed"))
+#	Print(yield(rest.get_guild_member("369422519129604096", "172002275412279296"), "completed"))
+#	Print(yield(rest.search_guild_members("369422519129604096", {
+#		query = "discord",
+#		limit = 10
+#	}), "completed"))
+#	Print(yield(rest.add_guild_member(), "completed")) # TODO: test this method
+#	Print(yield(rest.modify_guild_member("369422519129604096", "369422213394464770", {
+#		nick = null
+#	}), "completed"))
+#	Print(yield(rest.modify_current_member("369422519129604096", null), "completed"))
+
+#	Print(yield(rest.add_guild_member_role("369422519129604096", "369422213394464770", "993759829850079253"), "completed"))
+#	Print(yield(rest.remove_guild_member_role("369422519129604096", "369422213394464770", "993759829850079253"), "completed"))
+#	Print(yield(rest.remove_guild_member("369422519129604096", "309562096486449153"), "completed"))
+
+#	Print(yield(rest.get_guild_bans("330264450148073474", {limit = 5}), "completed"))
+#	Print(yield(rest.get_guild_ban("330264450148073474", "775654177736097802"), "completed"))
+#	Print(yield(rest.create_guild_ban("369422519129604096", "309562096486449153"), "completed"))
+#	Print(yield(rest.remove_guild_ban("369422519129604096", "309562096486449153"), "completed"))
+
+#	Print(yield(rest.get_guild_roles("369422519129604096"), "completed"))
+#	Print(yield(rest.get_guild_role("369422519129604096", "369422519129604096"), "completed"))
+#	var params_create_guild_role = CreateGuildRoleParams.new().from_dict({
+#		name = "Created Role 001",
+#		color = 1000,
+#		hoist = true,
+#		mentionable = true
+#	})
+#	params_create_guild_role.permissions = Permissions.new().add(Permissions.FLAGS.ADMINISTRATOR)
+#	Print(yield(rest.create_guild_role("369422519129604096", params_create_guild_role), "completed"))
+#	Print(yield(rest.modify_guild_roles("369422519129604096", {
+#		modifications = [
+#			{id = "994911039407784028", position = 1}
+#		]
+#	}), "completed"))
+#	Print(yield(rest.modify_guild_role("369422519129604096", "994911039407784028", {
+#		name = "edited role name",
+#		permissions = 0
+#	}), "completed"))
+#	Print(yield(rest.delete_guild_role("369422519129604096", "994911039407784028"), "completed"))
 

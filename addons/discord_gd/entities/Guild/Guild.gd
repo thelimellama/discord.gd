@@ -3,13 +3,13 @@ class_name Guild extends Dataclass
 
 var id: String # Guild id
 var name: String # Guild name (2-100 characters, excluding trailing and leading whitespace)
-var icon: String # Icon hash
+var icon = null # [String] Icon hash
 var icon_hash = null # [String] Icon hash, returned when in the template object
 var splash = null # [String] Splash hash
 var discovery_splash = null # [String] Discovery splash hash; only present for guilds with the `DISCOVERABLE` feature
 var owner = null # [bool] True if the user is the owner of the guild
 var owner_id: String # Id of owner
-var permissions = null # [String] Total permissions for the user in the guild (excludes overwrites)
+var permissions = null # [Permissions] Total permissions for the user in the guild (excludes overwrites)
 var region = null # [String] Voice region id for the guild (deprecated)
 var afk_channel_id = null # [String] Id of afk channel
 var afk_timeout: int # Afk timeout in seconds
@@ -44,6 +44,9 @@ var nsfw_level: int # [GuildNSFWlevel] Guild NSFW Level
 var stickers = null # [Array] of [Sticker] Custom guild stickers
 var premium_progress_bar_enabled: bool # Whether the guild has the boost progress bar enabled
 
+var joined_at = null # (Undocumented)
+var hub_type = null # (Undocumented)
+var flags = null # (Undocumented)
 
 # @hidden
 func _init().("Guild"): return self
@@ -53,12 +56,14 @@ func _init().("Guild"): return self
 func from_dict(p_dict: Dictionary):
 	.from_dict(p_dict)
 
-	roles = []
+	if p_dict.has("permissions") and p_dict.permissions != null:
+		permissions = Permissions.new(p_dict.permissions)
 	if p_dict.has("roles"):
+		roles = []
 		for data in p_dict.roles:
 			roles.append(Role.new().from_dict(data))
-	emojis = []
 	if p_dict.has("emojis"):
+		emojis = []
 		for data in p_dict.emojis:
 			emojis.append(Emoji.new().from_dict(data))
 	if p_dict.has("system_channel_flags"):
@@ -76,15 +81,17 @@ func from_dict(p_dict: Dictionary):
 func to_dict() -> Dictionary:
 	var dict = .to_dict().duplicate(true)
 
+	if dict.has("permissions"):
+		dict.permissions = str(dict.permissions.bitfield)
 	if dict.has("roles"):
 		for i in dict.roles.size():
 			dict.roles[i] = dict.roles[i].to_dict()
 	if dict.has("emojis"):
 		for i in dict.emojis.size():
 			dict.emojis[i] = dict.emojis[i].to_dict()
-	if dict.has("system_channel_flags") and dict.system_channel_flags != null:
+	if dict.has("system_channel_flags"):
 		dict.system_channel_flags = dict.system_channel_flags.bitfield
-	if dict.has("welcome_screen") and dict.welcome_screen != null:
+	if dict.has("welcome_screen"):
 		dict.welcome_screen = dict.welcome_screen.to_dict()
 	if dict.has("stickers"):
 		for i in dict.stickers.size():

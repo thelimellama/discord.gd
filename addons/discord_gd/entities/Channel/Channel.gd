@@ -26,10 +26,11 @@ var member_count = null # [int] An approximate count of users in a thread, stops
 var thread_metadata = null # [ThreadMetadata] Thread-specific fields not needed by other channels
 var member = null # [ThreadMember] Thread member object for the current user, if they have joined the thread, only included on certain API endpoints
 var default_auto_archive_duration = null # [int] Default duration that the clients (not the API) will use for newly created threads, in minutes, to automatically archive the thread after recent activity, can be set to: 60, 1440, 4320, 10080
-var permissions = null # [String] Computed permissions for the invoking user in the channel, including overwrites, only included when part of the resolved data received on a slash command interaction
+var permissions = null # [Permissions] Computed permissions for the invoking user in the channel, including overwrites, only included when part of the resolved data received on a slash command interaction
 var flags = null # [int] Channel flags combined as a bitfield
 
 var total_message_sent = null # [int] (Undocumented)
+var member_ids_preview = null # [Array] of [String] (Undocumented)
 
 # @hidden
 func _init().("Channel"): return self
@@ -51,6 +52,8 @@ func from_dict(p_dict: Dictionary):
 		thread_metadata = ThreadMetadata.new().from_dict(p_dict.thread_metadata)
 	if p_dict.has("member"):
 		member = ThreadMember.new().from_dict(p_dict.member)
+	if p_dict.has("permissions"):
+		permissions = Permissions.new(p_dict.permissions)
 	if p_dict.has("flags"):
 		flags = ChannelFlags.new(p_dict.flags)
 
@@ -71,6 +74,8 @@ func to_dict() -> Dictionary:
 		dict.thread_metadata = dict.thread_metadata.to_dict()
 	if dict.has("member") and dict.member != null:
 		dict.member = dict.member.to_dict()
+	if dict.has("permissions") and dict.permissions != null:
+		dict.flags = str(dict.permissions.bitfield)
 	if dict.has("flags"):
 		dict.flags = dict.flags.bitfield
 

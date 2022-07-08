@@ -664,7 +664,7 @@ func get_joined_private_archived_threads(p_channel_id: String, p_params = {}) ->
 	elif not p_params is GetArchivedThreadsParams:
 		DiscordUtils.perror("Discord.gd:get_joined_private_archived_threads:params must be a Dictionary or GetArchivedThreadsParams")
 
-	var endpoint = ENDPOINTS.CHANNEL_USER_ME_THREADS_ARCHIVED_PRIVATE % p_channel_id
+	var endpoint = ENDPOINTS.CHANNEL_USERS_ME_THREADS_ARCHIVED_PRIVATE % p_channel_id
 	var query_string = DiscordUtils.query_string_from_dict(p_params.to_dict())
 	if query_string: endpoint += "?" + query_string
 
@@ -744,6 +744,431 @@ func delete_guild_emoji(p_guild_id: String, p_emoji_id: String) -> bool:
 	return false
 
 
+#! ----------
+#! Guild
+#! ----------
+
+
+# Get a guild with given Id
+#
+# If `with_counts` is set to true, this method will also return `approximate_member_count` and `approximate_presence_count` for the guild
+# @returns [Guild] | [HTTPResponse] if error
+func get_guild(p_guild_id: String, p_with_counts = false) -> Guild:
+	var endpoint = ENDPOINTS.GUILD % p_guild_id
+	if p_with_counts == true:
+		var query_string = DiscordUtils.query_string_from_dict({with_counts = true})
+		if query_string: endpoint += "?" + query_string
+
+	var data = yield(_send_request(endpoint), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return Guild.new().from_dict(data)
+
+
+# Get a guild preview for the guild with given Id
+#
+# If the user is not in the guild, then the guild must be lurkable
+# @returns [Guild] | [HTTPResponse] if error
+func get_guild_preview(p_guild_id: String) -> GuildPreview:
+	var data = yield(_send_request(ENDPOINTS.GUILD_PREVIEW % p_guild_id), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return GuildPreview.new().from_dict(data)
+
+
+# Create a new guild
+#
+# Can be used only by bots in less than 10 guilds
+# @returns [Guild] | [HTTPResponse] if error
+func create_guild(p_params = {}) -> Guild:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = CreateGuildParams.new().from_dict(p_params)
+	elif not p_params is CreateGuildParams:
+		DiscordUtils.perror("Discord.gd:create_guild:params must be a Dictionary or CreateGuildParams")
+	var data = yield(_send_post_request(ENDPOINTS.GUILDS, p_params.to_dict()), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return Guild.new().from_dict(data)
+
+
+# Modify a guild's settings
+#
+# Needs the `MANAGE_GUILD` permission. Attempting to add or remove the `COMMUNITY` guild feature requires the `ADMINISTRATOR` permission
+# @returns [Guild] | [HTTPResponse] if error
+func modify_guild(p_guild_id: String, p_params = {}) -> Guild:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = ModifyGuildParams.new().from_dict(p_params)
+	elif not p_params is ModifyGuildParams:
+		DiscordUtils.perror("Discord.gd:modify_guild:params must be a Dictionary or ModifyGuildParams")
+	var data = yield(_send_patch_request(ENDPOINTS.GUILD % p_guild_id, p_params.to_dict()), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return Guild.new().from_dict(data)
+
+
+# Deletes a guild permanently
+#
+# Current user must be owner
+# @returns [bool] | [HTTPResponse] if error
+func delete_guild(p_guild_id: String) -> bool:
+	var data = yield(_send_delete_request(ENDPOINTS.GUILD % p_guild_id), "completed")
+	if data is HTTPResponse:
+		if data.is_error():
+			return data
+		return data.is_no_content()
+	return false
+
+
+# Get a list of guild channels. Does not include threads
+#
+# @returns [Array] of [Channel] | [HTTPResponse] if error
+func get_guild_channels(p_guild_id: String) -> Array:
+	var data = yield(_send_request(ENDPOINTS.GUILD_CHANNELS % p_guild_id), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	var ret = []
+	for elm in data:
+		ret.append(Channel.new().from_dict(elm))
+	return ret
+
+
+# Create a new channel in a guild
+#
+# Needs the `MANAGE_CHANNELS` permission. If setting permission overwrites, only permissions your bot has in the guild can be allowed/denied. Setting `MANAGE_ROLES` permission in channels is only possible for guild administrators
+# @returns [Channel] | [HTTPResponse] if error
+func create_guild_channel(p_guild_id: String, p_params = {}) -> Channel:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = CreateGuildChannelParams.new().from_dict(p_params)
+	elif not p_params is CreateGuildChannelParams:
+		DiscordUtils.perror("Discord.gd:create_guild_channel:params must be a Dictionary or CreateGuildChannelParams")
+	var data = yield(_send_post_request(ENDPOINTS.GUILD_CHANNELS % p_guild_id, p_params.to_dict()), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return Channel.new().from_dict(data)
+
+
+# Modify the settings for a set of channels in a guild
+#
+# Needs the `MANAGE_CHANNELS` permission
+# @returns [bool] | [HTTPResponse] if error
+func modify_guild_channels(p_guild_id: String, p_params = {}) -> bool:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = ModifyGuildChannelsParams.new().from_dict(p_params)
+	elif not p_params is ModifyGuildChannelsParams:
+		DiscordUtils.perror("Discord.gd:modify_guild_channels:params must be a Dictionary or ModifyGuildChannelsParams")
+	var data = yield(_send_patch_request(ENDPOINTS.GUILD_CHANNELS % p_guild_id, p_params.to_dict().modifications), "completed")
+	if data is HTTPResponse:
+		if data.is_error():
+			return data
+		return data.is_no_content()
+	return false
+
+
+# Get a list of active threads in a guild, including private and public threads
+#
+# Threads are ordered by their `id` in descending order
+# @returns [GetActiveGuildThreadsResponse] | [HTTPResponse] if error
+func get_active_guild_threads(p_guild_id: String) -> Array:
+	var data = yield(_send_request(ENDPOINTS.GUILD_THREADS_ACTIVE % p_guild_id), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return GetActiveGuildThreadsResponse.new().from_dict(data)
+
+
+# Get a list of members in a guild
+#
+# Needs the `GUILD_MEMBERS` privileged intent
+# @returns [Array] of [GuildMember] | [HTTPResponse] if error
+func get_guild_members(p_guild_id: String, p_params = {}) -> Array:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = GetGuildMembersParams.new().from_dict(p_params)
+	elif not p_params is GetGuildMembersParams:
+		DiscordUtils.perror("Discord.gd:get_guild_members:params must be a Dictionary or GetGuildMembersParams")
+
+	var endpoint = ENDPOINTS.GUILD_MEMBERS % p_guild_id
+	var query_string = DiscordUtils.query_string_from_dict(p_params.to_dict())
+	if query_string: endpoint += "?" + query_string
+
+	var data = yield(_send_request(endpoint), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	var ret = []
+	for elm in data:
+		ret.append(GuildMember.new().from_dict(elm))
+	return ret
+
+
+# Get a guild member for a specific user in a guild
+#
+# @returns [GuildMember] | [HTTPResponse] if error
+func get_guild_member(p_guild_id: String, p_user_id: String) -> GuildMember:
+	var data = yield(_send_request(ENDPOINTS.GUILD_MEMBER % [p_guild_id, p_user_id]), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return GuildMember.new().from_dict(data)
+
+
+# Get a list of guild members whose username or nickname starts with a provided string
+#
+# @returns [Array] of [GuildMember] | [HTTPResponse] if error
+func search_guild_members(p_guild_id: String, p_params = {}) -> Array:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = SearchGuildMembersParams.new().from_dict(p_params)
+	elif not p_params is SearchGuildMembersParams:
+		DiscordUtils.perror("Discord.gd:search_guild_members:params must be a Dictionary or SearchGuildMembersParams")
+
+	var endpoint = ENDPOINTS.GUILD_MEMBERS_SEARCH % p_guild_id
+	var query_string = DiscordUtils.query_string_from_dict(p_params.to_dict())
+	if query_string: endpoint += "?" + query_string
+
+	var data = yield(_send_request(endpoint), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+
+	var ret = []
+	for elm in data:
+		ret.append(GuildMember.new().from_dict(elm))
+	return ret
+
+
+# Adds a user to a guild
+#
+# Needs a valid oauth2 access token for the user with the `guilds.join` scope. The bot must belong to the same application user for authorization and the bot must be a member of the guild with `CREATE_INSTANT_INVITE` permission
+#
+# For guilds with Membership Screening enabled, this will default to adding new members as pending in the [GuildMember]. Members that are pending will have to complete membership screening before they become full members that can talk
+# @returns [GuildMember] | [HTTPResponse] if error
+func add_guild_member(p_guild_id: String, p_user_id: String, p_params = {}) -> GuildMember:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = AddGuildMemberParams.new().from_dict(p_params)
+	elif not p_params is AddGuildMemberParams:
+		DiscordUtils.perror("Discord.gd:add_guild_member:params must be a Dictionary or AddGuildMemberParams")
+
+	var data = yield(_send_put_request(ENDPOINTS.GUILD_MEMBER % [p_guild_id, p_user_id], p_params.to_dict()), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return GuildMember.new().from_dict(data)
+
+
+# Modify attributes of a guild member
+#
+# If the `channel_id` is set to null, this will force the target user to be disconnected from voice
+#
+# When moving members to channels, the current user must have permissions to both connect to the channel and have the `MOVE_MEMBERS` permission
+# @returns [GuildMember] | [HTTPResponse] if error
+func modify_guild_member(p_guild_id: String, p_user_id: String, p_params = {}) -> GuildMember:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = ModifyGuildMemberParams.new().from_dict(p_params)
+	elif not p_params is ModifyGuildMemberParams:
+		DiscordUtils.perror("Discord.gd:modify_guild_member:params must be a Dictionary or ModifyGuildMemberParams")
+
+	var data = yield(_send_patch_request(ENDPOINTS.GUILD_MEMBER % [p_guild_id, p_user_id], p_params.to_dict()), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return GuildMember.new().from_dict(data)
+
+
+# Modify the current member in a guild
+#
+# Needs `CHANGE_NICKNAME` permission
+# @returns [GuildMember] | [HTTPResponse] if error
+func modify_current_member(p_guild_id: String, p_nick = null) -> GuildMember:
+	var data = yield(_send_patch_request(ENDPOINTS.GUILD_MEMBERS_ME % p_guild_id, {nick = p_nick}), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return GuildMember.new().from_dict(data)
+
+
+# Removes member from a guild
+#
+# Needs `KICK_MEMBERS` permission
+# @returns [bool] | [HTTPResponse] if error
+func remove_guild_member(p_guild_id: String, p_user_id: String) -> bool:
+	var data = yield(_send_delete_request(ENDPOINTS.GUILD_MEMBER % [p_guild_id, p_user_id]), "completed")
+	if data is HTTPResponse:
+		if data.is_error():
+			return data
+		return data.is_no_content()
+	return false
+
+
+# Adds a role to a guild member
+#
+# Needs `MANAGE_ROLES` permission
+# @returns [bool] | [HTTPResponse] if error
+func add_guild_member_role(p_guild_id: String, p_user_id: String, p_role_id: String) -> bool:
+	var data = yield(_send_put_request(ENDPOINTS.GUILD_MEMBER_ROLE % [p_guild_id, p_user_id, p_role_id]), "completed")
+	if data is HTTPResponse:
+		if data.is_error():
+			return data
+		return data.is_no_content()
+	return false
+
+
+# Removes a role to a guild member
+#
+# Needs `MANAGE_ROLES` permission
+# @returns [bool] | [HTTPResponse] if error
+func remove_guild_member_role(p_guild_id: String, p_user_id: String, p_role_id: String) -> bool:
+	var data = yield(_send_delete_request(ENDPOINTS.GUILD_MEMBER_ROLE % [p_guild_id, p_user_id, p_role_id]), "completed")
+	if data is HTTPResponse:
+		if data.is_error():
+			return data
+		return data.is_no_content()
+	return false
+
+
+# Get a list of bans in a guild
+#
+# Needs `BAN_MEMBERS` permission
+# @returns [Array] of [GuildBan] | [HTTPResponse] if error
+func get_guild_bans(p_guild_id: String, p_params = {}) -> Array:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = GetGuildBansParams.new().from_dict(p_params)
+	elif not p_params is GetGuildBansParams:
+		DiscordUtils.perror("Discord.gd:get_guild_bans:params must be a Dictionary or GetGuildBansParams")
+
+	var endpoint = ENDPOINTS.GUILD_BANS % p_guild_id
+	var query_string = DiscordUtils.query_string_from_dict(p_params.to_dict())
+	if query_string: endpoint += "?" + query_string
+
+	var data = yield(_send_request(endpoint), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	var ret = []
+	for elm in data:
+		ret.append(GuildBan.new().from_dict(elm))
+	return ret
+
+
+# Get a guild ban for the given user or a 404 [HTTPResponse] if the ban cannot be found.
+#
+# Needs `BAN_MEMBERS` permission
+# @returns [GuildBan] | [HTTPResponse] if error
+func get_guild_ban(p_guild_id: String, p_user_id: String) -> GuildBan:
+	var data = yield(_send_request(ENDPOINTS.GUILD_BAN % [p_guild_id, p_user_id]), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return GuildBan.new().from_dict(data)
+
+
+# Create a guild ban, and optionally delete previous messages sent by the banned user
+#
+# Needs `BAN_MEMBERS` permission
+# @returns [bool] | [HTTPResponse] if error
+func create_guild_ban(p_guild_id: String, p_user_id: String, p_params = {}) -> bool:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = CreateGuildBanParams.new().from_dict(p_params)
+	elif not p_params is CreateGuildBanParams:
+		DiscordUtils.perror("Discord.gd:create_guild_ban:params must be a Dictionary or CreateGuildBanParams")
+
+	var data = yield(_send_put_request(ENDPOINTS.GUILD_BAN % [p_guild_id, p_user_id], p_params.to_dict()), "completed")
+	if data is HTTPResponse:
+		if data.is_error():
+			return data
+		return data.is_no_content()
+	return false
+
+
+# Remove the ban for a user
+#
+# Needs `BAN_MEMBERS` permission
+# @returns [bool] | [HTTPResponse] if error
+func remove_guild_ban(p_guild_id: String, p_user_id: String) -> bool:
+	var data = yield(_send_delete_request(ENDPOINTS.GUILD_BAN % [p_guild_id, p_user_id]), "completed")
+	if data is HTTPResponse:
+		if data.is_error():
+			return data
+		return data.is_no_content()
+	return false
+
+
+# Get a list of roles for a guild
+#
+# @returns [Array] of [Role] | [HTTPResponse] if error
+func get_guild_roles(p_guild_id: String) -> Array:
+	var data = yield(_send_request(ENDPOINTS.GUILD_ROLES % p_guild_id), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	var ret = []
+	for elm in data:
+		ret.append(Role.new().from_dict(elm))
+	return ret
+
+
+# Create a new role for the guild
+#
+# Needs the `MANAGE_ROLES` permission
+# @returns [Role] | [HTTPResponse] if error
+func create_guild_role(p_guild_id: String, p_params = {}) -> Role:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = CreateGuildRoleParams.new().from_dict(p_params)
+	elif not p_params is CreateGuildRoleParams:
+		DiscordUtils.perror("Discord.gd:create_guild_role:params must be a Dictionary or CreateGuildRoleParams")
+
+	var data = yield(_send_post_request(ENDPOINTS.GUILD_ROLES % p_guild_id, p_params.to_dict()), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return Role.new().from_dict(data)
+
+
+# Modify the settings for a set of roles in a guild
+#
+# Needs the `MANAGE_ROLES` permission
+# @returns [Array] of [Role] | [HTTPResponse] if error
+func modify_guild_roles(p_guild_id: String, p_params = {}) -> Array:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = ModifyGuildRolesParams.new().from_dict(p_params)
+	elif not p_params is ModifyGuildRolesParams:
+		DiscordUtils.perror("Discord.gd:modify_guild_roles:params must be a Dictionary or ModifyGuildRolesParams")
+
+	var data = yield(_send_patch_request(ENDPOINTS.GUILD_ROLES % p_guild_id, p_params.to_dict().modifications), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	var ret = []
+	for elm in data:
+		ret.append(Role.new().from_dict(elm))
+	return ret
+
+
+# Modify a guild role
+#
+# Needs the `MANAGE_ROLES` permission
+# @returns [Role] | [HTTPResponse] if error
+func modify_guild_role(p_guild_id: String, p_role_id: String, p_params = {}) -> Role:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = ModifyGuildRoleParams.new().from_dict(p_params)
+	elif not p_params is ModifyGuildRoleParams:
+		DiscordUtils.perror("Discord.gd:modify_guild_role:params must be a Dictionary or ModifyGuildRoleParams")
+
+	var data = yield(_send_patch_request(ENDPOINTS.GUILD_ROLE % [p_guild_id, p_role_id], p_params.to_dict()), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return Role.new().from_dict(data)
+
+
+# Delete a guild role
+#
+# Needs the `MANAGE_ROLES` permission
+# @returns [Role] | [HTTPResponse] if error
+func delete_guild_role(p_guild_id: String, p_role_id: String) -> bool:
+	var data = yield(_send_delete_request(ENDPOINTS.GUILD_ROLE % [p_guild_id, p_role_id]), "completed")
+	if data is HTTPResponse:
+		if data.is_error():
+			return data
+		return data.is_no_content()
+	return false
+
+
+# Modify a guild's MFA level. Needs guild ownership
+#
+# @returns [MFALevel] | [HTTPResponse] if error
+func modify_guild_mfa_level(p_guild_id: String, p_level: int) -> int:
+	var data = yield(_send_post_request(ENDPOINTS.GUILD_MFA % p_guild_id, {level = p_level}), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return data
+
+
 # @hidden
 const ENDPOINTS: Dictionary = {
 	# AuditLog
@@ -786,11 +1211,53 @@ const ENDPOINTS: Dictionary = {
 	CHANNEL_THREADMEMBERS_ME = "/channels/%s/thread-members/@me",
 	CHANNEL_THREADS_ARCHIVED_PUBLIC = "/channels/%s/threads/archived/public",
 	CHANNEL_THREADS_ARCHIVED_PRIVATE = "/channels/%s/threads/archived/private",
-	CHANNEL_USER_ME_THREADS_ARCHIVED_PRIVATE = "/channels/%s/users/@me/threads/archived/private",
+	CHANNEL_USERS_ME_THREADS_ARCHIVED_PRIVATE = "/channels/%s/users/@me/threads/archived/private",
 
 	# Emoji
 	GUILD_EMOJIS = "/guilds/%s/emojis",
 	GUILD_EMOJI = "/guilds/%s/emojis/%s",
+
+	# Guild
+	GUILDS = "/guilds",
+	GUILD = "/guilds/%s",
+	GUILD_PREVIEW = "/guilds/%s/preview",
+
+	GUILD_CHANNELS = "/guilds/%s/channels",
+	GUILD_THREADS_ACTIVE = "/guilds/%s/threads/active",
+
+	GUILD_MEMBERS = "/guilds/%s/members",
+	GUILD_MEMBER = "/guilds/%s/members/%s",
+	GUILD_MEMBERS_SEARCH = "/guilds/%s/members/search",
+	GUILD_MEMBERS_ME = "/guilds/%s/members/@me",
+
+	GUILD_MEMBER_ROLE = "/guilds/%s/members/%s/roles/%s",
+
+	GUILD_BANS = "/guilds/%s/bans",
+	GUILD_BAN = "/guilds/%s/bans/%s",
+
+	GUILD_ROLES = "/guilds/%s/roles",
+	GUILD_ROLE = "/guilds/%s/roles/%s",
+
+	GUILD_MFA = "/guilds/%s/mfa",
+
+	GUILD_PRUNE = "/guilds/%s/prune",
+
+	GUILD_REGIONS = "/guilds/%s/regions",
+
+	GUILD_INVITES = "/guilds/%s/invites",
+
+	GUILD_INTEGRATIONS = "/guilds/%s/integrations",
+
+	GUILD_WIDGET = "/guilds/%s/widget/widget.json",
+	GUILD_WIDGET_SETTINGS = "/guilds/%s/widget",
+	GUILD_WIDGET_IMAGE = "/guilds/%s/widget.png",
+
+	GUILD_VANITYURL = "/guilds/%s/vanity-url",
+
+	GUILD_WELCOMESCREEN = "/guilds/%s/welcome-screen",
+
+	GUILD_VOICESTATES_USER = "/guilds/%s/voice-states/%s",
+	GUILD_VOICESTATES_ME = "/guilds/%s/voice-states/@me",
 }
 
 var _base_url: String

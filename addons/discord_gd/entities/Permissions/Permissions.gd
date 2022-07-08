@@ -83,8 +83,8 @@
 # `MODERATE_MEMBERS`: Allows for timing out users to prevent them from sending or reacting to messages in chat and threads, and from speaking in voice and stage channels
 class_name Permissions extends BitField
 
-# Default bit = 104324673
-var default_bit = 104324673
+# Default bit = `CREATE_INSTANT_INVITE` | `ADD_REACTIONS` | `VIEW_CHANNEL` | `SEND_MESSAGES` | `SEND_TTS_MESSAGES` | `EMBED_LINKS` | `ATTACH_FILES` | `READ_MESSAGE_HISTORY` | `MENTION_EVERYONE` | `USE_EXTERNAL_EMOJIS` | `CONNECT` | `SPEAK` | `USE_VAD` | `CHANGE_NICKNAME` | `USE_EXTERNAL_STICKERS`
+var default_bit = 137543277633
 
 enum FLAGS {
 	CREATE_INSTANT_INVITE = 1 << 0,
