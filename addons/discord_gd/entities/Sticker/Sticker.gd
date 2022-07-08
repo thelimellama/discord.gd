@@ -13,6 +13,7 @@ var guild_id = null # [String] Id of the guild that owns this sticker
 var user = null # [User] The user that uploaded the guild sticker
 var sort_value = null # [int] The standard sticker's sort order within its pack
 
+var asset = null # [String] (Undocumented)
 
 # @hidden
 func _init().("Sticker"): return self
