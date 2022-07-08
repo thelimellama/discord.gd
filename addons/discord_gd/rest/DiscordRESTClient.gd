@@ -1401,6 +1401,95 @@ func modify_user_voice_state(p_guild_id: String, p_user_id: String, p_params = {
 	return false
 
 
+#! ----------
+#! GuildScheduledEvent
+#! ----------
+
+
+# Get a list of guild scheduled events for the given guild
+#
+# @returns [Array] of [GuildScheduledEvent] | [HTTPResponse] if error
+func get_guild_scheduled_events(p_guild_id: String, p_with_counts = null) -> Array:
+	var endpoint = ENDPOINTS.GUILD_SCHEDULED_EVENTS % p_guild_id
+	if typeof(p_with_counts) == TYPE_BOOL:
+		var query_string = DiscordUtils.query_string_from_dict({with_counts = p_with_counts})
+		if query_string: endpoint += "?" + query_string
+	var data = yield(_send_request(endpoint), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	var ret = []
+	for elm in data:
+		ret.append(GuildScheduledEvent.new().from_dict(elm))
+	return ret
+
+
+# Create a guild scheduled event in the guild
+#
+# @returns [GuildScheduledEvent] | [HTTPResponse] if error
+func create_guild_scheduled_event(p_guild_id: String, p_params = {}) -> GuildScheduledEvent:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = CreateGuildScheduledEventParams.new().from_dict(p_params)
+	elif not p_params is CreateGuildScheduledEventParams:
+		DiscordUtils.perror("Discord.gd:create_guild_scheduled_event:params must be a Dictionary or CreateGuildScheduledEventParams")
+
+	var data = yield(_send_post_request(ENDPOINTS.GUILD_SCHEDULED_EVENTS % p_guild_id, p_params.to_dict()), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return GuildScheduledEvent.new().from_dict(data)
+
+
+# Modify an existing guild scheduled event
+#
+# To start or end an event, use this method to modify the event's `status` field
+# @returns [GuildScheduledEvent] | [HTTPResponse] if error
+func modify_guild_scheduled_event(p_guild_id: String, p_event_id: String, p_params = {}) -> GuildScheduledEvent:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = ModifyGuildScheduledEventParams.new().from_dict(p_params)
+	elif not p_params is ModifyGuildScheduledEventParams:
+		DiscordUtils.perror("Discord.gd:modify_guild_scheduled_event:params must be a Dictionary or ModifyGuildScheduledEventParams")
+
+	var data = yield(_send_patch_request(ENDPOINTS.GUILD_SCHEDULED_EVENT % [p_guild_id, p_event_id], p_params.to_dict()), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return GuildScheduledEvent.new().from_dict(data)
+
+
+
+# Delete a guild scheduled event
+# @returns [bool] | [HTTPResponse] if error
+func delete_guild_scheduled_event(p_guild_id: String, p_event_id: String) -> bool:
+	var data = yield(_send_delete_request(ENDPOINTS.GUILD_SCHEDULED_EVENT % [p_guild_id, p_event_id]), "completed")
+	if data is HTTPResponse:
+		if data.is_error():
+			return data
+		return data.is_no_content()
+	return false
+
+
+
+# Get a list of guild scheduled events for the given guild
+#
+# @returns [Array] of [GuildScheduledEventUser] | [HTTPResponse] if error
+func get_guild_scheduled_event_users(p_guild_id: String, p_event_id: String, p_params = {}) -> Array:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = GetGuildScheduledEventUsersParams.new().from_dict(p_params)
+	elif not p_params is GetGuildScheduledEventUsersParams:
+		DiscordUtils.perror("Discord.gd:get_guild_scheduled_event_users:params must be a Dictionary or GetGuildScheduledEventUsersParams")
+
+	var endpoint = ENDPOINTS.GUILD_SCHEDULED_EVENT_USERS % [p_guild_id, p_event_id]
+	var query_string = DiscordUtils.query_string_from_dict(p_params.to_dict())
+	if query_string: endpoint += "?" + query_string
+
+	var data = yield(_send_request(endpoint), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	var ret = []
+	for elm in data:
+		ret.append(GuildScheduledEventUser.new().from_dict(elm))
+	return ret
+
+
+
 # @hidden
 const ENDPOINTS: Dictionary = {
 	# AuditLog
@@ -1491,6 +1580,11 @@ const ENDPOINTS: Dictionary = {
 
 	GUILD_VOICESTATES_USER = "/guilds/%s/voice-states/%s",
 	GUILD_VOICESTATES_ME = "/guilds/%s/voice-states/@me",
+
+	# GuildScheduledEvent
+	GUILD_SCHEDULED_EVENTS = "/guilds/%s/scheduled-events",
+	GUILD_SCHEDULED_EVENT = "/guilds/%s/scheduled-events/%s",
+	GUILD_SCHEDULED_EVENT_USERS = "/guilds/%s/scheduled-events/%s/users",
 }
 
 var _base_url: String

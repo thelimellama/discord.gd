@@ -245,4 +245,20 @@ func _on_rerun_btn_pressed() -> void:
 #	}), "completed")) # TODO: test this method
 
 
-
+#	Print(yield(rest.get_guild_scheduled_events("369422519129604096"), "completed"))
+#	Print(yield(rest.create_guild_scheduled_event("369422519129604096", {
+#		name = "Created event 001",
+#		privacy_level = GuildScheduledEventPrivacyLevel.GUILD_ONLY,
+#		entity_type = GuildScheduledEventEntityTypes.EXTERNAL,
+#		scheduled_start_time = "2022-08-08T12:57:45+0000",
+#		scheduled_end_time = "2023-07-08T12:57:45+0000",
+#		entity_metadata = {
+#			location = "India"
+#		}
+#	}), "completed"))
+#	Print(yield(rest.modify_guild_scheduled_event("369422519129604096", "994950886365335582", {
+#		description = "edited desc",
+#		status = GuildScheduledEventStatus.COMPLETED
+#	}), "completed"))
+#	Print(yield(rest.delete_guild_scheduled_event("369422519129604096", "994950886365335582"), "completed"))
+	Print(yield(rest.get_guild_scheduled_event_users("369422519129604096", "994947386298347591", {with_member = true}), "completed"))

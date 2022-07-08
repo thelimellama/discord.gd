@@ -18,6 +18,7 @@ var creator = null # [User] The user that created the scheduled event
 var user_count = null # [int] The number of users subscribed to the scheduled event
 var image = null # [String] The cover image hash of the scheduled event
 
+var sku_ids = null # [Array] (Undocumented)
 
 # @hidden
 func _init().("GuildScheduledEvent"): return self
@@ -27,7 +28,7 @@ func _init().("GuildScheduledEvent"): return self
 func from_dict(p_dict: Dictionary):
 	.from_dict(p_dict)
 
-	if p_dict.has("entity_metadata"):
+	if p_dict.has("entity_metadata") and p_dict.entity_metadata != null:
 		entity_metadata = GuildScheduledEventEntityMetadata.new().from_dict(p_dict.entity_metadata)
 	if p_dict.has("creator"):
 		creator = User.new().from_dict(p_dict.creator)
@@ -39,7 +40,7 @@ func from_dict(p_dict: Dictionary):
 func to_dict() -> Dictionary:
 	var dict = .to_dict().duplicate(true)
 
-	if dict.has("entity_metadata"):
+	if dict.has("entity_metadata") and dict.entity_metadata != null:
 		dict.entity_metadata = dict.entity_metadata.to_dict()
 	if dict.has("creator"):
 		dict.creator = dict.creator.to_dict()
