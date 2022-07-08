@@ -13,7 +13,7 @@ var attachments = null  setget __set_attachments # [Array] of [Attachment] Attac
 var __set_props = {} # @hidden
 
 # @hidden
-func _init().("EditMessageParams", {include_null_in_dict = false}): return self
+func _init().("EditMessageParams", {include_null_in_dict = false, print_exclude = ["__set_props"]}): return self
 
 
 func __set_content(p_content):

@@ -10,7 +10,7 @@ var __set_props = {} # @hidden
 
 
 # @hidden
-func _init().("StartThreadInForumParams", {include_null_in_dict = false}): return self
+func _init().("StartThreadInForumParams", {include_null_in_dict = false, print_exclude = ["__set_props"]}): return self
 
 
 func __set_rate_limit_per_user(p_rate_limit_per_user):

@@ -1,4 +1,4 @@
-# Params for start thread with message
+# Params for start thread
 class_name StartThreadParams extends Dataclass
 
 var name: String # 1-100 character channel name
@@ -11,7 +11,7 @@ var __set_props = {} # @hidden
 
 
 # @hidden
-func _init().("StartThreadParams", {include_null_in_dict = false}): return self
+func _init().("StartThreadParams", {include_null_in_dict = false, print_exclude = ["__set_props"]}): return self
 
 
 func __set_rate_limit_per_user(p_rate_limit_per_user):

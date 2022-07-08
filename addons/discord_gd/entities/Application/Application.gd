@@ -22,6 +22,9 @@ var tags = null # [Array] of [String] Up to 5 tags describing the content and fu
 var install_params = null # [ApplicationInstallParams] Settings for the application's default in-app authorization link, if enabled
 var custom_install_url = null # [String] The application's default custom authorization link, if enabled
 
+var bot = null # (Undocumented)
+var summary = null # [String] (Undocumented)
+var type = null # [int] (Undocumented)
 
 # @hidden
 func _init().("Application"): return self

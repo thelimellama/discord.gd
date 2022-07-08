@@ -1169,6 +1169,238 @@ func modify_guild_mfa_level(p_guild_id: String, p_level: int) -> int:
 	return data
 
 
+# Get the number of members that would be removed in a prune operation
+#
+# Needs the `KICK_MEMBERS` permission
+# @returns [int] | [HTTPResponse] if error
+func get_guild_prune_count(p_guild_id: String, p_params = {}) -> int:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = GetGuildPruneCountParams.new().from_dict(p_params)
+	elif not p_params is GetGuildPruneCountParams:
+		DiscordUtils.perror("Discord.gd:get_guild_prune_count:params must be a Dictionary or GetGuildPruneCountParams")
+
+	var endpoint = ENDPOINTS.GUILD_PRUNE % p_guild_id
+	var query_string = DiscordUtils.query_string_from_dict(p_params.to_dict())
+	if query_string: endpoint += "?" + query_string
+
+	var data = yield(_send_request(endpoint), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return data.pruned
+
+
+# Begin a prune operation on the guild
+#
+# Needs the `KICK_MEMBERS` permission
+#
+# For large guilds it's recommended to set the `compute_prune_count` option to false, thus returning null
+# @returns [int] | [HTTPResponse] if error
+func begin_guild_prune(p_guild_id: String, p_params = {}) -> int:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = BeginGuildPruneParams.new().from_dict(p_params)
+	elif not p_params is BeginGuildPruneParams:
+		DiscordUtils.perror("Discord.gd:begin_guild_prune:params must be a Dictionary or BeginGuildPruneParams")
+
+	var data = yield(_send_post_request(ENDPOINTS.GUILD_PRUNE % p_guild_id, p_params.to_dict()), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return data.pruned
+
+
+# Get a list of voice regions for the guild
+#
+# @returns [Array] of [VoiceRegion] | [HTTPResponse] if error
+func get_guild_voice_regions(p_guild_id: String) -> Array:
+	var data = yield(_send_request(ENDPOINTS.GUILD_REGIONS % p_guild_id), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	var ret = []
+	for elm in data:
+		ret.append(VoiceRegion.new().from_dict(elm))
+	return ret
+
+
+# Get a list of invites for the guild
+#
+# Needs the `MANAGE_GUILD` permission
+# @returns [Array] of [Invite] | [HTTPResponse] if error
+func get_guild_invites(p_guild_id: String) -> Array:
+	var data = yield(_send_request(ENDPOINTS.GUILD_INVITES % p_guild_id), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	var ret = []
+	for elm in data:
+		ret.append(Invite.new().from_dict(elm))
+	return ret
+
+
+# Get a list of integrations for the guild
+#
+# Needs the `MANAGE_GUILD` permission
+# @returns [Array] of [Integration] | [HTTPResponse] if error
+func get_guild_integrations(p_guild_id: String) -> Array:
+	var data = yield(_send_request(ENDPOINTS.GUILD_INTEGRATIONS % p_guild_id), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	var ret = []
+	for elm in data:
+		ret.append(Integration.new().from_dict(elm))
+	return ret
+
+
+# Delete an integration for the guild. Alse deletes any associated webhooks and kicks the associated bot if there is one.
+#
+# Needs the `MANAGE_GUILD` permission
+# @returns [bol] | [HTTPResponse] if error
+func delete_guild_integration(p_guild_id: String, p_integration_id: String) -> bool:
+	var data = yield(_send_delete_request(ENDPOINTS.GUILD_INTEGRATION % [p_guild_id, p_integration_id]), "completed")
+	if data is HTTPResponse:
+		if data.is_error():
+			return data
+		return data.is_no_content()
+	return false
+
+
+# Get the settings for the guild widget
+#
+# Needs the `MANAGE_GUILD` permission
+# @returns [GuildWidgetSettings] | [HTTPResponse] if error
+func get_guild_widget_settings(p_guild_id: String) -> GuildWidgetSettings:
+	var data = yield(_send_request(ENDPOINTS.GUILD_WIDGET_SETTINGS % p_guild_id), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return GuildWidgetSettings.new().from_dict(data)
+
+
+# Get the widget for a guild
+# @returns [GuildWidget] | [HTTPResponse] if error
+func get_guild_widget(p_guild_id: String) -> GuildWidget:
+	var data = yield(_send_request(ENDPOINTS.GUILD_WIDGET % p_guild_id), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return GuildWidget.new().from_dict(data)
+
+
+# Get the PNG image widget for a guild
+# @param p_style - [GuildWidgetStyles]
+# @returns [Image] | [HTTPResponse] if error
+func get_guild_widget_image(p_guild_id: String, p_style = "") -> Image:
+	var endpoint = ENDPOINTS.GUILD_WIDGET_IMAGE % p_guild_id
+	var query_string = DiscordUtils.query_string_from_dict({style = p_style})
+	if query_string: endpoint += "?" + query_string
+
+	var data = yield(_send_request(endpoint), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+
+	var image = Image.new()
+	image.load_png_from_buffer(data)
+	return image
+
+
+# Modify the widget settings for a guild
+#
+# Needs the `MANAGE_GUILD` permission
+# @returns [GuildWidgetSettings] | [HTTPResponse] if error
+func modify_guild_widget(p_guild_id: String, p_params = {}) -> GuildWidgetSettings:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = GuildWidgetSettings.new().from_dict(p_params)
+	elif not p_params is GuildWidgetSettings:
+		DiscordUtils.perror("Discord.gd:modify_guild_widget:params must be a Dictionary or GuildWidgetSettings")
+
+	var data = yield(_send_patch_request(ENDPOINTS.GUILD_WIDGET_SETTINGS % p_guild_id, p_params.to_dict()), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return GuildWidgetSettings.new().from_dict(data)
+
+
+# Get a partial invite for guilds with the `VANITY_URL` feature enable
+#
+# Needs the `MANAGE_GUILD`
+#
+# `code` will be null if a vanity url for the guild is not set.
+# @returns [Invite] | [HTTPResponse] if error
+func get_guild_vanity_url(p_guild_id: String) -> Invite:
+	var data = yield(_send_request(ENDPOINTS.GUILD_VANITYURL % p_guild_id), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return Invite.new().from_dict(data)
+
+
+# Get the welcome screen of a guild
+#
+# If the welcome screen is not enabled, the `MANAGE_GUILD` permission is required
+# @returns [WelcomeScreen] | [HTTPResponse] if error
+func get_guild_welcome_screen(p_guild_id: String) -> WelcomeScreen:
+	var data = yield(_send_request(ENDPOINTS.GUILD_WELCOMESCREEN % p_guild_id), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+
+	return WelcomeScreen.new().from_dict(data)
+
+
+# Modify the welcome screen for a guild
+#
+# Needs the `MANAGE_GUILD` permission
+# @returns [WelcomeScreen] | [HTTPResponse] if error
+func modify_guild_welcome_screen(p_guild_id: String, p_params = {}) -> WelcomeScreen:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = ModifyGuildWelcomeScreenParams.new().from_dict(p_params)
+	elif not p_params is ModifyGuildWelcomeScreenParams:
+		DiscordUtils.perror("Discord.gd:modify_guild_welcome_screen:params must be a Dictionary or ModifyGuildWelcomeScreenParams")
+
+	var data = yield(_send_patch_request(ENDPOINTS.GUILD_WELCOMESCREEN % p_guild_id, p_params.to_dict()), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return WelcomeScreen.new().from_dict(data)
+
+
+# Modify the current user's voice state
+#
+# There are currently several caveats for this method:
+# - `channel_id` must currently point to a stage channel
+# - current user must already have joined `channel_id`
+# - You must have the `MUTE_MEMBERS` permission to unsuppress yourself. You can always suppress yourself
+# - You must have the `REQUEST_TO_SPEAK` permission to request to speak. You can always clear your own request to speak
+# - You are able to set `request_to_speak_timestamp` to any present or future time
+# @returns [bool] | [HTTPResponse] if error
+func modify_current_user_voice_state(p_guild_id: String, p_params = {}) -> bool:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = ModifyCurrentUserVoiceStateParams.new().from_dict(p_params)
+	elif not p_params is ModifyCurrentUserVoiceStateParams:
+		DiscordUtils.perror("Discord.gd:modify_current_user_voice_state:params must be a Dictionary or ModifyCurrentUserVoiceStateParams")
+
+	var data = yield(_send_patch_request(ENDPOINTS.GUILD_VOICESTATES_ME % p_guild_id, p_params.to_dict()), "completed")
+	if data is HTTPResponse:
+		if data.is_error():
+			return data
+		return data.is_no_content()
+	return false
+
+
+# Updates another user's voice state
+#
+# There are currently several caveats for this method:
+# - `channel_id` must currently point to a stage channel
+# - User must already have joined `channel_id`
+# - You must have the `MUTE_MEMBERS` permission (Since suppression is the only thing that is available currently)
+# - When unsuppressed, non-bot users will have their `request_to_speak_timestamp` set to the current time. Bot users will not
+# - When suppressed, the user will have their `request_to_speak_timestamp` removed
+# @returns [bool] | [HTTPResponse] if error
+func modify_user_voice_state(p_guild_id: String, p_user_id: String, p_params = {}) -> bool:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = ModifyUserVoiceStateParams.new().from_dict(p_params)
+	elif not p_params is ModifyUserVoiceStateParams:
+		DiscordUtils.perror("Discord.gd:modify_user_voice_state:params must be a Dictionary or ModifyUserVoiceStateParams")
+
+	var data = yield(_send_patch_request(ENDPOINTS.GUILD_VOICESTATES_USER % [p_guild_id, p_user_id], p_params.to_dict()), "completed")
+	if data is HTTPResponse:
+		if data.is_error():
+			return data
+		return data.is_no_content()
+	return false
+
+
 # @hidden
 const ENDPOINTS: Dictionary = {
 	# AuditLog
@@ -1247,8 +1479,9 @@ const ENDPOINTS: Dictionary = {
 	GUILD_INVITES = "/guilds/%s/invites",
 
 	GUILD_INTEGRATIONS = "/guilds/%s/integrations",
+	GUILD_INTEGRATION = "/guilds/%s/integrations/%s",
 
-	GUILD_WIDGET = "/guilds/%s/widget/widget.json",
+	GUILD_WIDGET = "/guilds/%s/widget.json",
 	GUILD_WIDGET_SETTINGS = "/guilds/%s/widget",
 	GUILD_WIDGET_IMAGE = "/guilds/%s/widget.png",
 
@@ -1263,8 +1496,8 @@ const ENDPOINTS: Dictionary = {
 var _base_url: String
 var _auth_header = ""
 var _headers = [
-	"user-agent: DiscordBot (%s %s, Godot:%s)" % [DiscordMetadata.LIBRARY, DiscordMetadata.LIBRARY_URL, Engine.get_version_info()["string"]],
-	"accept: application/json"
+	"User-Agent: DiscordBot (%s %s, Godot:%s)" % [DiscordMetadata.LIBRARY, DiscordMetadata.LIBRARY_URL, Engine.get_version_info()["string"]],
+	"Accept: application/json"
 ]
 
 
@@ -1315,7 +1548,7 @@ func _send_request(slug: String, payload = null, method := HTTPClient.METHOD_GET
 
 	var request_string = ""
 	if payload != null:
-		headers.append("content-type: application/json")
+		headers.append("Content-Type: application/json")
 		request_string = JSON.print(payload)
 
 	http_request.call_deferred("request", _base_url + slug, headers, true, method, request_string)
@@ -1330,5 +1563,17 @@ func _send_request(slug: String, payload = null, method := HTTPClient.METHOD_GET
 		# Got some error or 204
 		return res
 
-	var json = res.get_json()
-	return json
+	var content_type = null
+	for header in res.headers:
+		header = header as String
+		if header.begins_with("Content-Type: "):
+			content_type = header.substr(14)
+			break
+	match content_type:
+		"application/json":
+			var json = res.get_json()
+			return json
+		"image/png", "image/jpg", "image/gif":
+			return res.body
+		_:
+			return res

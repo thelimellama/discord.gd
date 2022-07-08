@@ -12,7 +12,7 @@ var mentionable = null # [bool] Whether the role should be mentionable (default 
 var __set_props = {} # @hidden
 
 # @hidden
-func _init().("CreateGuildRoleParams", {include_null_in_dict = false}): return self
+func _init().("CreateGuildRoleParams", {include_null_in_dict = false, print_exclude = ["__set_props"]}): return self
 
 
 func __set_icon(p_icon):

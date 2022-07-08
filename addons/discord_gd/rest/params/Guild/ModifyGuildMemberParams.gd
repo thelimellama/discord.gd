@@ -10,6 +10,10 @@ var communication_disabled_until = null setget __set_communication_disabled_unti
 
 var __set_props = {} # @hidden
 
+# @hidden
+func _init().("ModifyGuildMemberParams", {include_null_in_dict = false, print_exclude = ["__set_props"]}): return self
+
+
 func __set_nick(p_nick):
 	__set_props.nick = true
 	nick = p_nick
@@ -39,9 +43,6 @@ func __set_communication_disabled_until(p_communication_disabled_until):
 	__set_props.communication_disabled_until = true
 	communication_disabled_until = p_communication_disabled_until
 
-
-# @hidden
-func _init().("ModifyGuildMemberParams", {include_null_in_dict = false}): return self
 
 # @hidden
 func to_dict() -> Dictionary:

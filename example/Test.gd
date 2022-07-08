@@ -212,3 +212,37 @@ func _on_rerun_btn_pressed() -> void:
 #	}), "completed"))
 #	Print(yield(rest.delete_guild_role("369422519129604096", "994911039407784028"), "completed"))
 
+#	Print(yield(rest.get_guild_prune_count("369422519129604096"), "completed"))
+#	Print(yield(rest.begin_guild_prune("369422519129604096"), "completed")) # TODO: test this method
+
+#	Print(yield(rest.get_guild_voice_regions("369422519129604096"), "completed"))
+
+#	Print(yield(rest.get_guild_invites("369422519129604096"), "completed"))
+
+#	Print(yield(rest.get_guild_integrations("369422519129604096"), "completed"))
+#	Print(yield(rest.delete_guild_integration("369422519129604096", "841711554055372800"), "completed")) # TODO: test this method
+
+#	Print(yield(rest.get_guild_widget_settings("369422519129604096"), "completed"))
+#	Print(yield(rest.get_guild_widget("369422519129604096"), "completed"))
+#	Print(yield(rest.get_guild_widget_image("369422519129604096"), "completed"))
+
+
+#	Print(yield(rest.modify_guild_widget("369422519129604096", {enabled = true}), "completed"))
+
+#	Print(yield(rest.get_guild_vanity_url("369422519129604096"), "completed"))
+
+#	Print(yield(rest.get_guild_welcome_screen("369422519129604096"), "completed"))
+#	Print(yield(rest.modify_guild_welcome_screen("369422519129604096", {
+#		enabled = true,
+#		description = "hey"
+#	}), "completed")) # TODO: test this method
+
+#	Print(yield(rest.modify_current_user_voice_state("330264450148073474", {
+#		channel_id = "369422519129604100"
+#	}), "completed")) # TODO: test this method
+#	Print(yield(rest.modify_user_voice_state("330264450148073474", "321233875776962560", {
+#		channel_id = null
+#	}), "completed")) # TODO: test this method
+
+
+
