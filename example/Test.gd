@@ -280,3 +280,16 @@ func _on_rerun_btn_pressed() -> void:
 
 #	Print(yield(rest.get_invite("FZY9TqW"), "completed"))
 #	Print(yield(rest.delete_invite("YKx5F8Fc"), "completed"))
+
+
+
+#	Print(yield(rest.create_stage_instance({
+#		channel_id = "993847090595766292",
+#		send_start_notification = false,
+#		topic = "Discord.gd test stage instance"
+#	}), "completed"))
+#	Print(yield(rest.get_stage_instance("993847090595766292"), "completed"))
+#	Print(yield(rest.modify_stage_instance("993847090595766292", {
+#		topic = "Discord.gd edited topic"
+#	}), "completed"))
+	Print(yield(rest.delete_stage_instance("993847090595766292"), "completed"))

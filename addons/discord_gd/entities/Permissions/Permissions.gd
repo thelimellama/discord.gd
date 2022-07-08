@@ -34,7 +34,7 @@
 #
 # `READ_MESSAGE_HISTORY`: Allows for reading of message history
 #
-# `MENTION_EVERYONE`: Allows for using the @everyone tag to notify all users in a channel, and the @here tag to notify all online users in a channel
+# `MENTION_EVERYONE`: Allows for using the `@everyone` tag to notify all users in a channel, and the `@here` tag to notify all online users in a channel
 #
 # `USE_EXTERNAL_EMOJIS`: Allows the usage of custom emojis from other servers
 #

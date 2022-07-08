@@ -15,7 +15,7 @@ func set_token(token: String) -> void:
 
 # Get the audit logs for the given guild
 #
-# Requires the `VIEW_AUDIT_LOG` permission
+# Needs the `VIEW_AUDIT_LOG` permission
 # @returns [AuditLog] | [HTTPResponse] if error
 func get_guild_audit_log(p_guild_id: String, p_params = {}) -> AuditLog:
 	if typeof(p_params) == TYPE_DICTIONARY:
@@ -40,7 +40,7 @@ func get_guild_audit_log(p_guild_id: String, p_params = {}) -> AuditLog:
 
 # Get a list of auto moderation rules for the given guild
 #
-# Requires the `MANAGE_GUILD` permission
+# Needs the `MANAGE_GUILD` permission
 # @returns [Array] of [AutoModerationRule] | [HTTPResponse] if error
 func get_guild_auto_moderation_rules(p_guild_id: String) -> Array:
 	var data = yield(_send_request(ENDPOINTS.GUILD_AUTO_MODERATION_RULES % p_guild_id), "completed")
@@ -54,7 +54,7 @@ func get_guild_auto_moderation_rules(p_guild_id: String) -> Array:
 
 # Get a single auto moderation rule
 #
-# Requires the `MANAGE_GUILD` permission
+# Needs the `MANAGE_GUILD` permission
 # @returns [AutoModerationRule] | [HTTPResponse] if error
 func get_guild_auto_moderation_rule(p_guild_id: String, p_rule_id: String) -> Array:
 	var data = yield(_send_request(ENDPOINTS.GUILD_AUTO_MODERATION_RULE % [p_guild_id, p_rule_id]), "completed")
@@ -65,7 +65,7 @@ func get_guild_auto_moderation_rule(p_guild_id: String, p_rule_id: String) -> Ar
 
 # Creates a new auto moderation rule
 #
-# Requires the `MANAGE_GUILD` permission
+# Needs the `MANAGE_GUILD` permission
 # @returns [AutoModerationRule] | [HTTPResponse] if error
 func create_guild_auto_moderation_rule(p_guild_id: String, p_params = {}) -> AutoModerationRule:
 	if typeof(p_params) == TYPE_DICTIONARY:
@@ -80,7 +80,7 @@ func create_guild_auto_moderation_rule(p_guild_id: String, p_params = {}) -> Aut
 
 # Modify an existing auto moderation rule
 #
-# Requires the `MANAGE_GUILD` permission
+# Needs the `MANAGE_GUILD` permission
 # @returns [AutoModerationRule] | [HTTPResponse] if error
 func modify_guild_auto_moderation_rule(p_guild_id: String, p_rule_id: String, p_params = {}) -> AutoModerationRule:
 	if typeof(p_params) == TYPE_DICTIONARY:
@@ -95,7 +95,7 @@ func modify_guild_auto_moderation_rule(p_guild_id: String, p_rule_id: String, p_
 
 # Deletes an existing auto moderation rule
 #
-# Requires the `MANAGE_GUILD` permission
+# Needs the `MANAGE_GUILD` permission
 # @returns [bool] | [HTTPResponse] if error
 func delete_guild_auto_moderation_rule(p_guild_id: String, p_rule_id: String) -> bool:
 	var data = yield(_send_delete_request(ENDPOINTS.GUILD_AUTO_MODERATION_RULE % [p_guild_id, p_rule_id]), "completed")
@@ -137,7 +137,7 @@ func modify_channel(p_channel_id: String, p_params = {}) -> Channel:
 
 # Delete a channel, or close a private message
 #
-# Requires the `MANAGE_CHANNELS` permission for the guild, or `MANAGE_THREADS` if the channel is a thread
+# Needs the `MANAGE_CHANNELS` permission for the guild, or `MANAGE_THREADS` if the channel is a thread
 # @returns [Channel] | [HTTPResponse] if error
 func delete_channel(p_channel_id: String) -> Channel:
 	var data = yield(_send_delete_request(ENDPOINTS.CHANNEL % p_channel_id), "completed")
@@ -148,7 +148,7 @@ func delete_channel(p_channel_id: String) -> Channel:
 
 # Get the messages for a channel
 #
-# If operating on a guild channel, this endpoint requires the `VIEW_CHANNEL` permission to be present on the current user. If the current user is missing the `READ_MESSAGE_HISTORY` permission in the channel then this will return no messages (since they cannot read the message history)
+# If operating on a guild channel, this endpoint needs the `VIEW_CHANNEL` permission to be present on the current user. If the current user is missing the `READ_MESSAGE_HISTORY` permission in the channel then this will return no messages (since they cannot read the message history)
 # @returns [Array] of [Message] | [HTTPResponse] if error
 func get_channel_messages(p_channel_id: String, p_params = {}) -> Array:
 	if typeof(p_params) == TYPE_DICTIONARY:
@@ -171,7 +171,7 @@ func get_channel_messages(p_channel_id: String, p_params = {}) -> Array:
 
 # Get a specifc message in a channel
 #
-# If operating on a guild channel, this endpoint requires the `READ_MESSAGE_HISTORY` permission to be present on the current user
+# If operating on a guild channel, this endpoint needs the `READ_MESSAGE_HISTORY` permission to be present on the current user
 # @returns [Array] of [Message] | [HTTPResponse] if error
 func get_channel_message(p_channel_id: String, p_message_id: String) -> Message:
 	var data = yield(_send_request(ENDPOINTS.CHANNEL_MESSAGE % [p_channel_id, p_message_id]), "completed")
@@ -267,7 +267,7 @@ func edit_message(p_channel_id: String, p_message_id: String, p_params = {}) -> 
 
 # Delete a message
 #
-# If operating on a guild channel and trying to delete a message that was not sent by the current user, requires the `MANAGE_MESSAGES` permission
+# If operating on a guild channel and trying to delete a message that was not sent by the current user, needs the `MANAGE_MESSAGES` permission
 # @returns [bool] | [HTTPResponse] if error
 func delete_message(p_channel_id: String, p_message_id: String) -> bool:
 	var data = yield(_send_delete_request(ENDPOINTS.CHANNEL_MESSAGE % [p_channel_id, p_message_id]), "completed")
@@ -280,7 +280,7 @@ func delete_message(p_channel_id: String, p_message_id: String) -> bool:
 
 # Delete multiple messages in a single request
 #
-# Can only be used on guild channels and requires the `MANAGE_MESSAGES` permission
+# Can only be used on guild channels and needs the `MANAGE_MESSAGES` permission
 #
 # Any message IDs given that do not exist or are invalid will count towards the minimum and maximum message count (currently 2 and 100 respectively)
 #
@@ -298,7 +298,7 @@ func delete_messages(p_channel_id: String, p_message_ids: Array) -> bool:
 
 # Edit the channel permission overwrites for a user or role in a channel. Only usable for guild channels
 #
-# Requires the `MANAGE_ROLES` permission. Only permissions your bot has in the guild or parent channel (if applicable) can be allowed/denied (unless your bot has a `MANAGE_ROLES` overwrite in the channel)
+# Needs the `MANAGE_ROLES` permission. Only permissions your bot has in the guild or parent channel (if applicable) can be allowed/denied (unless your bot has a `MANAGE_ROLES` overwrite in the channel)
 # @returns [bool] | [HTTPResponse] if error
 func edit_channel_permissions(p_channel_id: String, p_overwrite_id: String, p_params = {}) -> bool:
 	if typeof(p_params) == TYPE_DICTIONARY:
@@ -315,7 +315,7 @@ func edit_channel_permissions(p_channel_id: String, p_overwrite_id: String, p_pa
 
 # Delete a channel permission overwrite for a user or role in a channel. Only usable for guild channels
 #
-# Requires the `MANAGE_ROLES` permission
+# Needs the `MANAGE_ROLES` permission
 # @returns [bool] | [HTTPResponse] if error
 func delete_channel_permissions(p_channel_id: String, p_overwrite_id: String) -> bool:
 	var data = yield(_send_delete_request(ENDPOINTS.CHANNEL_PERMISSIONS % [p_channel_id, p_overwrite_id]), "completed")
@@ -328,7 +328,7 @@ func delete_channel_permissions(p_channel_id: String, p_overwrite_id: String) ->
 
 # Get a list of invites (with metadata) for a given channel
 #
-# Requires the `MANAGE_CHANNELS` permission
+# Needs the `MANAGE_CHANNELS` permission
 # @returns [Array] of [Invite] | [HTTPResponse] if error
 func get_channel_invites(p_channel_id: String) -> Array:
 	var data = yield(_send_request(ENDPOINTS.CHANNEL_INVITES % p_channel_id), "completed")
@@ -342,7 +342,7 @@ func get_channel_invites(p_channel_id: String) -> Array:
 
 # Create a new invite for a given channel. Only usable for guild channels
 #
-# Requires the `CREATE_INSTANT_INVITE` permission
+# Needs the `CREATE_INSTANT_INVITE` permission
 # @returns [Invite] | [HTTPResponse] if error
 func create_channel_invite(p_channel_id: String, p_params = {}) -> Invite:
 	if typeof(p_params) == TYPE_DICTIONARY:
@@ -357,7 +357,7 @@ func create_channel_invite(p_channel_id: String, p_params = {}) -> Invite:
 
 # Create a reaction for the message.
 #
-# Needs the `READ_MESSAGE_HISTORY` permission to be present on the current user. Additionally, if nobody else has reacted to the message using this emoji, requires the `ADD_REACTIONS` permission to be present on the current user
+# Needs the `READ_MESSAGE_HISTORY` permission to be present on the current user. Additionally, if nobody else has reacted to the message using this emoji, needs the `ADD_REACTIONS` permission to be present on the current user
 #
 # For custom emojis, specify the emoji in the format `name:id`
 # @returns [bool] | [HTTPResponse] if error
@@ -442,7 +442,7 @@ func delete_reactions(p_channel_id: String, p_message_id: String, p_emoji: Strin
 
 # Follow a News Channel to send messages to a target channel
 #
-# Requires the MANAGE_WEBHOOKS permission in the target channel.
+# Needs the MANAGE_WEBHOOKS permission in the target channel.
 # @returns [FollowedChannel] | [HTTPResponse] if error
 func follow_news_channel(p_channel_id: String, p_webhook_channel_id: String) -> FollowedChannel:
 	var data = yield(_send_post_request(ENDPOINTS.CHANNEL_FOLLOWERS % p_channel_id, {webhook_channel_id = p_webhook_channel_id}), "completed")
@@ -718,7 +718,7 @@ func create_guild_emoji(p_guild_id: String, p_params = {}) -> Emoji:
 
 # Modify an existing emoji in a guild
 #
-# Requires the `MANAGE_EMOJIS_AND_STICKERS` permission
+# Needs the `MANAGE_EMOJIS_AND_STICKERS` permission
 # @returns [Emoji] | [HTTPResponse] if error
 func modify_guild_emoji(p_guild_id: String, p_emoji_id: String, p_params = {}) -> Emoji:
 	if typeof(p_params) == TYPE_DICTIONARY:
@@ -733,7 +733,7 @@ func modify_guild_emoji(p_guild_id: String, p_emoji_id: String, p_params = {}) -
 
 # Delete an existing emoji in a guild
 #
-# Requires the `MANAGE_EMOJIS_AND_STICKERS` permission
+# Needs the `MANAGE_EMOJIS_AND_STICKERS` permission
 # @returns [bool] | [HTTPResponse] if error
 func delete_guild_emoji(p_guild_id: String, p_emoji_id: String) -> bool:
 	var data = yield(_send_delete_request(ENDPOINTS.GUILD_EMOJI % [p_guild_id, p_emoji_id]), "completed")
@@ -793,7 +793,7 @@ func create_guild(p_params = {}) -> Guild:
 
 # Modify a guild's settings
 #
-# Needs the `MANAGE_GUILD` permission. Attempting to add or remove the `COMMUNITY` guild feature requires the `ADMINISTRATOR` permission
+# Needs the `MANAGE_GUILD` permission. Attempting to add or remove the `COMMUNITY` guild feature needs the `ADMINISTRATOR` permission
 # @returns [Guild] | [HTTPResponse] if error
 func modify_guild(p_guild_id: String, p_params = {}) -> Guild:
 	if typeof(p_params) == TYPE_DICTIONARY:
@@ -1594,6 +1594,65 @@ func delete_invite(p_invite_code: String) -> Invite:
 	return Invite.new().from_dict(data)
 
 
+#! ----------
+#! StageInstance
+#! ----------
+
+
+# Creates a new Stage instance associated to a Stage channel
+#
+# Needs the user to be a moderator of the Stage channel
+# @returns [StageInstance] | [HTTPResponse] if error
+func create_stage_instance(p_params = {}) -> Invite:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = CreateStageInstanceParams.new().from_dict(p_params)
+	elif not p_params is CreateStageInstanceParams:
+		DiscordUtils.perror("Discord.gd:create_stage_instance:params must be a Dictionary or CreateStageInstanceParams")
+
+	var data = yield(_send_post_request(ENDPOINTS.STAGEINSTANCES, p_params.to_dict()), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return StageInstance.new().from_dict(data)
+
+
+# Get the invite with given code
+# @returns [Invite] | [HTTPResponse] if error
+func get_stage_instance(p_channel_id: String) -> StageInstance:
+	var data = yield(_send_request(ENDPOINTS.STAGEINSTANCE % p_channel_id), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return StageInstance.new().from_dict(data)
+
+
+
+# Updates fields of an existing Stage instance
+#
+# Needs the user to be a moderator of the Stage channel
+# @returns [StageInstance] | [HTTPResponse] if error
+func modify_stage_instance(p_channel_id: String, p_params = {}) -> StageInstance:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = ModifyStageInstanceParams.new().from_dict(p_params)
+	elif not p_params is ModifyStageInstanceParams:
+		DiscordUtils.perror("Discord.gd:modify_stage_instance:params must be a Dictionary or ModifyStageInstanceParams")
+
+	var data = yield(_send_patch_request(ENDPOINTS.STAGEINSTANCE % p_channel_id, p_params.to_dict()), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return StageInstance.new().from_dict(data)
+
+
+# Deletes a stage instance
+#
+# Needs the user to be a moderator of the Stage channel
+# @returns [bool] | [HTTPResponse] if error
+func delete_stage_instance(p_channel_id: String) -> bool:
+	var data = yield(_send_delete_request(ENDPOINTS.STAGEINSTANCE % p_channel_id), "completed")
+	if data is HTTPResponse:
+		if data.is_error():
+			return data
+		return data.is_no_content()
+	return false
+
 # @hidden
 const ENDPOINTS: Dictionary = {
 	# AuditLog
@@ -1696,7 +1755,11 @@ const ENDPOINTS: Dictionary = {
 	GUILD_TEMPLATE = "/guilds/%s/templates/%s",
 
 	# Invite
-	INVITE = "/invites/%s"
+	INVITE = "/invites/%s",
+
+	# StageInstance
+	STAGEINSTANCES = "/stage-instances",
+	STAGEINSTANCE = "/stage-instances/%s",
 }
 
 var _base_url: String

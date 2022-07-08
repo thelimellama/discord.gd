@@ -2,7 +2,7 @@
 class_name CreateGuildRoleParams extends Dataclass
 
 var name = null # [String] Name of the role (default is "new role")
-var permissions = null # [Permissions] Bitwise value of the enabled/disabled permissions (default is @everyone permissions in guild)
+var permissions = null # [Permissions] Bitwise value of the enabled/disabled permissions (default is `@everyone` permissions in guild)
 var color = null # [int] RGB color value (default is 0)
 var hoist = null # [bool] Whether the role should be displayed separately in the sidebar (default is false)
 var icon = null setget __set_icon # [String] The role's icon image (if the guild has the `ROLE_ICONS` feature) (Data URI scheme encoded) (default is null)
