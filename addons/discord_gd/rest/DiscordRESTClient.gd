@@ -21,7 +21,7 @@ func get_guild_audit_log(p_guild_id: String, p_params = {}) -> AuditLog:
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = GetGuildAuditLogParams.new().from_dict(p_params)
 	elif not p_params is GetGuildAuditLogParams:
-		DiscordUtils.perror("Discord.gd:get_guild_audit_log:params must be a Dictionary or GetGuildAuditLogParams")
+		DiscordUtils.perror("DiscordRESTClient:get_guild_audit_log:params must be a Dictionary or GetGuildAuditLogParams")
 
 	var endpoint = ENDPOINTS.GUILD_AUDIT_LOGS % p_guild_id
 	var query_string = DiscordUtils.query_string_from_dict(p_params.to_dict())
@@ -71,7 +71,7 @@ func create_guild_auto_moderation_rule(p_guild_id: String, p_params = {}) -> Aut
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = CreateGuildAutoModerationRuleParams.new().from_dict(p_params)
 	elif not p_params is CreateGuildAutoModerationRuleParams:
-		DiscordUtils.perror("Discord.gd:create_guild_auto_moderation_rule:params must be a Dictionary or CreateGuildAutoModerationRuleParams")
+		DiscordUtils.perror("DiscordRESTClient:create_guild_auto_moderation_rule:params must be a Dictionary or CreateGuildAutoModerationRuleParams")
 	var data = yield(_send_post_request(ENDPOINTS.GUILD_AUTO_MODERATION_RULES % p_guild_id, p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
 		return data
@@ -86,7 +86,7 @@ func modify_guild_auto_moderation_rule(p_guild_id: String, p_rule_id: String, p_
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = ModifyGuildAutoModerationRuleParams.new().from_dict(p_params)
 	elif not p_params is ModifyGuildAutoModerationRuleParams:
-		DiscordUtils.perror("Discord.gd:modify_guild_auto_moderation_rule:params must be a Dictionary or ModifyGuildAutoModerationRuleParams")
+		DiscordUtils.perror("DiscordRESTClient:modify_guild_auto_moderation_rule:params must be a Dictionary or ModifyGuildAutoModerationRuleParams")
 	var data = yield(_send_patch_request(ENDPOINTS.GUILD_AUTO_MODERATION_RULE % [p_guild_id, p_rule_id], p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
 		return data
@@ -128,7 +128,7 @@ func modify_channel(p_channel_id: String, p_params = {}) -> Channel:
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = ModifyChannelParams.new().from_dict(p_params)
 	elif not p_params is ModifyChannelParams:
-		DiscordUtils.perror("Discord.gd:modify_channel:params must be a Dictionary or ModifyChannelParams")
+		DiscordUtils.perror("DiscordRESTClient:modify_channel:params must be a Dictionary or ModifyChannelParams")
 	var data = yield(_send_patch_request(ENDPOINTS.CHANNEL % p_channel_id, p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
 		return data
@@ -154,7 +154,7 @@ func get_channel_messages(p_channel_id: String, p_params = {}) -> Array:
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = GetChannelMessagesParams.new().from_dict(p_params)
 	elif not p_params is GetChannelMessagesParams:
-		DiscordUtils.perror("Discord.gd:get_channel_messages:params must be a Dictionary or GetChannelMessagesParams")
+		DiscordUtils.perror("DiscordRESTClient:get_channel_messages:params must be a Dictionary or GetChannelMessagesParams")
 
 	var endpoint = ENDPOINTS.CHANNEL_MESSAGES % p_channel_id
 	var query_string = DiscordUtils.query_string_from_dict(p_params.to_dict())
@@ -232,7 +232,7 @@ func create_message(p_channel_id: String, p_params = {}) -> Message:
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = CreateMessageParams.new().from_dict(p_params)
 	elif not p_params is CreateMessageParams:
-		DiscordUtils.perror("Discord.gd:create_message:params must be a Dictionary or CreateMessageParams")
+		DiscordUtils.perror("DiscordRESTClient:create_message:params must be a Dictionary or CreateMessageParams")
 	var data = yield(_send_post_request(ENDPOINTS.CHANNEL_MESSAGES % p_channel_id, p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
 		return data
@@ -258,7 +258,7 @@ func edit_message(p_channel_id: String, p_message_id: String, p_params = {}) -> 
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = EditMessageParams.new().from_dict(p_params)
 	elif not p_params is EditMessageParams:
-		DiscordUtils.perror("Discord.gd:edit_message:params must be a Dictionary or EditMessageParams")
+		DiscordUtils.perror("DiscordRESTClient:edit_message:params must be a Dictionary or EditMessageParams")
 	var data = yield(_send_patch_request(ENDPOINTS.CHANNEL_MESSAGE % [p_channel_id, p_message_id], p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
 		return data
@@ -304,7 +304,7 @@ func edit_channel_permissions(p_channel_id: String, p_overwrite_id: String, p_pa
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = EditChannelPermissionsParams.new().from_dict(p_params)
 	elif not p_params is EditChannelPermissionsParams:
-		DiscordUtils.perror("Discord.gd:edit_channel_permissions:params must be a Dictionary or EditChannelPermissionsParams")
+		DiscordUtils.perror("DiscordRESTClient:edit_channel_permissions:params must be a Dictionary or EditChannelPermissionsParams")
 	var data = yield(_send_put_request(ENDPOINTS.CHANNEL_PERMISSIONS % [p_channel_id, p_overwrite_id], p_params.to_dict()), "completed")
 	if data is HTTPResponse:
 		if data.is_error():
@@ -348,7 +348,7 @@ func create_channel_invite(p_channel_id: String, p_params = {}) -> Invite:
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = CreateChannelInvite.new().from_dict(p_params)
 	elif not p_params is CreateChannelInvite:
-		DiscordUtils.perror("Discord.gd:create_channel_invite:params must be a Dictionary or CreateChannelInvite")
+		DiscordUtils.perror("DiscordRESTClient:create_channel_invite:params must be a Dictionary or CreateChannelInvite")
 	var data = yield(_send_post_request(ENDPOINTS.CHANNEL_INVITES % p_channel_id, p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
 		return data
@@ -406,7 +406,7 @@ func get_reactions(p_channel_id: String, p_message_id: String, p_emoji: String, 
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = GetReactionsParams.new().from_dict(p_params)
 	elif not p_params is GetReactionsParams:
-		DiscordUtils.perror("Discord.gd:get_reactions:params must be a Dictionary or GetReactionsParams")
+		DiscordUtils.perror("DiscordRESTClient:get_reactions:params must be a Dictionary or GetReactionsParams")
 
 	var endpoint = ENDPOINTS.REACTIONS_EMOJI
 	var query_string = DiscordUtils.query_string_from_dict(p_params.to_dict())
@@ -470,7 +470,7 @@ func group_dm_add_recipient(p_channel_id: String, p_user_id: String, p_params = 
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = GroupDmAddRecipientParams.new().from_dict(p_params)
 	elif not p_params is GroupDmAddRecipientParams:
-		DiscordUtils.perror("Discord.gd:get_channel_messages:params must be a Dictionary or GetChannelMessagesParams")
+		DiscordUtils.perror("DiscordRESTClient:get_channel_messages:params must be a Dictionary or GetChannelMessagesParams")
 	var data = yield(_send_put_request(ENDPOINTS.CHANNEL_RECIPIENT % [p_channel_id, p_user_id], p_params.to_dict()), "completed")
 	if data is HTTPResponse:
 		if data.is_error():
@@ -498,7 +498,7 @@ func start_thread_from_message(p_channel_id: String, p_message_id: String, p_par
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = StartThreadWithMessageParams.new().from_dict(p_params)
 	elif not p_params is StartThreadWithMessageParams:
-		DiscordUtils.perror("Discord.gd:start_thread_from_message:params must be a Dictionary or StartThreadWithMessageParams")
+		DiscordUtils.perror("DiscordRESTClient:start_thread_from_message:params must be a Dictionary or StartThreadWithMessageParams")
 	var data = yield(_send_post_request(ENDPOINTS.CHANNEL_MESSAGE_THREADS % [p_channel_id, p_message_id], p_params.to_dict()), "completed")
 
 	if data is HTTPResponse and data.is_error():
@@ -513,7 +513,7 @@ func start_thread(p_channel_id: String, p_params = {}) -> Channel:
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = StartThreadParams.new().from_dict(p_params)
 	elif not p_params is StartThreadParams:
-		DiscordUtils.perror("Discord.gd:start_thread:params must be a Dictionary or StartThreadParams")
+		DiscordUtils.perror("DiscordRESTClient:start_thread:params must be a Dictionary or StartThreadParams")
 	var data = yield(_send_post_request(ENDPOINTS.CHANNEL_THREADS % p_channel_id, p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
 		return data
@@ -528,7 +528,7 @@ func start_thread_in_forum(p_channel_id: String, p_params = {}) -> Channel:
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = StartThreadInForumParams.new().from_dict(p_params)
 	elif not p_params is StartThreadInForumParams:
-		DiscordUtils.perror("Discord.gd:start_thread_in_forum:params must be a Dictionary or StartThreadInForumParams")
+		DiscordUtils.perror("DiscordRESTClient:start_thread_in_forum:params must be a Dictionary or StartThreadInForumParams")
 	var data = yield(_send_post_request(ENDPOINTS.CHANNEL_THREADS % p_channel_id, p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
 		return data
@@ -618,7 +618,7 @@ func get_public_archived_threads(p_channel_id: String, p_params = {}) -> GetArch
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = GetArchivedThreadsParams.new().from_dict(p_params)
 	elif not p_params is GetArchivedThreadsParams:
-		DiscordUtils.perror("Discord.gd:get_public_archived_threads:params must be a Dictionary or GetArchivedThreadsParams")
+		DiscordUtils.perror("DiscordRESTClient:get_public_archived_threads:params must be a Dictionary or GetArchivedThreadsParams")
 
 	var endpoint = ENDPOINTS.CHANNEL_THREADS_ARCHIVED_PUBLIC % p_channel_id
 	var query_string = DiscordUtils.query_string_from_dict(p_params.to_dict())
@@ -640,7 +640,7 @@ func get_private_archived_threads(p_channel_id: String, p_params = {}) -> GetArc
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = GetArchivedThreadsParams.new().from_dict(p_params)
 	elif not p_params is GetArchivedThreadsParams:
-		DiscordUtils.perror("Discord.gd:get_private_archived_threads:params must be a Dictionary or GetArchivedThreadsParams")
+		DiscordUtils.perror("DiscordRESTClient:get_private_archived_threads:params must be a Dictionary or GetArchivedThreadsParams")
 
 	var endpoint = ENDPOINTS.CHANNEL_THREADS_ARCHIVED_PRIVATE % p_channel_id
 	var query_string = DiscordUtils.query_string_from_dict(p_params.to_dict())
@@ -662,7 +662,7 @@ func get_joined_private_archived_threads(p_channel_id: String, p_params = {}) ->
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = GetArchivedThreadsParams.new().from_dict(p_params)
 	elif not p_params is GetArchivedThreadsParams:
-		DiscordUtils.perror("Discord.gd:get_joined_private_archived_threads:params must be a Dictionary or GetArchivedThreadsParams")
+		DiscordUtils.perror("DiscordRESTClient:get_joined_private_archived_threads:params must be a Dictionary or GetArchivedThreadsParams")
 
 	var endpoint = ENDPOINTS.CHANNEL_USERS_ME_THREADS_ARCHIVED_PRIVATE % p_channel_id
 	var query_string = DiscordUtils.query_string_from_dict(p_params.to_dict())
@@ -708,7 +708,7 @@ func create_guild_emoji(p_guild_id: String, p_params = {}) -> Emoji:
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = CreateGuildEmojiParams.new().from_dict(p_params)
 	elif not p_params is CreateGuildEmojiParams:
-		DiscordUtils.perror("Discord.gd:create_guild_emoji:params must be a Dictionary or CreateGuildEmojiParams")
+		DiscordUtils.perror("DiscordRESTClient:create_guild_emoji:params must be a Dictionary or CreateGuildEmojiParams")
 
 	var data = yield(_send_post_request(ENDPOINTS.GUILD_EMOJIS % p_guild_id, p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
@@ -724,7 +724,7 @@ func modify_guild_emoji(p_guild_id: String, p_emoji_id: String, p_params = {}) -
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = ModifyGuildEmojiParams.new().from_dict(p_params)
 	elif not p_params is ModifyGuildEmojiParams:
-		DiscordUtils.perror("Discord.gd:modify_guild_emoji:params must be a Dictionary or ModifyGuildEmojiParams")
+		DiscordUtils.perror("DiscordRESTClient:modify_guild_emoji:params must be a Dictionary or ModifyGuildEmojiParams")
 	var data = yield(_send_patch_request(ENDPOINTS.GUILD_EMOJI % [p_guild_id, p_emoji_id], p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
 		return data
@@ -749,7 +749,7 @@ func delete_guild_emoji(p_guild_id: String, p_emoji_id: String) -> bool:
 #! ----------
 
 
-# Get a guild with given Id
+# Get a guild with given id
 #
 # If `with_counts` is set to true, this method will also return `approximate_member_count` and `approximate_presence_count` for the guild
 # @returns [Guild] | [HTTPResponse] if error
@@ -765,7 +765,7 @@ func get_guild(p_guild_id: String, p_with_counts = false) -> Guild:
 	return Guild.new().from_dict(data)
 
 
-# Get a guild preview for the guild with given Id
+# Get a guild preview for the guild with given id
 #
 # If the user is not in the guild, then the guild must be lurkable
 # @returns [Guild] | [HTTPResponse] if error
@@ -784,7 +784,7 @@ func create_guild(p_params = {}) -> Guild:
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = CreateGuildParams.new().from_dict(p_params)
 	elif not p_params is CreateGuildParams:
-		DiscordUtils.perror("Discord.gd:create_guild:params must be a Dictionary or CreateGuildParams")
+		DiscordUtils.perror("DiscordRESTClient:create_guild:params must be a Dictionary or CreateGuildParams")
 	var data = yield(_send_post_request(ENDPOINTS.GUILDS, p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
 		return data
@@ -799,7 +799,7 @@ func modify_guild(p_guild_id: String, p_params = {}) -> Guild:
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = ModifyGuildParams.new().from_dict(p_params)
 	elif not p_params is ModifyGuildParams:
-		DiscordUtils.perror("Discord.gd:modify_guild:params must be a Dictionary or ModifyGuildParams")
+		DiscordUtils.perror("DiscordRESTClient:modify_guild:params must be a Dictionary or ModifyGuildParams")
 	var data = yield(_send_patch_request(ENDPOINTS.GUILD % p_guild_id, p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
 		return data
@@ -840,7 +840,7 @@ func create_guild_channel(p_guild_id: String, p_params = {}) -> Channel:
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = CreateGuildChannelParams.new().from_dict(p_params)
 	elif not p_params is CreateGuildChannelParams:
-		DiscordUtils.perror("Discord.gd:create_guild_channel:params must be a Dictionary or CreateGuildChannelParams")
+		DiscordUtils.perror("DiscordRESTClient:create_guild_channel:params must be a Dictionary or CreateGuildChannelParams")
 	var data = yield(_send_post_request(ENDPOINTS.GUILD_CHANNELS % p_guild_id, p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
 		return data
@@ -855,7 +855,7 @@ func modify_guild_channels(p_guild_id: String, p_params = {}) -> bool:
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = ModifyGuildChannelsParams.new().from_dict(p_params)
 	elif not p_params is ModifyGuildChannelsParams:
-		DiscordUtils.perror("Discord.gd:modify_guild_channels:params must be a Dictionary or ModifyGuildChannelsParams")
+		DiscordUtils.perror("DiscordRESTClient:modify_guild_channels:params must be a Dictionary or ModifyGuildChannelsParams")
 	var data = yield(_send_patch_request(ENDPOINTS.GUILD_CHANNELS % p_guild_id, p_params.to_dict().modifications), "completed")
 	if data is HTTPResponse:
 		if data.is_error():
@@ -883,7 +883,7 @@ func get_guild_members(p_guild_id: String, p_params = {}) -> Array:
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = GetGuildMembersParams.new().from_dict(p_params)
 	elif not p_params is GetGuildMembersParams:
-		DiscordUtils.perror("Discord.gd:get_guild_members:params must be a Dictionary or GetGuildMembersParams")
+		DiscordUtils.perror("DiscordRESTClient:get_guild_members:params must be a Dictionary or GetGuildMembersParams")
 
 	var endpoint = ENDPOINTS.GUILD_MEMBERS % p_guild_id
 	var query_string = DiscordUtils.query_string_from_dict(p_params.to_dict())
@@ -915,7 +915,7 @@ func search_guild_members(p_guild_id: String, p_params = {}) -> Array:
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = SearchGuildMembersParams.new().from_dict(p_params)
 	elif not p_params is SearchGuildMembersParams:
-		DiscordUtils.perror("Discord.gd:search_guild_members:params must be a Dictionary or SearchGuildMembersParams")
+		DiscordUtils.perror("DiscordRESTClient:search_guild_members:params must be a Dictionary or SearchGuildMembersParams")
 
 	var endpoint = ENDPOINTS.GUILD_MEMBERS_SEARCH % p_guild_id
 	var query_string = DiscordUtils.query_string_from_dict(p_params.to_dict())
@@ -941,7 +941,7 @@ func add_guild_member(p_guild_id: String, p_user_id: String, p_params = {}) -> G
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = AddGuildMemberParams.new().from_dict(p_params)
 	elif not p_params is AddGuildMemberParams:
-		DiscordUtils.perror("Discord.gd:add_guild_member:params must be a Dictionary or AddGuildMemberParams")
+		DiscordUtils.perror("DiscordRESTClient:add_guild_member:params must be a Dictionary or AddGuildMemberParams")
 
 	var data = yield(_send_put_request(ENDPOINTS.GUILD_MEMBER % [p_guild_id, p_user_id], p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
@@ -959,7 +959,7 @@ func modify_guild_member(p_guild_id: String, p_user_id: String, p_params = {}) -
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = ModifyGuildMemberParams.new().from_dict(p_params)
 	elif not p_params is ModifyGuildMemberParams:
-		DiscordUtils.perror("Discord.gd:modify_guild_member:params must be a Dictionary or ModifyGuildMemberParams")
+		DiscordUtils.perror("DiscordRESTClient:modify_guild_member:params must be a Dictionary or ModifyGuildMemberParams")
 
 	var data = yield(_send_patch_request(ENDPOINTS.GUILD_MEMBER % [p_guild_id, p_user_id], p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
@@ -1025,7 +1025,7 @@ func get_guild_bans(p_guild_id: String, p_params = {}) -> Array:
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = GetGuildBansParams.new().from_dict(p_params)
 	elif not p_params is GetGuildBansParams:
-		DiscordUtils.perror("Discord.gd:get_guild_bans:params must be a Dictionary or GetGuildBansParams")
+		DiscordUtils.perror("DiscordRESTClient:get_guild_bans:params must be a Dictionary or GetGuildBansParams")
 
 	var endpoint = ENDPOINTS.GUILD_BANS % p_guild_id
 	var query_string = DiscordUtils.query_string_from_dict(p_params.to_dict())
@@ -1059,7 +1059,7 @@ func create_guild_ban(p_guild_id: String, p_user_id: String, p_params = {}) -> b
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = CreateGuildBanParams.new().from_dict(p_params)
 	elif not p_params is CreateGuildBanParams:
-		DiscordUtils.perror("Discord.gd:create_guild_ban:params must be a Dictionary or CreateGuildBanParams")
+		DiscordUtils.perror("DiscordRESTClient:create_guild_ban:params must be a Dictionary or CreateGuildBanParams")
 
 	var data = yield(_send_put_request(ENDPOINTS.GUILD_BAN % [p_guild_id, p_user_id], p_params.to_dict()), "completed")
 	if data is HTTPResponse:
@@ -1103,7 +1103,7 @@ func create_guild_role(p_guild_id: String, p_params = {}) -> Role:
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = CreateGuildRoleParams.new().from_dict(p_params)
 	elif not p_params is CreateGuildRoleParams:
-		DiscordUtils.perror("Discord.gd:create_guild_role:params must be a Dictionary or CreateGuildRoleParams")
+		DiscordUtils.perror("DiscordRESTClient:create_guild_role:params must be a Dictionary or CreateGuildRoleParams")
 
 	var data = yield(_send_post_request(ENDPOINTS.GUILD_ROLES % p_guild_id, p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
@@ -1119,7 +1119,7 @@ func modify_guild_roles(p_guild_id: String, p_params = {}) -> Array:
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = ModifyGuildRolesParams.new().from_dict(p_params)
 	elif not p_params is ModifyGuildRolesParams:
-		DiscordUtils.perror("Discord.gd:modify_guild_roles:params must be a Dictionary or ModifyGuildRolesParams")
+		DiscordUtils.perror("DiscordRESTClient:modify_guild_roles:params must be a Dictionary or ModifyGuildRolesParams")
 
 	var data = yield(_send_patch_request(ENDPOINTS.GUILD_ROLES % p_guild_id, p_params.to_dict().modifications), "completed")
 	if data is HTTPResponse and data.is_error():
@@ -1138,7 +1138,7 @@ func modify_guild_role(p_guild_id: String, p_role_id: String, p_params = {}) -> 
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = ModifyGuildRoleParams.new().from_dict(p_params)
 	elif not p_params is ModifyGuildRoleParams:
-		DiscordUtils.perror("Discord.gd:modify_guild_role:params must be a Dictionary or ModifyGuildRoleParams")
+		DiscordUtils.perror("DiscordRESTClient:modify_guild_role:params must be a Dictionary or ModifyGuildRoleParams")
 
 	var data = yield(_send_patch_request(ENDPOINTS.GUILD_ROLE % [p_guild_id, p_role_id], p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
@@ -1177,7 +1177,7 @@ func get_guild_prune_count(p_guild_id: String, p_params = {}) -> int:
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = GetGuildPruneCountParams.new().from_dict(p_params)
 	elif not p_params is GetGuildPruneCountParams:
-		DiscordUtils.perror("Discord.gd:get_guild_prune_count:params must be a Dictionary or GetGuildPruneCountParams")
+		DiscordUtils.perror("DiscordRESTClient:get_guild_prune_count:params must be a Dictionary or GetGuildPruneCountParams")
 
 	var endpoint = ENDPOINTS.GUILD_PRUNE % p_guild_id
 	var query_string = DiscordUtils.query_string_from_dict(p_params.to_dict())
@@ -1199,7 +1199,7 @@ func begin_guild_prune(p_guild_id: String, p_params = {}) -> int:
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = BeginGuildPruneParams.new().from_dict(p_params)
 	elif not p_params is BeginGuildPruneParams:
-		DiscordUtils.perror("Discord.gd:begin_guild_prune:params must be a Dictionary or BeginGuildPruneParams")
+		DiscordUtils.perror("DiscordRESTClient:begin_guild_prune:params must be a Dictionary or BeginGuildPruneParams")
 
 	var data = yield(_send_post_request(ENDPOINTS.GUILD_PRUNE % p_guild_id, p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
@@ -1306,7 +1306,7 @@ func modify_guild_widget(p_guild_id: String, p_params = {}) -> GuildWidgetSettin
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = GuildWidgetSettings.new().from_dict(p_params)
 	elif not p_params is GuildWidgetSettings:
-		DiscordUtils.perror("Discord.gd:modify_guild_widget:params must be a Dictionary or GuildWidgetSettings")
+		DiscordUtils.perror("DiscordRESTClient:modify_guild_widget:params must be a Dictionary or GuildWidgetSettings")
 
 	var data = yield(_send_patch_request(ENDPOINTS.GUILD_WIDGET_SETTINGS % p_guild_id, p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
@@ -1347,7 +1347,7 @@ func modify_guild_welcome_screen(p_guild_id: String, p_params = {}) -> WelcomeSc
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = ModifyGuildWelcomeScreenParams.new().from_dict(p_params)
 	elif not p_params is ModifyGuildWelcomeScreenParams:
-		DiscordUtils.perror("Discord.gd:modify_guild_welcome_screen:params must be a Dictionary or ModifyGuildWelcomeScreenParams")
+		DiscordUtils.perror("DiscordRESTClient:modify_guild_welcome_screen:params must be a Dictionary or ModifyGuildWelcomeScreenParams")
 
 	var data = yield(_send_patch_request(ENDPOINTS.GUILD_WELCOMESCREEN % p_guild_id, p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
@@ -1368,7 +1368,7 @@ func modify_current_user_voice_state(p_guild_id: String, p_params = {}) -> bool:
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = ModifyCurrentUserVoiceStateParams.new().from_dict(p_params)
 	elif not p_params is ModifyCurrentUserVoiceStateParams:
-		DiscordUtils.perror("Discord.gd:modify_current_user_voice_state:params must be a Dictionary or ModifyCurrentUserVoiceStateParams")
+		DiscordUtils.perror("DiscordRESTClient:modify_current_user_voice_state:params must be a Dictionary or ModifyCurrentUserVoiceStateParams")
 
 	var data = yield(_send_patch_request(ENDPOINTS.GUILD_VOICESTATES_ME % p_guild_id, p_params.to_dict()), "completed")
 	if data is HTTPResponse:
@@ -1391,7 +1391,7 @@ func modify_user_voice_state(p_guild_id: String, p_user_id: String, p_params = {
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = ModifyUserVoiceStateParams.new().from_dict(p_params)
 	elif not p_params is ModifyUserVoiceStateParams:
-		DiscordUtils.perror("Discord.gd:modify_user_voice_state:params must be a Dictionary or ModifyUserVoiceStateParams")
+		DiscordUtils.perror("DiscordRESTClient:modify_user_voice_state:params must be a Dictionary or ModifyUserVoiceStateParams")
 
 	var data = yield(_send_patch_request(ENDPOINTS.GUILD_VOICESTATES_USER % [p_guild_id, p_user_id], p_params.to_dict()), "completed")
 	if data is HTTPResponse:
@@ -1430,7 +1430,7 @@ func create_guild_scheduled_event(p_guild_id: String, p_params = {}) -> GuildSch
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = CreateGuildScheduledEventParams.new().from_dict(p_params)
 	elif not p_params is CreateGuildScheduledEventParams:
-		DiscordUtils.perror("Discord.gd:create_guild_scheduled_event:params must be a Dictionary or CreateGuildScheduledEventParams")
+		DiscordUtils.perror("DiscordRESTClient:create_guild_scheduled_event:params must be a Dictionary or CreateGuildScheduledEventParams")
 
 	var data = yield(_send_post_request(ENDPOINTS.GUILD_SCHEDULED_EVENTS % p_guild_id, p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
@@ -1446,7 +1446,7 @@ func modify_guild_scheduled_event(p_guild_id: String, p_event_id: String, p_para
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = ModifyGuildScheduledEventParams.new().from_dict(p_params)
 	elif not p_params is ModifyGuildScheduledEventParams:
-		DiscordUtils.perror("Discord.gd:modify_guild_scheduled_event:params must be a Dictionary or ModifyGuildScheduledEventParams")
+		DiscordUtils.perror("DiscordRESTClient:modify_guild_scheduled_event:params must be a Dictionary or ModifyGuildScheduledEventParams")
 
 	var data = yield(_send_patch_request(ENDPOINTS.GUILD_SCHEDULED_EVENT % [p_guild_id, p_event_id], p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
@@ -1472,7 +1472,7 @@ func get_guild_scheduled_event_users(p_guild_id: String, p_event_id: String, p_p
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = GetGuildScheduledEventUsersParams.new().from_dict(p_params)
 	elif not p_params is GetGuildScheduledEventUsersParams:
-		DiscordUtils.perror("Discord.gd:get_guild_scheduled_event_users:params must be a Dictionary or GetGuildScheduledEventUsersParams")
+		DiscordUtils.perror("DiscordRESTClient:get_guild_scheduled_event_users:params must be a Dictionary or GetGuildScheduledEventUsersParams")
 
 	var endpoint = ENDPOINTS.GUILD_SCHEDULED_EVENT_USERS % [p_guild_id, p_event_id]
 	var query_string = DiscordUtils.query_string_from_dict(p_params.to_dict())
@@ -1507,7 +1507,7 @@ func create_guild_from_template(p_template_code: String, p_params = {}) -> Guild
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = CreateGuildFromTemplateParams.new().from_dict(p_params)
 	elif not p_params is CreateGuildFromTemplateParams:
-		DiscordUtils.perror("Discord.gd:create_guild_from_template:params must be a Dictionary or CreateGuildFromTemplateParams")
+		DiscordUtils.perror("DiscordRESTClient:create_guild_from_template:params must be a Dictionary or CreateGuildFromTemplateParams")
 
 	var data = yield(_send_post_request(ENDPOINTS.GUILD_TEMPLATES_CODE % p_template_code, p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
@@ -1523,7 +1523,7 @@ func create_template_from_guild(p_guild_id: String, p_params = {}) -> GuildTempl
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = CreateGuildFromTemplateParams.new().from_dict(p_params)
 	elif not p_params is CreateGuildFromTemplateParams:
-		DiscordUtils.perror("Discord.gd:create_template_from_guild:params must be a Dictionary or CreateGuildFromTemplateParams")
+		DiscordUtils.perror("DiscordRESTClient:create_template_from_guild:params must be a Dictionary or CreateGuildFromTemplateParams")
 
 	var data = yield(_send_post_request(ENDPOINTS.GUILD_TEMPLATES % p_guild_id, p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
@@ -1555,7 +1555,7 @@ func modify_guild_template(p_guild_id: String, p_template_code: String, p_params
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = ModifyGuildTemplateParams.new().from_dict(p_params)
 	elif not p_params is ModifyGuildTemplateParams:
-		DiscordUtils.perror("Discord.gd:modify_guild_template:params must be a Dictionary or ModifyGuildTemplateParams")
+		DiscordUtils.perror("DiscordRESTClient:modify_guild_template:params must be a Dictionary or ModifyGuildTemplateParams")
 
 	var data = yield(_send_post_request(ENDPOINTS.GUILD_TEMPLATE % [p_guild_id, p_template_code], p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
@@ -1573,7 +1573,7 @@ func get_invite(p_invite_code: String, p_params = {}) -> Invite:
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = GetInviteParams.new().from_dict(p_params)
 	elif not p_params is GetInviteParams:
-		DiscordUtils.perror("Discord.gd:get_invite:params must be a Dictionary or GetInviteParams")
+		DiscordUtils.perror("DiscordRESTClient:get_invite:params must be a Dictionary or GetInviteParams")
 
 	var endpoint = ENDPOINTS.INVITE % p_invite_code
 	var query_string = DiscordUtils.query_string_from_dict(p_params.to_dict())
@@ -1607,7 +1607,7 @@ func create_stage_instance(p_params = {}) -> Invite:
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = CreateStageInstanceParams.new().from_dict(p_params)
 	elif not p_params is CreateStageInstanceParams:
-		DiscordUtils.perror("Discord.gd:create_stage_instance:params must be a Dictionary or CreateStageInstanceParams")
+		DiscordUtils.perror("DiscordRESTClient:create_stage_instance:params must be a Dictionary or CreateStageInstanceParams")
 
 	var data = yield(_send_post_request(ENDPOINTS.STAGEINSTANCES, p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
@@ -1615,14 +1615,13 @@ func create_stage_instance(p_params = {}) -> Invite:
 	return StageInstance.new().from_dict(data)
 
 
-# Get the invite with given code
+# Get the stage instance associated with the Stage channel, if it exists
 # @returns [Invite] | [HTTPResponse] if error
 func get_stage_instance(p_channel_id: String) -> StageInstance:
 	var data = yield(_send_request(ENDPOINTS.STAGEINSTANCE % p_channel_id), "completed")
 	if data is HTTPResponse and data.is_error():
 		return data
 	return StageInstance.new().from_dict(data)
-
 
 
 # Updates fields of an existing Stage instance
@@ -1633,7 +1632,7 @@ func modify_stage_instance(p_channel_id: String, p_params = {}) -> StageInstance
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = ModifyStageInstanceParams.new().from_dict(p_params)
 	elif not p_params is ModifyStageInstanceParams:
-		DiscordUtils.perror("Discord.gd:modify_stage_instance:params must be a Dictionary or ModifyStageInstanceParams")
+		DiscordUtils.perror("DiscordRESTClient:modify_stage_instance:params must be a Dictionary or ModifyStageInstanceParams")
 
 	var data = yield(_send_patch_request(ENDPOINTS.STAGEINSTANCE % p_channel_id, p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
@@ -1652,6 +1651,81 @@ func delete_stage_instance(p_channel_id: String) -> bool:
 			return data
 		return data.is_no_content()
 	return false
+
+
+#! ----------
+#! Sticker
+#! ----------
+
+# Get a sticker with given id
+# @returns [Invite] | [HTTPResponse] if error
+func get_sticker(p_sticker_id: String) -> Sticker:
+	var data = yield(_send_request(ENDPOINTS.STICKER % p_sticker_id), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return Sticker.new().from_dict(data)
+
+
+# Get a lsit of nitro sticker packs
+# @returns [Array] of [StickerPack] | [HTTPResponse] if error
+func get_sticker_packs() -> Array:
+	var data = yield(_send_request(ENDPOINTS.STICKERPACKS), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	var ret = []
+	for elm in data.sticker_packs:
+		ret.append(StickerPack.new().from_dict(elm))
+	return ret
+
+
+# Get a list of stickers for the given guild
+# @returns [Array] of [Sticker] | [HTTPResponse] if error
+func get_guild_stickers(p_guild_id: String) -> Array:
+	var data = yield(_send_request(ENDPOINTS.GUILD_STICKERS % p_guild_id), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	var ret = []
+	for elm in data:
+		ret.append(Sticker.new().from_dict(elm))
+	return ret
+
+
+# Get a sticker for a given sticker in a guild
+# @returns [Sticker] | [HTTPResponse] if error
+func get_guild_sticker(p_guild_id: String, p_sticker_id: String) -> Sticker:
+	var data = yield(_send_request(ENDPOINTS.GUILD_STICKER % [p_guild_id, p_sticker_id]), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return Sticker.new().from_dict(data)
+
+
+# Modify the given sticker
+#
+# Needs the `MANAGE_EMOJIS_AND_STICKERS` permission
+# @returns [Sticker] | [HTTPResponse] if error
+func modify_guild_sticker(p_guild_id: String, p_sticker_id: String, p_params = {}) -> Sticker:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = ModifyGuildStickerParams.new().from_dict(p_params)
+	elif not p_params is ModifyGuildStickerParams:
+		DiscordUtils.perror("DiscordRESTClient:modify_guild_sticker:params must be a Dictionary or ModifyGuildStickerParams")
+	var data = yield(_send_patch_request(ENDPOINTS.GUILD_STICKER % [p_guild_id, p_sticker_id], p_params.to_dict()), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return Sticker.new().from_dict(data)
+
+
+# Delete the given sticker
+#
+# Needs the `MANAGE_EMOJIS_AND_STICKERS` permission
+# @returns [bool] | [HTTPResponse] if error
+func delete_guild_sticker(p_guild_id: String, p_sticker_id: String) -> bool:
+	var data = yield(_send_delete_request(ENDPOINTS.GUILD_STICKER % [p_guild_id, p_sticker_id]), "completed")
+	if data is HTTPResponse:
+		if data.is_error():
+			return data
+		return data.is_no_content()
+	return false
+
 
 # @hidden
 const ENDPOINTS: Dictionary = {
@@ -1760,6 +1834,12 @@ const ENDPOINTS: Dictionary = {
 	# StageInstance
 	STAGEINSTANCES = "/stage-instances",
 	STAGEINSTANCE = "/stage-instances/%s",
+
+	# Sticker
+	STICKER = "/stickers/%s",
+	STICKERPACKS = "/sticker-packs",
+	GUILD_STICKERS = "/guilds/%s/stickers",
+	GUILD_STICKER = "/guilds/%s/stickers/%s",
 }
 
 var _base_url: String
