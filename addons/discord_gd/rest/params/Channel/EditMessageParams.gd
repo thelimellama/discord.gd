@@ -3,11 +3,11 @@ class_name EditMessageParams extends Dataclass
 
 var content = null setget __set_content # [String] Message contents (up to 2000 characters)
 var embeds = null setget __set_embeds # [Array] of [Embed] Embedded rich content (up to 6000 characters)
-var flags = null  setget __set_flags # [MessageFlags] Edit the flags of a message (only `SUPPRESS_EMBEDS` can currently be set/unset)
-var allowed_mentions = null  setget __set_allowed_mentions # [AllowedMention] Allowed mentions for the message
-var components = null  setget __set_components # [Array] of [MessageActionRow] Components to include with the message
-var files = null  setget __set_files # [Array] of [DiscordFile] Contents of the file(s) being sent/edited
-var attachments = null  setget __set_attachments # [Array] of [Attachment] Attached files to keep and possible descriptions for new files
+var flags = null setget __set_flags # [MessageFlags] Edit the flags of a message (only `SUPPRESS_EMBEDS` can currently be set/unset)
+var allowed_mentions = null setget __set_allowed_mentions # [AllowedMention] Allowed mentions for the message
+var components = null setget __set_components # [Array] of [MessageActionRow] Components to include with the message
+var files = null setget __set_files # [Array] of [DiscordFile] Contents of the file(s) being sent/edited
+var attachments = null setget __set_attachments # [Array] of [Attachment] Attached files to keep and possible descriptions for new files
 
 var __set_props = {} # @hidden
 

@@ -234,14 +234,8 @@ func create_message(p_channel_id: String, p_params = {}) -> Message:
 	elif not p_params is CreateMessageParams:
 		DiscordUtils.perror("DiscordRESTClient:create_message:params must be a Dictionary or CreateMessageParams")
 
-	var params_dict = p_params.to_dict()
-	var form_dict = {}
-	if params_dict.files:
-		var files = params_dict.files
-		params_dict.erase("files")
-		form_dict.files = files
-		form_dict.payload_json = params_dict
-	var data = yield(_send_multipart_form_request(ENDPOINTS.CHANNEL_MESSAGES % p_channel_id, form_dict), "completed")
+	var multipart_form_dict = _parse_files_from_dict(p_params.to_dict())
+	var data = yield(_send_multipart_form_request(ENDPOINTS.CHANNEL_MESSAGES % p_channel_id, multipart_form_dict), "completed")
 	if data is HTTPResponse and data.is_error():
 		return data
 	return Message.new().from_dict(data)
@@ -267,7 +261,9 @@ func edit_message(p_channel_id: String, p_message_id: String, p_params = {}) -> 
 		p_params = EditMessageParams.new().from_dict(p_params)
 	elif not p_params is EditMessageParams:
 		DiscordUtils.perror("DiscordRESTClient:edit_message:params must be a Dictionary or EditMessageParams")
-	var data = yield(_send_patch_request(ENDPOINTS.CHANNEL_MESSAGE % [p_channel_id, p_message_id], p_params.to_dict()), "completed")
+
+	var multipart_form_dict = _parse_files_from_dict(p_params.to_dict())
+	var data = yield(_send_multipart_form_request(ENDPOINTS.CHANNEL_MESSAGE % [p_channel_id, p_message_id], multipart_form_dict, HTTPClient.METHOD_PATCH), "completed")
 	if data is HTTPResponse and data.is_error():
 		return data
 	return Message.new().from_dict(data)
@@ -537,7 +533,14 @@ func start_thread_in_forum(p_channel_id: String, p_params = {}) -> Channel:
 		p_params = StartThreadInForumParams.new().from_dict(p_params)
 	elif not p_params is StartThreadInForumParams:
 		DiscordUtils.perror("DiscordRESTClient:start_thread_in_forum:params must be a Dictionary or StartThreadInForumParams")
-	var data = yield(_send_post_request(ENDPOINTS.CHANNEL_THREADS % p_channel_id, p_params.to_dict()), "completed")
+
+	var params_dict = p_params.to_dict()
+	if params_dict.message.has("files"):
+		var files = params_dict.message.files
+		params_dict.files = files
+		params_dict.message.erase("files")
+	var multipart_form_dict = _parse_files_from_dict(params_dict)
+	var data = yield(_send_multipart_form_request(ENDPOINTS.CHANNEL_THREADS % p_channel_id, multipart_form_dict), "completed")
 	if data is HTTPResponse and data.is_error():
 		return data
 	return Channel.new().from_dict(data)
@@ -2004,3 +2007,15 @@ func _send_multipart_form_request(slug: String, form_dict = {}, method := HTTPCl
 			return res.body
 		_:
 			return res
+
+
+# Extracts non [DiscordFile] data from a dictionary to `payload_json`.
+func _parse_files_from_dict(p_dict: Dictionary) -> Dictionary:
+	var form_dict = {}
+	var params_dict = p_dict.to_dict()
+	if params_dict.files:
+		var files = params_dict.files
+		params_dict.erase("files")
+		form_dict.files = files
+		form_dict.payload_json = params_dict
+	return form_dict
