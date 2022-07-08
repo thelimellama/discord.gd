@@ -31,6 +31,9 @@ var flags = null # [int] Channel flags combined as a bitfield
 
 var total_message_sent = null # [int] (Undocumented)
 var member_ids_preview = null # [Array] of [String] (Undocumented)
+var available_tags = null # (Undocumented)
+var template = null # (Undocumented)
+var default_reaction_emoji = null # (Undocumented)
 
 # @hidden
 func _init().("Channel"): return self

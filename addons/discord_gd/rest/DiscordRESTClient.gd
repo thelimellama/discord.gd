@@ -1454,7 +1454,6 @@ func modify_guild_scheduled_event(p_guild_id: String, p_event_id: String, p_para
 	return GuildScheduledEvent.new().from_dict(data)
 
 
-
 # Delete a guild scheduled event
 # @returns [bool] | [HTTPResponse] if error
 func delete_guild_scheduled_event(p_guild_id: String, p_event_id: String) -> bool:
@@ -1464,7 +1463,6 @@ func delete_guild_scheduled_event(p_guild_id: String, p_event_id: String) -> boo
 			return data
 		return data.is_no_content()
 	return false
-
 
 
 # Get a list of guild scheduled events for the given guild
@@ -1488,6 +1486,81 @@ func get_guild_scheduled_event_users(p_guild_id: String, p_event_id: String, p_p
 		ret.append(GuildScheduledEventUser.new().from_dict(elm))
 	return ret
 
+
+#! ----------
+#! GuildTemplate
+#! ----------
+
+
+# Get a list of guild scheduled events for the given guild
+# @returns [GuildTemplate] | [HTTPResponse] if error
+func get_guild_template(p_code: String) -> GuildTemplate:
+	var data = yield(_send_request(ENDPOINTS.GUILD_TEMPLATES_CODE % p_code), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return GuildTemplate.new().from_dict(data)
+
+
+# Get a list of guild scheduled events for the given guild
+# @returns [GuildTemplate] | [HTTPResponse] if error
+func create_guild_from_template(p_code: String, p_params = {}) -> Guild:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = CreateGuildFromTemplateParams.new().from_dict(p_params)
+	elif not p_params is CreateGuildFromTemplateParams:
+		DiscordUtils.perror("Discord.gd:create_guild_from_template:params must be a Dictionary or CreateGuildFromTemplateParams")
+
+	var data = yield(_send_post_request(ENDPOINTS.GUILD_TEMPLATES_CODE % p_code, p_params.to_dict()), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return Guild.new().from_dict(data)
+
+
+# Creates a template for the guild
+#
+# Needs the `MANAGE_GUILD` permission
+# @returns [GuildTemplate] | [HTTPResponse] if error
+func create_template_from_guild(p_guild_id: String, p_params = {}) -> GuildTemplate:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = CreateGuildFromTemplateParams.new().from_dict(p_params)
+	elif not p_params is CreateGuildFromTemplateParams:
+		DiscordUtils.perror("Discord.gd:create_template_from_guild:params must be a Dictionary or CreateGuildFromTemplateParams")
+
+	var data = yield(_send_post_request(ENDPOINTS.GUILD_TEMPLATES % p_guild_id, p_params.to_dict()), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return GuildTemplate.new().from_dict(data)
+
+
+# Delete a guild template
+# @returns [GuildTemplate] | [HTTPResponse] if error
+func delete_guild_template(p_guild_id: String, p_code: String) -> GuildTemplate:
+	var data = yield(_send_delete_request(ENDPOINTS.GUILD_TEMPLATE % [p_guild_id, p_code]), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return GuildTemplate.new().from_dict(data)
+
+
+# Syncs a guild template to the guild's current state
+# @returns [GuildTemplate] | [HTTPResponse] if error
+func sync_guild_template(p_guild_id: String, p_code: String) -> GuildTemplate:
+	var data = yield(_send_put_request(ENDPOINTS.GUILD_TEMPLATE % [p_guild_id, p_code]), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return GuildTemplate.new().from_dict(data)
+
+
+# Modify a guild template's metadata
+# @returns [GuildTemplate] | [HTTPResponse] if error
+func modify_guild_template(p_guild_id: String, p_code: String, p_params = {}) -> GuildTemplate:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = ModifyGuildTemplateParams.new().from_dict(p_params)
+	elif not p_params is ModifyGuildTemplateParams:
+		DiscordUtils.perror("Discord.gd:modify_guild_template:params must be a Dictionary or ModifyGuildTemplateParams")
+
+	var data = yield(_send_post_request(ENDPOINTS.GUILD_TEMPLATE % [p_guild_id, p_code], p_params.to_dict()), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return GuildTemplate.new().from_dict(data)
 
 
 # @hidden
@@ -1585,6 +1658,11 @@ const ENDPOINTS: Dictionary = {
 	GUILD_SCHEDULED_EVENTS = "/guilds/%s/scheduled-events",
 	GUILD_SCHEDULED_EVENT = "/guilds/%s/scheduled-events/%s",
 	GUILD_SCHEDULED_EVENT_USERS = "/guilds/%s/scheduled-events/%s/users",
+
+	# GuildTemplate
+	GUILD_TEMPLATES_CODE = "/guilds/templates/%s",
+	GUILD_TEMPLATES = "/guilds/%s/templates",
+	GUILD_TEMPLATE = "/guilds/%s/templates/%s",
 }
 
 var _base_url: String

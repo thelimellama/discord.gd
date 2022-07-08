@@ -17,7 +17,7 @@ const __DEFAULT_OPTIONS__ = {
 	"include_null_in_print": false,
 
 	# Whether to print properties on newlines when printing
-	"print_newline": false,
+	"print_newline": true,
 
 	# Names of properties to exclude when printing
 	"print_exclude": []

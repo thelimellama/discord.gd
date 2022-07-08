@@ -47,6 +47,7 @@ var premium_progress_bar_enabled: bool # Whether the guild has the boost progres
 var joined_at = null # (Undocumented)
 var hub_type = null # (Undocumented)
 var flags = null # (Undocumented)
+var channels = null # [Array] of [Channel] (Undocumented)
 
 # @hidden
 func _init().("Guild"): return self
@@ -70,10 +71,15 @@ func from_dict(p_dict: Dictionary):
 		system_channel_flags = SystemChannelFlags.new(p_dict.system_channel_flags)
 	if p_dict.has("welcome_screen"):
 		welcome_screen = WelcomeScreen.new().from_dict(p_dict.welcome_screen)
-	stickers = []
 	if p_dict.has("stickers"):
+		stickers = []
 		for data in p_dict.stickers:
 			stickers.append(Sticker.new().from_dict(data))
+
+	if p_dict.has("channels"):
+		channels = []
+		for data in p_dict.channels:
+			channels.append(Channel.new().from_dict(data))
 	return self
 
 
@@ -96,5 +102,8 @@ func to_dict() -> Dictionary:
 	if dict.has("stickers"):
 		for i in dict.stickers.size():
 			dict.stickers[i] = dict.stickers[i].to_dict()
+	if dict.has("channels"):
+		for i in dict.channels.size():
+			dict.channels[i] = dict.channels[i].to_dict()
 
 	return dict

@@ -261,4 +261,17 @@ func _on_rerun_btn_pressed() -> void:
 #		status = GuildScheduledEventStatus.COMPLETED
 #	}), "completed"))
 #	Print(yield(rest.delete_guild_scheduled_event("369422519129604096", "994950886365335582"), "completed"))
-	Print(yield(rest.get_guild_scheduled_event_users("369422519129604096", "994947386298347591", {with_member = true}), "completed"))
+#	Print(yield(rest.get_guild_scheduled_event_users("369422519129604096", "994947386298347591", {with_member = true}), "completed"))
+
+
+
+#	Print(yield(rest.get_guild_template("Wne7zhb45uKQ"), "completed"))
+#	Print(yield(rest.create_guild_from_template("Wne7zhb45uKQ", {
+#		name = "My Guild From Template"
+#	}), "completed"))
+#	Print(yield(rest.create_template_from_guild("369422519129604096", {
+#		name = "Test template 001"
+#	}), "completed"))
+#	Print(yield(rest.delete_guild_template("369422519129604096", "vjsvmNqw3aww"), "completed"))
+#	Print(yield(rest.sync_guild_template("369422519129604096", "vjsvmNqw3aww"), "completed"))
+#	Print(yield(rest.modify_guild_template("369422519129604096", "vjsvmNqw3aww", {name = "Edited template name"}), "completed"))

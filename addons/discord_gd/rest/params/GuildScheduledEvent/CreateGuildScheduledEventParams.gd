@@ -1,7 +1,7 @@
 # Params for create guild scheduled event
 class_name CreateGuildScheduledEventParams extends Dataclass
 
-var channel_id = null # [String] The channel id of the scheduled event.
+var channel_id = null # [String] The channel id of the scheduled event
 var entity_metadata = null # [GuildScheduledEventEntityMetadata] The entity metadata of the scheduled event
 var name: String # The name of the scheduled event
 var privacy_level: int # [GuildScheduledEventPrivacyLevel] The privacy level of the scheduled event
