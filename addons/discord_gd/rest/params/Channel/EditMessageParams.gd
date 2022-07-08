@@ -6,9 +6,8 @@ var embeds = null setget __set_embeds # [Array] of [Embed] Embedded rich content
 var flags = null  setget __set_flags # [MessageFlags] Edit the flags of a message (only `SUPPRESS_EMBEDS` can currently be set/unset)
 var allowed_mentions = null  setget __set_allowed_mentions # [AllowedMention] Allowed mentions for the message
 var components = null  setget __set_components # [Array] of [MessageActionRow] Components to include with the message
-var files = null  setget __set_files # [Array] of [PoolByteArray] Contents of the file being sent/edited. See Uploading Files
-var payload_json = null  setget __set_payload_json # [String] JSON-encoded body of non-file params (multipart/form-data only). See Uploading Files
-var attachments = null  setget __set_attachments # [Array] of [Attachment] Attached files to keep and possible descriptions for new files. See Uploading Files
+var files = null  setget __set_files # [Array] of [DiscordFile] Contents of the file(s) being sent/edited
+var attachments = null  setget __set_attachments # [Array] of [Attachment] Attached files to keep and possible descriptions for new files
 
 var __set_props = {} # @hidden
 
@@ -46,11 +45,6 @@ func __set_files(p_files):
 	files = p_files
 
 
-func __set_payload_json(p_payload_json):
-	__set_props.payload_json = true
-	payload_json = p_payload_json
-
-
 func __set_attachments(p_attachments):
 	__set_props.attachments = true
 	attachments = p_attachments
@@ -72,6 +66,13 @@ func from_dict(p_dict: Dictionary):
 		components = []
 		for data in p_dict.components:
 			components.append(MessageActionRow.new().from_dict(data))
+	if p_dict.has("files"):
+		files = []
+		for data in p_dict.files:
+			if not data is DiscordFile:
+				DiscordUtils.perror("EditMessageParams:from_dict:Got non DiscordFile in files array: %s" % data)
+			else:
+				files.append(data)
 	if p_dict.has("attachments") and p_dict.attachments != null:
 		attachments = []
 		for data in p_dict.attachments:

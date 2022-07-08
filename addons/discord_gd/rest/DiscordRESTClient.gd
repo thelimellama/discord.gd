@@ -233,7 +233,15 @@ func create_message(p_channel_id: String, p_params = {}) -> Message:
 		p_params = CreateMessageParams.new().from_dict(p_params)
 	elif not p_params is CreateMessageParams:
 		DiscordUtils.perror("DiscordRESTClient:create_message:params must be a Dictionary or CreateMessageParams")
-	var data = yield(_send_post_request(ENDPOINTS.CHANNEL_MESSAGES % p_channel_id, p_params.to_dict()), "completed")
+
+	var params_dict = p_params.to_dict()
+	var form_dict = {}
+	if params_dict.files:
+		var files = params_dict.files
+		params_dict.erase("files")
+		form_dict.files = files
+		form_dict.payload_json = params_dict
+	var data = yield(_send_multipart_form_request(ENDPOINTS.CHANNEL_MESSAGES % p_channel_id, form_dict), "completed")
 	if data is HTTPResponse and data.is_error():
 		return data
 	return Message.new().from_dict(data)
@@ -1901,6 +1909,76 @@ func _send_request(slug: String, payload = null, method := HTTPClient.METHOD_GET
 		request_string = JSON.print(payload)
 
 	http_request.call_deferred("request", _base_url + slug, headers, true, method, request_string)
+
+	var data = yield(http_request, "request_completed")
+	http_request.queue_free()
+
+	# Check for errors
+	var res := HTTPResponse.new(data[0], data[1], data[2], data[3])
+
+	if res.is_error() or res.is_no_content():
+		# Got some error or 204
+		return res
+
+	var content_type = null
+	for header in res.headers:
+		header = header as String
+		if header.begins_with("Content-Type: "):
+			content_type = header.substr(14)
+			break
+	match content_type:
+		"application/json":
+			var json = res.get_json()
+			return json
+		"image/png", "image/jpg", "image/gif":
+			return res.body
+		_:
+			return res
+
+
+# @hidden
+func _send_multipart_form_request(slug: String, form_dict = {}, method := HTTPClient.METHOD_POST) -> HTTPResponse:
+	var headers = _headers.duplicate(true)
+
+	if not _auth_header == "":
+		headers.append(_auth_header)
+
+	headers.append("Content-Type: multipart/form-data; boundary=\"xx__boundary__xx\"")
+
+	var http_request = HTTPRequest.new()
+	add_child(http_request)
+
+	var body = PoolByteArray()
+
+	var _file_count = 0
+	if form_dict.has("files") and typeof(form_dict.files) == TYPE_ARRAY:
+		for file in form_dict.files:
+			if not file is DiscordFile:
+				DiscordUtils.perror("DiscordRESTClient:_send_multipart_form_request:Invalid file in files. Expected DiscordFile but got: %s" % file)
+			body.append_array("--xx__boundary__xx\r\n".to_utf8())
+			body.append_array(
+				("Content-Disposition: form-data; name=\"files[%s]\"; filename=\"%s\"\r\n" % [_file_count, file.filename]).to_utf8()
+			)
+			body.append_array(("Content-Type: %s\r\n\r\n" % file.mime).to_utf8())
+			body.append_array(file.contents)
+			body.append_array("\r\n".to_utf8())
+			_file_count += 1
+		form_dict.erase("files")
+
+	var form_field_names = form_dict.keys()
+	for field_name in form_field_names:
+		var field_value = form_dict[field_name]
+		if typeof(field_value) == TYPE_DICTIONARY:
+			body.append_array("--xx__boundary__xx\r\n".to_utf8())
+			body.append_array(("Content-Disposition: form-data; name=\"%s\"\r\n" % field_name).to_utf8())
+			body.append_array("Content-Type: application/json\r\n\r\n".to_utf8())
+
+			body.append_array((JSON.print(field_value) + "\r\n").to_utf8())
+		else:
+			DiscordUtils.perror("DiscordRESTClient:_send_multipart_form_request:Invalid form field type: %s for field: %s" % [typeof(field_value), field_name])
+	body.append_array("--xx__boundary__xx--\r\n".to_utf8())
+
+	http_request.call_deferred("request_raw", _base_url + slug, headers, true, method, body)
 
 	var data = yield(http_request, "request_completed")
 	http_request.queue_free()

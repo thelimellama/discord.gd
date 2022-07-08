@@ -8,6 +8,7 @@ onready var logs = $VB/MC/Logs
 
 func _ready() -> void:
 	_on_rerun_btn_pressed()
+	# warning-ignore:return_value_discarded
 	$VB/RerunBtn.connect("pressed", self, "_on_rerun_btn_pressed")
 
 
@@ -77,6 +78,12 @@ func _on_rerun_btn_pressed() -> void:
 #					EmbedField.new().from_dict({ name = "Field 3", value = "Value 3", inline = true})]
 #	params_create_message.embeds = [embed]
 #	Print(yield(rest.create_message("369423865618628608", params_create_message), "completed"))
+
+	var file1 = DiscordFile.new().load_file("res://icon.png")
+	Print(yield(rest.create_message("369423865618628608", {
+		embeds = [ {image = { url = "attachment://icon.png"}}],
+		files = [file1]
+	}), "completed"))
 
 #	Print(yield(rest.crosspost_message("994518610028548127", "994519585246162984"), "completed"))
 #	Print(yield(rest.edit_message("369423865618628608", "994547930046418954", {
@@ -292,4 +299,16 @@ func _on_rerun_btn_pressed() -> void:
 #	Print(yield(rest.modify_stage_instance("993847090595766292", {
 #		topic = "Discord.gd edited topic"
 #	}), "completed"))
-	Print(yield(rest.delete_stage_instance("993847090595766292"), "completed"))
+#	Print(yield(rest.delete_stage_instance("993847090595766292"), "completed"))
+
+
+
+#	Print(yield(rest.get_sticker("860415820748292129"), "completed"))
+#	Print(yield(rest.get_sticker_packs(), "completed"))
+#	Print(yield(rest.get_guild_stickers("369422519129604096"), "completed"))
+#	Print(yield(rest.get_guild_sticker("330264450148073474", "860415820748292129"), "completed"))
+#	Print(yield(rest.modify_guild_sticker("369422519129604096", "995011624823955607", {
+#		name = "edited-name",
+#		description = "edited desc"
+#	}), "completed"))
+#	Print(yield(rest.delete_guild_sticker("330264450148073474", "860415820748292129"), "completed"))

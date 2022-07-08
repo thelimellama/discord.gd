@@ -10,8 +10,7 @@ var allowed_mentions = null # [AllowedMention] Allowed mentions for the message
 var message_reference = null # [MessageReference] Include to make your message a reply
 var components = null # [Array] of [MessageActionRow] Components to include with the message
 var sticker_ids = null # [Array] of [String] Ids of up to 3 stickers in the server to send in the message
-var files = null # [Array] of [PoolByteArray] Contents of the file being sent
-var payload_json = null # [String] JSON-encoded body of non-file params, only for multipart/form-data requests
+var files = null # [Array] of [DiscordFile] Contents of the file(s) being sent
 var attachments = null # [Array] of partial [Attachment] Attachment objects with filename and description
 var flags = null # [MessageFlags] Message flags combined as a bitfield (only `SUPPRESS_EMBEDS` can be set)
 
@@ -36,6 +35,13 @@ func from_dict(p_dict: Dictionary):
 		components = []
 		for data in p_dict.components:
 			components.append(MessageActionRow.new().from_dict(data))
+	if p_dict.has("files"):
+		files = []
+		for data in p_dict.files:
+			if not data is DiscordFile:
+				DiscordUtils.perror("CreateMessageParams:from_dict:Got non DiscordFile in files array: %s" % data)
+			else:
+				files.append(data)
 	if p_dict.has("attachments"):
 		attachments = []
 		for data in p_dict.attachments:
