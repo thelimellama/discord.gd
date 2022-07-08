@@ -275,3 +275,8 @@ func _on_rerun_btn_pressed() -> void:
 #	Print(yield(rest.delete_guild_template("369422519129604096", "vjsvmNqw3aww"), "completed"))
 #	Print(yield(rest.sync_guild_template("369422519129604096", "vjsvmNqw3aww"), "completed"))
 #	Print(yield(rest.modify_guild_template("369422519129604096", "vjsvmNqw3aww", {name = "Edited template name"}), "completed"))
+
+
+
+#	Print(yield(rest.get_invite("FZY9TqW"), "completed"))
+#	Print(yield(rest.delete_invite("YKx5F8Fc"), "completed"))

@@ -1494,8 +1494,8 @@ func get_guild_scheduled_event_users(p_guild_id: String, p_event_id: String, p_p
 
 # Get a list of guild scheduled events for the given guild
 # @returns [GuildTemplate] | [HTTPResponse] if error
-func get_guild_template(p_code: String) -> GuildTemplate:
-	var data = yield(_send_request(ENDPOINTS.GUILD_TEMPLATES_CODE % p_code), "completed")
+func get_guild_template(p_template_code: String) -> GuildTemplate:
+	var data = yield(_send_request(ENDPOINTS.GUILD_TEMPLATES_CODE % p_template_code), "completed")
 	if data is HTTPResponse and data.is_error():
 		return data
 	return GuildTemplate.new().from_dict(data)
@@ -1503,13 +1503,13 @@ func get_guild_template(p_code: String) -> GuildTemplate:
 
 # Get a list of guild scheduled events for the given guild
 # @returns [GuildTemplate] | [HTTPResponse] if error
-func create_guild_from_template(p_code: String, p_params = {}) -> Guild:
+func create_guild_from_template(p_template_code: String, p_params = {}) -> Guild:
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = CreateGuildFromTemplateParams.new().from_dict(p_params)
 	elif not p_params is CreateGuildFromTemplateParams:
 		DiscordUtils.perror("Discord.gd:create_guild_from_template:params must be a Dictionary or CreateGuildFromTemplateParams")
 
-	var data = yield(_send_post_request(ENDPOINTS.GUILD_TEMPLATES_CODE % p_code, p_params.to_dict()), "completed")
+	var data = yield(_send_post_request(ENDPOINTS.GUILD_TEMPLATES_CODE % p_template_code, p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
 		return data
 	return Guild.new().from_dict(data)
@@ -1533,8 +1533,8 @@ func create_template_from_guild(p_guild_id: String, p_params = {}) -> GuildTempl
 
 # Delete a guild template
 # @returns [GuildTemplate] | [HTTPResponse] if error
-func delete_guild_template(p_guild_id: String, p_code: String) -> GuildTemplate:
-	var data = yield(_send_delete_request(ENDPOINTS.GUILD_TEMPLATE % [p_guild_id, p_code]), "completed")
+func delete_guild_template(p_guild_id: String, p_template_code: String) -> GuildTemplate:
+	var data = yield(_send_delete_request(ENDPOINTS.GUILD_TEMPLATE % [p_guild_id, p_template_code]), "completed")
 	if data is HTTPResponse and data.is_error():
 		return data
 	return GuildTemplate.new().from_dict(data)
@@ -1542,8 +1542,8 @@ func delete_guild_template(p_guild_id: String, p_code: String) -> GuildTemplate:
 
 # Syncs a guild template to the guild's current state
 # @returns [GuildTemplate] | [HTTPResponse] if error
-func sync_guild_template(p_guild_id: String, p_code: String) -> GuildTemplate:
-	var data = yield(_send_put_request(ENDPOINTS.GUILD_TEMPLATE % [p_guild_id, p_code]), "completed")
+func sync_guild_template(p_guild_id: String, p_template_code: String) -> GuildTemplate:
+	var data = yield(_send_put_request(ENDPOINTS.GUILD_TEMPLATE % [p_guild_id, p_template_code]), "completed")
 	if data is HTTPResponse and data.is_error():
 		return data
 	return GuildTemplate.new().from_dict(data)
@@ -1551,16 +1551,47 @@ func sync_guild_template(p_guild_id: String, p_code: String) -> GuildTemplate:
 
 # Modify a guild template's metadata
 # @returns [GuildTemplate] | [HTTPResponse] if error
-func modify_guild_template(p_guild_id: String, p_code: String, p_params = {}) -> GuildTemplate:
+func modify_guild_template(p_guild_id: String, p_template_code: String, p_params = {}) -> GuildTemplate:
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = ModifyGuildTemplateParams.new().from_dict(p_params)
 	elif not p_params is ModifyGuildTemplateParams:
 		DiscordUtils.perror("Discord.gd:modify_guild_template:params must be a Dictionary or ModifyGuildTemplateParams")
 
-	var data = yield(_send_post_request(ENDPOINTS.GUILD_TEMPLATE % [p_guild_id, p_code], p_params.to_dict()), "completed")
+	var data = yield(_send_post_request(ENDPOINTS.GUILD_TEMPLATE % [p_guild_id, p_template_code], p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
 		return data
 	return GuildTemplate.new().from_dict(data)
+
+
+#! ----------
+#! Invite
+#! ----------
+
+# Get the invite with given code
+# @returns [Invite] | [HTTPResponse] if error
+func get_invite(p_invite_code: String, p_params = {}) -> Invite:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = GetInviteParams.new().from_dict(p_params)
+	elif not p_params is GetInviteParams:
+		DiscordUtils.perror("Discord.gd:get_invite:params must be a Dictionary or GetInviteParams")
+
+	var endpoint = ENDPOINTS.INVITE % p_invite_code
+	var query_string = DiscordUtils.query_string_from_dict(p_params.to_dict())
+	if query_string: endpoint += "?" + query_string
+
+	var data = yield(_send_request(endpoint), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return Invite.new().from_dict(data)
+
+
+# Get the invite with given code
+# @returns [Invite] | [HTTPResponse] if error
+func delete_invite(p_invite_code: String) -> Invite:
+	var data = yield(_send_delete_request(ENDPOINTS.INVITE % p_invite_code), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return Invite.new().from_dict(data)
 
 
 # @hidden
@@ -1663,6 +1694,9 @@ const ENDPOINTS: Dictionary = {
 	GUILD_TEMPLATES_CODE = "/guilds/templates/%s",
 	GUILD_TEMPLATES = "/guilds/%s/templates",
 	GUILD_TEMPLATE = "/guilds/%s/templates/%s",
+
+	# Invite
+	INVITE = "/invites/%s"
 }
 
 var _base_url: String
