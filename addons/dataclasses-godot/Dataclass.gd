@@ -46,8 +46,8 @@ func from_dict(p_dict: Dictionary):
 		var typeof_expected = typeof(get(key))
 		var typeof_received = typeof(p_dict[key])
 		if typeof_expected != TYPE_NIL and typeof_received != typeof_expected and (
-			not typeof_expected in [TYPE_INT, TYPE_REAL] and
-			not typeof_received in [TYPE_INT, TYPE_REAL]
+			(not typeof_expected in [TYPE_INT, TYPE_REAL]) and
+			(not typeof_received in [TYPE_INT, TYPE_REAL])
 		):
 			printerr("Dataclass:from_dict: Warning: Key \"%s\" has type %s but expected type %s in dataclass \"%s\"" % [key, __type_to_string(typeof_received) , __type_to_string(typeof_expected), __name__])
 		set(key, p_dict[key])
@@ -79,9 +79,10 @@ func __get_props() -> Array:
 	all_props.pop_front()
 
 	if __options__.sort_keys:
-		all_props.sort()
+		all_props.sort_custom(_PropertySorterAlphabetical, "sort_ascending")
 
 	return all_props
+
 
 func __type_to_string(p_type: int) -> String:
 	var types = ["NIL", "BOOL", "INT", "REAL", "STRING", "VECTOR2", "RECT2", "VECTOR3", "TRANSFORM2D", "PLANE", "QUAT", "AABB", "BASIS", "TRANSFORM", "COLOR", "NODE_PATH", "RID", "OBJECT", "DICTIONARY", "ARRAY", "RAW_ARRAY", "INT_ARRAY", "REAL_ARRAY", "STRING_ARRAY", "VECTOR2_ARRAY", "VECTOR3_ARRAY", "COLOR_ARRAY", "MAX"]
