@@ -608,14 +608,13 @@ func leave_thread(p_channel_id: String) -> bool:
 	return false
 
 
-
 # Get a list of archived threads in the channel that are public
 #
 # When called on a `GUILD_TEXT` channel, returns threads of type `GUILD_PUBLIC_THREAD`. When called on a `GUILD_NEWS` channel returns threads of type `GUILD_NEWS_THREAD`. Threads are ordered by `archive_timestamp`, in descending order
 #
 # Needs the `READ_MESSAGE_HISTORY` permission
 # @returns [GetArchivedThreadsResponse] | [HTTPResponse] if error
-func get_public_archived_threads(p_channel_id: String, p_params = {}) -> Array:
+func get_public_archived_threads(p_channel_id: String, p_params = {}) -> GetArchivedThreadsResponse:
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = GetArchivedThreadsParams.new().from_dict(p_params)
 	elif not p_params is GetArchivedThreadsParams:
@@ -637,7 +636,7 @@ func get_public_archived_threads(p_channel_id: String, p_params = {}) -> Array:
 #
 # Needs both the `READ_MESSAGE_HISTORY` and `MANAGE_THREADS` permissions
 # @returns [GetArchivedThreadsResponse] | [HTTPResponse] if error
-func get_private_archived_threads(p_channel_id: String, p_params = {}) -> Array:
+func get_private_archived_threads(p_channel_id: String, p_params = {}) -> GetArchivedThreadsResponse:
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = GetArchivedThreadsParams.new().from_dict(p_params)
 	elif not p_params is GetArchivedThreadsParams:
@@ -659,7 +658,7 @@ func get_private_archived_threads(p_channel_id: String, p_params = {}) -> Array:
 #
 # Needs the `READ_MESSAGE_HISTORY`
 # @returns [GetArchivedThreadsResponse] | [HTTPResponse] if error
-func get_joined_private_archived_threads(p_channel_id: String, p_params = {}) -> Array:
+func get_joined_private_archived_threads(p_channel_id: String, p_params = {}) -> GetArchivedThreadsResponse:
 	if typeof(p_params) == TYPE_DICTIONARY:
 		p_params = GetArchivedThreadsParams.new().from_dict(p_params)
 	elif not p_params is GetArchivedThreadsParams:
@@ -673,6 +672,76 @@ func get_joined_private_archived_threads(p_channel_id: String, p_params = {}) ->
 	if data is HTTPResponse and data.is_error():
 		return data
 	return GetArchivedThreadsResponse.new().from_dict(data)
+
+
+#! ----------
+#! Emoji
+#! ----------
+
+
+# Get a list of [Emoji] for the given guild
+# @returns [Array] of [Emoji] | [HTTPResponse] if error
+func get_guild_emojis(p_guild_id: String) -> Array:
+	var data = yield(_send_request(ENDPOINTS.GUILD_EMOJIS % p_guild_id), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	var ret = []
+	for elm in data:
+		ret.append(Emoji.new().from_dict(elm))
+	return ret
+
+
+# Get a spefic emoji in the given guild
+# @returns [Emoji] | [HTTPResponse] if error
+func get_guild_emoji(p_guild_id: String, p_emoji_id: String) -> Emoji:
+	var data = yield(_send_request(ENDPOINTS.GUILD_EMOJI % [p_guild_id, p_emoji_id]), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return Emoji.new().from_dict(data)
+
+
+# Create a new emoji for the guild
+#
+# Needs the `MANAGE_EMOJIS_AND_STICKERS` permission
+# @returns [Emoji] | [HTTPResponse] if error
+func create_guild_emoji(p_guild_id: String, p_params = {}) -> Emoji:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = CreateGuildEmojiParams.new().from_dict(p_params)
+	elif not p_params is CreateGuildEmojiParams:
+		DiscordUtils.perror("Discord.gd:create_guild_emoji:params must be a Dictionary or CreateGuildEmojiParams")
+
+	var data = yield(_send_post_request(ENDPOINTS.GUILD_EMOJIS % p_guild_id, p_params.to_dict()), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return Emoji.new().from_dict(data)
+
+
+# Modify an existing emoji in a guild
+#
+# Requires the `MANAGE_EMOJIS_AND_STICKERS` permission
+# @returns [Emoji] | [HTTPResponse] if error
+func modify_guild_emoji(p_guild_id: String, p_emoji_id: String, p_params = {}) -> Emoji:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = ModifyGuildEmojiParams.new().from_dict(p_params)
+	elif not p_params is ModifyGuildEmojiParams:
+		DiscordUtils.perror("Discord.gd:modify_guild_emoji:params must be a Dictionary or ModifyGuildEmojiParams")
+	var data = yield(_send_patch_request(ENDPOINTS.GUILD_EMOJI % [p_guild_id, p_emoji_id], p_params.to_dict()), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return Emoji.new().from_dict(data)
+
+
+# Delete an existing emoji in a guild
+#
+# Requires the `MANAGE_EMOJIS_AND_STICKERS` permission
+# @returns [bool] | [HTTPResponse] if error
+func delete_guild_emoji(p_guild_id: String, p_emoji_id: String) -> bool:
+	var data = yield(_send_delete_request(ENDPOINTS.GUILD_EMOJI % [p_guild_id, p_emoji_id]), "completed")
+	if data is HTTPResponse:
+		if data.is_error():
+			return data
+		return data.is_no_content()
+	return false
 
 
 # @hidden
@@ -718,6 +787,10 @@ const ENDPOINTS: Dictionary = {
 	CHANNEL_THREADS_ARCHIVED_PUBLIC = "/channels/%s/threads/archived/public",
 	CHANNEL_THREADS_ARCHIVED_PRIVATE = "/channels/%s/threads/archived/private",
 	CHANNEL_USER_ME_THREADS_ARCHIVED_PRIVATE = "/channels/%s/users/@me/threads/archived/private",
+
+	# Emoji
+	GUILD_EMOJIS = "/guilds/%s/emojis",
+	GUILD_EMOJI = "/guilds/%s/emojis/%s",
 }
 
 var _base_url: String
