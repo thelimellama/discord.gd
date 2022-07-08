@@ -115,7 +115,20 @@ func _on_rerun_btn_pressed() -> void:
 #	Print(yield(rest.group_dm_add_recipient("", "", {}), "completed"))
 #	Print(yield(rest.group_dm_remove_recipient("", ""), "completed"))
 
-#	Print(yield(rest.start_message_thread("369423865618628608", "994612045121081414", {name = "Test Thread"}), "completed"))
+#	Print(yield(rest.start_thread_from_message("369423865618628608", "994612045121081414", {name = "Test Thread From Message"}), "completed"))
+#	Print(yield(rest.start_thread("369423865618628608", {name = "Test Thread", auto_archive_duration = 1440, invitable = true, type = ChannelTypes.GUILD_PUBLIC_THREAD}), "completed"))
+#	Print(yield(rest.start_thread_in_forum("369423865618628608", {name = "My thread", message = {content = "Message content"}}), "completed")) # TODO: test this when forums release to public
+
+#	Print(yield(rest.get_thread_members("994824485058400259"), "completed"))
+#	Print(yield(rest.get_thread_member("994824485058400259", "321233875776962560"), "completed"))
+#	Print(yield(rest.add_thread_member("994824485058400259", "369422213394464770"), "completed"))
+#	Print(yield(rest.remove_thread_member("994824485058400259", "369422213394464770"), "completed"))
+#	Print(yield(rest.join_thread("994824485058400259"), "completed"))
+#	Print(yield(rest.leave_thread("994824485058400259"), "completed"))
+#	Print(yield(rest.get_public_archived_threads("369423865618628608", {limit = 2}), "completed"))
+#	Print(yield(rest.get_private_archived_threads("369423865618628608", {limit = 2}), "completed"))
+#	Print(yield(rest.get_joined_private_archived_threads("369423865618628608"), "completed"))
+
 
 
 

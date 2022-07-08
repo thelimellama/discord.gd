@@ -352,7 +352,6 @@ func create_channel_invite(p_channel_id: String, p_params = {}) -> Invite:
 	var data = yield(_send_post_request(ENDPOINTS.CHANNEL_INVITES % p_channel_id, p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
 		return data
-	print("\n", data, "\n")
 	return Invite.new().from_dict(data)
 
 
@@ -491,23 +490,189 @@ func group_dm_remove_recipient(p_channel_id: String, p_user_id: String) -> bool:
 	return false
 
 
-
 # Creates a new thread from an existing message
 #
 # When called on a `GUILD_TEXT` channel, creates a `GUILD_PUBLIC_THREAD`. When called on a `GUILD_NEWS` channel, creates a `GUILD_NEWS_THREAD`. Does not work on a `GUILD_FORUM` channel. The id of the created thread will be the same as the id of the source message, and as such a message can only have a single thread created from it.
 # @returns [Channel] | [HTTPResponse] if error
-func start_message_thread(p_channel_id: String, p_message_id: String, p_params = {}) -> Channel:
+func start_thread_from_message(p_channel_id: String, p_message_id: String, p_params = {}) -> Channel:
 	if typeof(p_params) == TYPE_DICTIONARY:
-		p_params = StartMessageThreadParams.new().from_dict(p_params)
-	elif not p_params is StartMessageThreadParams:
-		DiscordUtils.perror("Discord.gd:start_message_thread:params must be a Dictionary or StartMessageThreadParams")
-	var data = yield(_send_post_request(ENDPOINTS.CHANNEL_MESSAGE_THREADS
-	 % [p_channel_id, p_message_id], p_params.to_dict()), "completed")
-	print(data, "\n")
+		p_params = StartThreadWithMessageParams.new().from_dict(p_params)
+	elif not p_params is StartThreadWithMessageParams:
+		DiscordUtils.perror("Discord.gd:start_thread_from_message:params must be a Dictionary or StartThreadWithMessageParams")
+	var data = yield(_send_post_request(ENDPOINTS.CHANNEL_MESSAGE_THREADS % [p_channel_id, p_message_id], p_params.to_dict()), "completed")
+
 	if data is HTTPResponse and data.is_error():
 		return data
 	return Channel.new().from_dict(data)
 
+
+# Creates a new thread that is not connected to an existing message.
+#
+# @returns [Channel] | [HTTPResponse] if error
+func start_thread(p_channel_id: String, p_params = {}) -> Channel:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = StartThreadParams.new().from_dict(p_params)
+	elif not p_params is StartThreadParams:
+		DiscordUtils.perror("Discord.gd:start_thread:params must be a Dictionary or StartThreadParams")
+	var data = yield(_send_post_request(ENDPOINTS.CHANNEL_THREADS % p_channel_id, p_params.to_dict()), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return Channel.new().from_dict(data)
+
+
+# Creates a new thread in a forum channel, and sends a message within the created thread
+#
+# The current user must have the `SEND_MESSAGES` permission (`CREATE_PUBLIC_THREADS` is ignored)
+# @returns [Channel] | [HTTPResponse] if error
+func start_thread_in_forum(p_channel_id: String, p_params = {}) -> Channel:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = StartThreadInForumParams.new().from_dict(p_params)
+	elif not p_params is StartThreadInForumParams:
+		DiscordUtils.perror("Discord.gd:start_thread_in_forum:params must be a Dictionary or StartThreadInForumParams")
+	var data = yield(_send_post_request(ENDPOINTS.CHANNEL_THREADS % p_channel_id, p_params.to_dict()), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return Channel.new().from_dict(data)
+
+
+# Get a list of all [ThreadMember] of members of the thread
+# @returns [Array] of [ThreadMember] | [HTTPResponse] if error
+func get_thread_members(p_channel_id: String) -> Array:
+	var data = yield(_send_request(ENDPOINTS.CHANNEL_THREADMEMBERS % p_channel_id), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	var ret = []
+	for elm in data:
+		ret.append(ThreadMember.new().from_dict(elm))
+	return ret
+
+
+# Get a [ThreadMember] for the specified user if they are a member of the thread, returns a 404 [HTTPResponse] otherwise
+# @returns [ThreadMember] | [HTTPResponse] if error
+func get_thread_member(p_channel_id: String, p_user_id: String) -> ThreadMember:
+	var data = yield(_send_request(ENDPOINTS.CHANNEL_THREADMEMBERS_USER % [p_channel_id, p_user_id]), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return ThreadMember.new().from_dict(data)
+
+
+# Adds another member to a thread
+#
+# Needs the ability to send messages in the thread, also needs the thread to be not archived
+# @returns [bool] | [HTTPResponse] if error
+func add_thread_member(p_channel_id: String, p_user_id: String) -> bool:
+	var data = yield(_send_put_request(ENDPOINTS.CHANNEL_THREADMEMBERS_USER % [p_channel_id, p_user_id]), "completed")
+	if data is HTTPResponse:
+		if data.is_error():
+			return data
+		return data.is_no_content()
+	return false
+
+
+# Removes another member from a thread
+#
+# Needs the `MANAGE_THREADS` permission, or the creator of the thread if it is a `GUILD_PRIVATE_THREAD`, also needs the thread to be not archived
+# @returns [bool] | [HTTPResponse] if error
+func remove_thread_member(p_channel_id: String, p_user_id: String) -> bool:
+	var data = yield(_send_delete_request(ENDPOINTS.CHANNEL_THREADMEMBERS_USER % [p_channel_id, p_user_id]), "completed")
+	if data is HTTPResponse:
+		if data.is_error():
+			return data
+		return data.is_no_content()
+	return false
+
+
+# Adds the current user to a thread
+#
+# Needs the thread to be not archived
+# @returns [bool] | [HTTPResponse] if error
+func join_thread(p_channel_id: String) -> bool:
+	var data = yield(_send_put_request(ENDPOINTS.CHANNEL_THREADMEMBERS_ME % p_channel_id), "completed")
+	if data is HTTPResponse:
+		if data.is_error():
+			return data
+		return data.is_no_content()
+	return false
+
+
+# Removes the current user from a thread
+#
+# Needs the thread to be not archived
+# @returns [bool] | [HTTPResponse] if error
+func leave_thread(p_channel_id: String) -> bool:
+	var data = yield(_send_delete_request(ENDPOINTS.CHANNEL_THREADMEMBERS_ME % p_channel_id), "completed")
+	if data is HTTPResponse:
+		if data.is_error():
+			return data
+		return data.is_no_content()
+	return false
+
+
+
+# Get a list of archived threads in the channel that are public
+#
+# When called on a `GUILD_TEXT` channel, returns threads of type `GUILD_PUBLIC_THREAD`. When called on a `GUILD_NEWS` channel returns threads of type `GUILD_NEWS_THREAD`. Threads are ordered by `archive_timestamp`, in descending order
+#
+# Needs the `READ_MESSAGE_HISTORY` permission
+# @returns [GetArchivedThreadsResponse] | [HTTPResponse] if error
+func get_public_archived_threads(p_channel_id: String, p_params = {}) -> Array:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = GetArchivedThreadsParams.new().from_dict(p_params)
+	elif not p_params is GetArchivedThreadsParams:
+		DiscordUtils.perror("Discord.gd:get_public_archived_threads:params must be a Dictionary or GetArchivedThreadsParams")
+
+	var endpoint = ENDPOINTS.CHANNEL_THREADS_ARCHIVED_PUBLIC % p_channel_id
+	var query_string = DiscordUtils.query_string_from_dict(p_params.to_dict())
+	if query_string: endpoint += "?" + query_string
+
+	var data = yield(_send_request(endpoint), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return GetArchivedThreadsResponse.new().from_dict(data)
+
+
+# Get a list of archived threads in the channel that are of type `GUILD_PRIVATE_THREAD`
+#
+# Threads are ordered by `archive_timestamp`, in descending order
+#
+# Needs both the `READ_MESSAGE_HISTORY` and `MANAGE_THREADS` permissions
+# @returns [GetArchivedThreadsResponse] | [HTTPResponse] if error
+func get_private_archived_threads(p_channel_id: String, p_params = {}) -> Array:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = GetArchivedThreadsParams.new().from_dict(p_params)
+	elif not p_params is GetArchivedThreadsParams:
+		DiscordUtils.perror("Discord.gd:get_private_archived_threads:params must be a Dictionary or GetArchivedThreadsParams")
+
+	var endpoint = ENDPOINTS.CHANNEL_THREADS_ARCHIVED_PRIVATE % p_channel_id
+	var query_string = DiscordUtils.query_string_from_dict(p_params.to_dict())
+	if query_string: endpoint += "?" + query_string
+
+	var data = yield(_send_request(endpoint), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return GetArchivedThreadsResponse.new().from_dict(data)
+
+
+# Get a list of archived threads in the channel that are of type `GUILD_PRIVATE_THREAD` and the user has joined
+#
+# Threads are ordered by their `id`, in descending order
+#
+# Needs the `READ_MESSAGE_HISTORY`
+# @returns [GetArchivedThreadsResponse] | [HTTPResponse] if error
+func get_joined_private_archived_threads(p_channel_id: String, p_params = {}) -> Array:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = GetArchivedThreadsParams.new().from_dict(p_params)
+	elif not p_params is GetArchivedThreadsParams:
+		DiscordUtils.perror("Discord.gd:get_joined_private_archived_threads:params must be a Dictionary or GetArchivedThreadsParams")
+
+	var endpoint = ENDPOINTS.CHANNEL_USER_ME_THREADS_ARCHIVED_PRIVATE % p_channel_id
+	var query_string = DiscordUtils.query_string_from_dict(p_params.to_dict())
+	if query_string: endpoint += "?" + query_string
+
+	var data = yield(_send_request(endpoint), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return GetArchivedThreadsResponse.new().from_dict(data)
 
 
 # @hidden
@@ -552,7 +717,7 @@ const ENDPOINTS: Dictionary = {
 	CHANNEL_THREADMEMBERS_ME = "/channels/%s/thread-members/@me",
 	CHANNEL_THREADS_ARCHIVED_PUBLIC = "/channels/%s/threads/archived/public",
 	CHANNEL_THREADS_ARCHIVED_PRIVATE = "/channels/%s/threads/archived/private",
-	CHANNEL_ME_THREADS_ARCHIVED_PRIVATE = "/channels/%s/users/@me/threads/archived/private",
+	CHANNEL_USER_ME_THREADS_ARCHIVED_PRIVATE = "/channels/%s/users/@me/threads/archived/private",
 }
 
 var _base_url: String
@@ -612,6 +777,7 @@ func _send_request(slug: String, payload = null, method := HTTPClient.METHOD_GET
 	if payload != null:
 		headers.append("content-type: application/json")
 		request_string = JSON.print(payload)
+
 	http_request.call_deferred("request", _base_url + slug, headers, true, method, request_string)
 
 	var data = yield(http_request, "request_completed")

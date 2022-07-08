@@ -25,6 +25,10 @@ func is_api_error():
 	return response_code >= 400 and response_code < 500 and result == OK
 
 
+func is_bad_request_error():
+	return response_code == 400 and result == OK
+
+
 func is_unauthorized_error():
 	return response_code == 401 and result == OK
 
@@ -67,6 +71,10 @@ func _to_string() -> String:
 			errors = DiscordUtils.get_or_default(json, "errors", {})
 			message = DiscordUtils.get_or_default(json, "message", "")
 			return "HTTPResponse::APIError(code=%s, message=%s, errors=%s)" % [code, message, errors]
+	if is_bad_request_error():
+		return "HTTPResponse::BadRequest(result=%s, response_code=%s, body=%s)" % [result, response_code, body.get_string_from_utf8()]
+
+
 
 	return "HTTPResponse(result=%s, response_code=%s, headers=%s, body=%s)" % [result, response_code, headers, body.get_string_from_utf8()]
 
