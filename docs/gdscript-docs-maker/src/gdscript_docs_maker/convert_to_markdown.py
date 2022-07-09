@@ -329,7 +329,7 @@ def _replace_references(
         # Matches [ClassName], [symbol], and [ClassName.symbol]. Escape it using \
         match: re.Match | None = re.match(
             r"\[([A-Z][a-zA-Z0-9]*)?\.?([a-z0-9_]+)?\]", reference)
-        if not match:
+        if not (match and (match[1] or match[2])):
             continue
         class_name, member = match[1], match[2]
         is_builtin_class = False
