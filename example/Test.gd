@@ -331,4 +331,8 @@ func _on_rerun_btn_pressed() -> void:
 #	Print(yield(rest.create_dm("321233875776962560"), "completed"))
 #	Print(yield(rest.create_group_dm({}), "completed")) # TODO: test this method
 
-	Print(yield(rest.get_current_user_connections(), "completed"))
+#	Print(yield(rest.get_current_user_connections(), "completed"))
+
+
+
+	Print(yield(rest.get_voice_regions(), "completed"))

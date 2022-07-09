@@ -1866,6 +1866,23 @@ func get_current_user_connections() -> Array:
 	return ret
 
 
+#! ----------
+#! Voice
+#! ----------
+
+
+# Get a list of of [VoiceRegion] that can be used when setting a voice or stage channel's `rtc_region`
+# @returns [Array] of [VoiceRegion] | [HTTPResponse] if error
+func get_voice_regions() -> Array:
+	var data = yield(_send_request(ENDPOINTS.VOICE_REGIONS), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	var ret = []
+	for elm in data:
+		ret.append(VoiceRegion.new().from_dict(elm))
+	return ret
+
+
 # @hidden
 const ENDPOINTS: Dictionary = {
 	# AuditLog
@@ -1989,6 +2006,9 @@ const ENDPOINTS: Dictionary = {
 	USER_ME_GUILDS = "/users/@me/guilds",
 	USER_ME_GUILD = "/users/@me/guilds/%s",
 	USER_ME_GUILD_MEMBER = "/users/@me/guilds/%s/member",
+
+	# Voice
+	VOICE_REGIONS = "/voice/regions"
 }
 
 var _base_url: String
