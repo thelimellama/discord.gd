@@ -1,5 +1,5 @@
 # Represents a Discord reaction
-class_name Reaction extends Dataclass
+class_name Reaction extends DiscordDataclass
 
 var count: int # Times this emoji has been used to react
 var me: bool # Whether the current user reacted using this emoji
@@ -21,8 +21,8 @@ func from_dict(p_dict: Dictionary):
 
 # @hidden
 func to_dict() -> Dictionary:
-	var dict = .to_dict().duplicate(true)
+	var dict = .to_dict()
 
-	dict.emoji = dict.emoji.to_dict()
+	DiscordUtils.try_dataclass_to_dict(dict, "emoji")
 
 	return dict

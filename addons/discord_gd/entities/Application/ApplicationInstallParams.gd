@@ -1,5 +1,5 @@
 # Represents a Discord application install params
-class_name ApplicationInstallParams extends Dataclass
+class_name ApplicationInstallParams extends DiscordDataclass
 
 var scopes: Array # [Array] of [OAuth2Scopes] The scopes to add the application to the server with
 var permissions: Permissions # [Permissions] The permissions to request for the bot role
@@ -20,8 +20,8 @@ func from_dict(p_dict: Dictionary):
 
 # @hidden
 func to_dict() -> Dictionary:
-	var dict = .to_dict().duplicate(true)
+	var dict = .to_dict()
 
-	dict.permissions = str(permissions.bitfield)
+	DiscordUtils.try_bitfield_to_int(dict, "permissions", true)
 
 	return dict

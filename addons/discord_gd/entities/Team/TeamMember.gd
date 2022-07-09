@@ -1,5 +1,5 @@
 # Represents a Discord team member
-class_name TeamMember extends Dataclass
+class_name TeamMember extends DiscordDataclass
 
 var membership_state: int # [TeamMembershipState] The user's membership state on the team
 var permissions: Array # [Array] of [String] Will always be ["*"]
@@ -22,9 +22,8 @@ func from_dict(p_dict: Dictionary):
 
 # @hidden
 func to_dict() -> Dictionary:
-	var dict = .to_dict().duplicate(true)
+	var dict = .to_dict()
 
-	if dict.has("user"):
-		dict.user = dict.user.to_dict()
+	DiscordUtils.try_dataclass_to_dict(dict, "user")
 
 	return dict

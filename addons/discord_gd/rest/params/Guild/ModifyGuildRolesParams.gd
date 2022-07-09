@@ -1,10 +1,10 @@
 # Params for modify guild roles
-class_name ModifyGuildRolesParams extends Dataclass
+class_name ModifyGuildRolesParams extends DiscordDataclass
 
 var modifications = [] # [Array] of [GuildRoleModification]
 
 # @hidden
-func _init().("ModifyGuildRolesParams", {include_null_in_dict = false}): return self
+func _init().("ModifyGuildRolesParams"): return self
 
 
 # @hidden
@@ -21,10 +21,8 @@ func from_dict(p_dict: Dictionary):
 
 # @hidden
 func to_dict() -> Dictionary:
-	var dict = .to_dict().duplicate(true)
+	var dict = .to_dict()
 
-	if dict.has("modifications"):
-		for i in dict.modifications.size():
-			dict.modifications[i] = dict.modifications[i].to_dict()
+	DiscordUtils.try_array_dataclass_to_dict(dict, "modifications")
 
 	return dict

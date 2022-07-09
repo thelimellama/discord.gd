@@ -1,20 +1,18 @@
 # Params for start thread in forum
-class_name StartThreadInForumParams extends Dataclass
+class_name StartThreadInForumParams extends DiscordDataclass
 
 var name: String # 1-100 character channel name
-var auto_archive_duration = null # [int] Duration in minutes to automatically archive the thread after recent activity, can be set to: 60, 1440, 4320, 10080
-var rate_limit_per_user = null # [int] Amount of seconds a user has to wait before sending another message (0-21600)
 var message: ForumThreadMessageParams # [ForumThreadMessageParams] Contents of the first message in the forum thread
-
-var __set_props = {} # @hidden
+var auto_archive_duration = null # [int] Duration in minutes to automatically archive the thread after recent activity, can be set to: 60, 1440, 4320, 10080 `optional`
+var rate_limit_per_user = null setget __set_rate_limit_per_user # [int] Amount of seconds a user has to wait before sending another message (0-21600) `optional`
 
 
 # @hidden
-func _init().("StartThreadInForumParams", {include_null_in_dict = false, print_exclude = ["__set_props"]}): return self
+func _init().("StartThreadInForumParams"): return self
 
 
 func __set_rate_limit_per_user(p_rate_limit_per_user):
-	__set_props.rate_limit_per_user = true
+	__options__.set_props.rate_limit_per_user = true
 	rate_limit_per_user = p_rate_limit_per_user
 
 
@@ -31,12 +29,7 @@ func from_dict(p_dict: Dictionary):
 # @hidden
 func to_dict() -> Dictionary:
 	var dict = .to_dict()
-	var set_props = __set_props.keys()
-	for prop in set_props: dict[prop] = get(prop)
-	dict = dict.duplicate(true)
-	dict.erase("__set_props")
 
-	if dict.has("message"):
-		dict.message = dict.message.to_dict()
+	DiscordUtils.try_dataclass_to_dict(dict, "message")
 
 	return dict

@@ -1,7 +1,7 @@
 # Represents a Discord team
-class_name Team extends Dataclass
+class_name Team extends DiscordDataclass
 
-var icon = null # [String] A hash of the image of the team's icon
+var icon = null # [String] A hash of the image of the team's icon `nullable`
 var id: String # The unique id of the team
 var members: Array # [Array] of [TeamMember] The members of the team
 var name: String # The name of the team
@@ -16,8 +16,8 @@ func _init().("Team"): return self
 func from_dict(p_dict: Dictionary):
 	.from_dict(p_dict)
 
-	members = []
 	if p_dict.has("members"):
+		members = []
 		for data in p_dict.members:
 			members.append(TeamMember.new().from_dict(data))
 
@@ -26,10 +26,8 @@ func from_dict(p_dict: Dictionary):
 
 # @hidden
 func to_dict() -> Dictionary:
-	var dict = .to_dict().duplicate(true)
+	var dict = .to_dict()
 
-	if dict.has("members"):
-		for i in dict.members.size():
-			dict.members[i] = dict.members[i].to_dict()
+	DiscordUtils.try_array_dataclass_to_dict(dict, "members")
 
 	return dict

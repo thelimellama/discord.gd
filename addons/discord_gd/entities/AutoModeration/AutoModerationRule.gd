@@ -1,5 +1,5 @@
 # Represents a Discord auto moderation rule
-class_name AutoModerationRule extends Dataclass
+class_name AutoModerationRule extends DiscordDataclass
 
 var id: String # The id of this rule
 var guild_id: String # The guild which this rule belongs to
@@ -22,20 +22,19 @@ func from_dict(p_dict: Dictionary):
 	.from_dict(p_dict)
 
 	trigger_metadata = AutoModerationTriggerMetadata.new().from_dict(p_dict.trigger_metadata)
-	actions = []
 	if p_dict.has("actions"):
+		actions = []
 		for data in p_dict.actions:
 			actions.append(AutoModerationAction.new().from_dict(data))
+
 	return self
 
 
 # @hidden
 func to_dict() -> Dictionary:
-	var dict = .to_dict().duplicate(true)
+	var dict = .to_dict()
 
-	dict.trigger_metadata = dict.trigger_metadata.to_dict()
-	if dict.has("actions") and dict.actions != null:
-		for i in dict.actions.size():
-			dict.actions[i] = dict.actions[i].to_dict()
+	DiscordUtils.try_dataclass_to_dict(dict, "trigger_metadata")
+	DiscordUtils.try_array_dataclass_to_dict(dict, "actions")
 
 	return dict

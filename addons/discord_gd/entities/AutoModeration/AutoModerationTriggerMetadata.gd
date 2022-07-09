@@ -1,7 +1,7 @@
 # Represents a Discord auto moderation trigger metadata
 #
 # Additional data used to determine whether a rule should be triggered.
-class_name AutoModerationTriggerMetadata extends Dataclass
+class_name AutoModerationTriggerMetadata extends DiscordDataclass
 
 var keyword_lists: Array # [Array] of [String] (Undocumented)
 var allow_list: Array # [Array] of [String] (Undocumented)

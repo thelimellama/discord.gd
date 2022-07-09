@@ -1,11 +1,11 @@
 # Represents a Discord guild integration application
-class_name IntegrationApplication extends Dataclass
+class_name IntegrationApplication extends DiscordDataclass
 
 var id: String # The id of the app
 var name: String # The name of the app
-var icon = null # [String] The icon hash of the app
+var icon = null # [String] The icon hash of the app `nullable`
 var description: String # The description of the app
-var bot = null # [User] The bot associated with this application
+var bot = null # [User] The bot associated with this application `optional`
 
 # @hidden
 func _init().("IntegrationApplication"): return self
@@ -23,9 +23,8 @@ func from_dict(p_dict: Dictionary):
 
 # @hidden
 func to_dict() -> Dictionary:
-	var dict = .to_dict().duplicate(true)
+	var dict = .to_dict()
 
-	if dict.has("bot") and dict.bot != null:
-		dict.bot = bot.to_dict()
+	DiscordUtils.try_dataclass_to_dict(dict, "bot")
 
 	return dict

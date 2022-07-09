@@ -1,8 +1,8 @@
 # Represents a Discord auto moderation action
-class_name AutoModerationAction extends Dataclass
+class_name AutoModerationAction extends DiscordDataclass
 
 var type: int # [AutoModerationActionTypes] The type of action
-var metadata = null # [AutoModerationActionMetadata] Additional metadata needed during execution for this specific action type
+var metadata = null # [AutoModerationActionMetadata] Additional metadata needed during execution for this specific action type `optional`
 
 
 # @hidden
@@ -21,9 +21,8 @@ func from_dict(p_dict: Dictionary):
 
 # @hidden
 func to_dict() -> Dictionary:
-	var dict = .to_dict().duplicate(true)
+	var dict = .to_dict()
 
-	if dict.has("metadata") and dict.metadata != null:
-		dict.metadata = dict.metadata.to_dict()
+	DiscordUtils.try_dataclass_to_dict(dict, "metadata")
 
 	return dict

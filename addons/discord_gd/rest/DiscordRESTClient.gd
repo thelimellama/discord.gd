@@ -282,13 +282,13 @@ func delete_message(p_channel_id: String, p_message_id: String) -> bool:
 	return false
 
 
-# Delete multiple messages in a single request
+# Delete multiple messages in a single request (bulk delete)
 #
 # Can only be used on guild channels and needs the `MANAGE_MESSAGES` permission
 #
-# Any message IDs given that do not exist or are invalid will count towards the minimum and maximum message count (currently 2 and 100 respectively)
+# Any message Ids given that do not exist or are invalid will count towards the minimum and maximum message count (currently 2 and 100 respectively)
 #
-# *Will not delete messages older than 2 weeks, and will fail with a 400 BAD REQUEST [HTTPResponse] if any message provided is older than that or if any duplicate message IDs are provided*
+# *Will not delete messages older than 2 weeks, and will fail with a 400 BAD REQUEST [HTTPResponse] if any message provided is older than that or if any duplicate message Ids are provided*
 #
 # @returns [bool] | [HTTPResponse] if error
 func delete_messages(p_channel_id: String, p_message_ids: Array) -> bool:
@@ -350,9 +350,9 @@ func get_channel_invites(p_channel_id: String) -> Array:
 # @returns [Invite] | [HTTPResponse] if error
 func create_channel_invite(p_channel_id: String, p_params = {}) -> Invite:
 	if typeof(p_params) == TYPE_DICTIONARY:
-		p_params = CreateChannelInvite.new().from_dict(p_params)
-	elif not p_params is CreateChannelInvite:
-		DiscordUtils.perror("DiscordRESTClient:create_channel_invite:params must be a Dictionary or CreateChannelInvite")
+		p_params = CreateChannelInviteParams.new().from_dict(p_params)
+	elif not p_params is CreateChannelInviteParams:
+		DiscordUtils.perror("DiscordRESTClient:create_channel_invite:params must be a Dictionary or CreateChannelInviteParams")
 	var data = yield(_send_post_request(ENDPOINTS.CHANNEL_INVITES % p_channel_id, p_params.to_dict()), "completed")
 	if data is HTTPResponse and data.is_error():
 		return data
@@ -671,9 +671,9 @@ func get_private_archived_threads(p_channel_id: String, p_params = {}) -> GetArc
 # @returns [GetArchivedThreadsResponse] | [HTTPResponse] if error
 func get_joined_private_archived_threads(p_channel_id: String, p_params = {}) -> GetArchivedThreadsResponse:
 	if typeof(p_params) == TYPE_DICTIONARY:
-		p_params = GetArchivedThreadsParams.new().from_dict(p_params)
-	elif not p_params is GetArchivedThreadsParams:
-		DiscordUtils.perror("DiscordRESTClient:get_joined_private_archived_threads:params must be a Dictionary or GetArchivedThreadsParams")
+		p_params = GetJoinedPrivateArchivedThreadsParams.new().from_dict(p_params)
+	elif not p_params is GetJoinedPrivateArchivedThreadsParams:
+		DiscordUtils.perror("DiscordRESTClient:get_joined_private_archived_threads:params must be a Dictionary or GetJoinedPrivateArchivedThreadsParams")
 
 	var endpoint = ENDPOINTS.CHANNEL_USERS_ME_THREADS_ARCHIVED_PRIVATE % p_channel_id
 	var query_string = DiscordUtils.query_string_from_dict(p_params.to_dict())
@@ -1962,7 +1962,7 @@ func _send_multipart_form_request(slug: String, form_dict = {}, method := HTTPCl
 			body.append_array(
 				("Content-Disposition: form-data; name=\"files[%s]\"; filename=\"%s\"\r\n" % [_file_count, file.filename]).to_utf8()
 			)
-			body.append_array(("Content-Type: %s\r\n\r\n" % file.mime).to_utf8())
+			body.append_array(("Content-Type: %s\r\n\r\n" % file.content_type).to_utf8())
 			body.append_array(file.contents)
 			body.append_array("\r\n".to_utf8())
 			_file_count += 1
@@ -2012,10 +2012,9 @@ func _send_multipart_form_request(slug: String, form_dict = {}, method := HTTPCl
 # Extracts non [DiscordFile] data from a dictionary to `payload_json`.
 func _parse_files_from_dict(p_dict: Dictionary) -> Dictionary:
 	var form_dict = {}
-	var params_dict = p_dict.to_dict()
-	if params_dict.files:
-		var files = params_dict.files
-		params_dict.erase("files")
+	if p_dict.has("files") and typeof(p_dict.files) == TYPE_ARRAY:
+		var files = p_dict.files
+		p_dict.erase("files")
 		form_dict.files = files
-		form_dict.payload_json = params_dict
+	form_dict.payload_json = p_dict
 	return form_dict

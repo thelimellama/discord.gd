@@ -1,5 +1,5 @@
 # Represents a Discord guild integration account
-class_name IntegrationAccount extends Dataclass
+class_name IntegrationAccount extends DiscordDataclass
 
 var id: String # Id of the account
 var name: String # Name of the account

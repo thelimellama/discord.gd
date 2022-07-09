@@ -1,9 +1,9 @@
 # Represents a Discord file
-class_name DiscordFile extends Dataclass
+class_name DiscordFile extends DiscordDataclass
 
 var filename: String # The name of the file with extension
 var contents: PoolByteArray # The raw bytes of the file
-var mime: String #  The MIME type of the file
+var content_type: String #  The MIME type of the file
 
 
 # @hidden
@@ -18,7 +18,7 @@ func from_image(p_image: Image):
 	filename = filepath.get_file()
 	contents = p_image.get_data()
 
-	_set_mime(filepath.get_extension())
+	_set_content_type(filepath.get_extension())
 
 	return self
 
@@ -30,12 +30,12 @@ func load_file(p_path: String):
 	file.open(p_path, File.READ)
 	filename = p_path.get_file()
 	contents = file.get_buffer(file.get_len())
-	_set_mime(p_path.get_extension())
+	_set_content_type(p_path.get_extension())
 	return self
 
 
-func _set_mime(p_extension: String):
-	var _extension_to_mime = {
+func _set_content_type(p_extension: String):
+	var _extension_to_content_type = {
 		"png" : "image/png",
 		"jpg" : "image/jpeg",
 		"gif" : "image/gif",
@@ -51,7 +51,7 @@ func _set_mime(p_extension: String):
 		"mpg4" : "video/mp4",
 	}
 
-	if _extension_to_mime.has(p_extension):
-		mime = _extension_to_mime[p_extension]
+	if _extension_to_content_type.has(p_extension):
+		content_type = _extension_to_content_type[p_extension]
 	else:
-		DiscordUtils.perror("DiscordFile:_set_mime:Unknown file extension \"%s\". Set the mime property manually." % p_extension)
+		DiscordUtils.perror("DiscordFile:_set_content_type:Unknown file extension \"%s\". Set the content_type property manually." % p_extension)

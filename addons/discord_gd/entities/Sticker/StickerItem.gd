@@ -1,5 +1,5 @@
 # Represents a Discord StickerItem
-class_name StickerItem extends Dataclass
+class_name StickerItem extends DiscordDataclass
 
 var id: String # Id of the sticker
 var name: String # Name of the sticker

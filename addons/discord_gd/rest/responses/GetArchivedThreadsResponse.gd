@@ -1,5 +1,5 @@
 # Response for get archived threads
-class_name GetArchivedThreadsResponse extends Dataclass
+class_name GetArchivedThreadsResponse extends DiscordDataclass
 
 var threads: Array # [Array] of [Channel] The public/private archived threads
 var members: Array # [Array] of [ThreadMembers] A thread member object for each returned thread the current user has joined
@@ -28,13 +28,9 @@ func from_dict(p_dict: Dictionary):
 
 # @hidden
 func to_dict() -> Dictionary:
-	var dict = .to_dict().duplicate(true)
+	var dict = .to_dict()
 
-	if dict.has("threads"):
-		for i in dict.threads.size():
-			dict.threads[i] = dict.threads[i].to_dict()
-	if dict.has("members"):
-		for i in dict.members.size():
-			dict.members[i] = dict.members[i].to_dict()
+	DiscordUtils.try_array_dataclass_to_dict(dict, "threads")
+	DiscordUtils.try_array_dataclass_to_dict(dict, "members")
 
 	return dict

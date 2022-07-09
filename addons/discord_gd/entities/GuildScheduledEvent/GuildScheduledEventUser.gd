@@ -1,9 +1,9 @@
 # Represents a Discord guild scheduled event user
-class_name GuildScheduledEventUser extends Dataclass
+class_name GuildScheduledEventUser extends DiscordDataclass
 
 var guild_scheduled_event_id: String # The scheduled event id which the user subscribed to
 var user: User # User which subscribed to an event
-var member = null # [GuildMember] Guild member data for this user for the guild which this event belongs to, if any
+var member = null # [GuildMember] Guild member data for this user for the guild which this event belongs to, if any `optional`
 
 # @hidden
 func _init().("GuildScheduledEventUser"): return self
@@ -23,11 +23,9 @@ func from_dict(p_dict: Dictionary):
 
 # @hidden
 func to_dict() -> Dictionary:
-	var dict = .to_dict().duplicate(true)
+	var dict = .to_dict()
 
-	if dict.has("user") and dict.user != null:
-		dict.user = dict.user.to_dict()
-	if dict.has("member") and dict.member != null:
-		dict.member = dict.member.to_dict()
+	DiscordUtils.try_dataclass_to_dict(dict, "user")
+	DiscordUtils.try_dataclass_to_dict(dict, "member")
 
 	return dict

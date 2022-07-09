@@ -128,4 +128,4 @@ enum FLAGS {
 
 
 # @hidden
-func _init(bits = default_bit).("Permissions", bits): return self
+func _init(bits = default_bit).("Permissions", int(bits)): return self

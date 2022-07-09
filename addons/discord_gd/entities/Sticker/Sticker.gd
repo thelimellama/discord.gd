@@ -1,19 +1,19 @@
 # Represents a Discord Sticker
-class_name Sticker extends Dataclass
+class_name Sticker extends DiscordDataclass
 
 var id: String # Id of the sticker
-var pack_id = null # [String] For standard stickers, id of the pack the sticker is from
+var pack_id = null # [String] For standard stickers, id of the pack the sticker is from `optional`
 var name: String # Name of the sticker
-var description = null # [String] Description of the sticker
+var description = null # [String] Description of the sticker `nullable`
 var tags: String # Autocomplete / suggestion tags for the sticker (max 200 characters)
 var type: int # [StickerTypes] Type of sticker
 var format_type: int # [StickerFormatTypes] Type of sticker format
-var available = null #[bool] Whether this guild sticker can be used, may be false due to loss of Server Boosts
-var guild_id = null # [String] Id of the guild that owns this sticker
-var user = null # [User] The user that uploaded the guild sticker
-var sort_value = null # [int] The standard sticker's sort order within its pack
+var available = null #[bool] Whether this guild sticker can be used, may be false due to loss of Server Boosts `optional`
+var guild_id = null # [String] Id of the guild that owns this sticker `optional`
+var user = null # [User] The user that uploaded the guild sticker `optional`
+var sort_value = null # [int] The standard sticker's sort order within its pack `optional`
 
-var asset = null # [String] (Undocumented)
+var asset = null # [String] (Deprecated an empty string) `optional`
 
 # @hidden
 func _init().("Sticker"): return self
@@ -31,9 +31,8 @@ func from_dict(p_dict: Dictionary):
 
 # @hidden
 func to_dict() -> Dictionary:
-	var dict = .to_dict().duplicate(true)
+	var dict = .to_dict()
 
-	if dict.has("user"):
-		dict.user = dict.user.to_dict()
+	DiscordUtils.try_dataclass_to_dict(dict, "user")
 
 	return dict

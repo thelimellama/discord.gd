@@ -1,10 +1,10 @@
 # Params for modify guild channels
-class_name ModifyGuildChannelsParams extends Dataclass
+class_name ModifyGuildChannelsParams extends DiscordDataclass
 
 var modifications = [] # [Array] of [GuildChannelModification]
 
 # @hidden
-func _init().("ModifyGuildChannelsParams", {include_null_in_dict = false}): return self
+func _init().("ModifyGuildChannelsParams"): return self
 
 
 # @hidden
@@ -21,7 +21,7 @@ func from_dict(p_dict: Dictionary):
 
 # @hidden
 func to_dict() -> Dictionary:
-	var dict = .to_dict().duplicate(true)
+	var dict = .to_dict()
 
 	if dict.has("modifications"):
 		for i in dict.modifications.size():

@@ -1,12 +1,14 @@
 # Params for get channel messages
-class_name GetChannelMessagesParams extends Dataclass
+#
+# The `around`, `before`, and `after` parameters are mutually exclusive, only one may be passed at a time
+class_name GetChannelMessagesParams extends DiscordDataclass
 
 
-var around = null # [String] Get messages around this message ID
-var before = null # [String] Get messages before this message ID
-var after = null # [String] Get messages after this message ID
-var limit = null # [int] Max number of messages to return (1-100)
+var around = null # [String] Get messages around this message id `optional`
+var before = null # [String] Get messages before this message id `optional`
+var after = null # [String] Get messages after this message id `optional`
+var limit = null # [int] Max number of messages to return (1-100) (default is 50) `optional`
 
 
 # @hidden
-func _init().("GetChannelMessagesParams", {include_null_in_dict = false}): return self
+func _init().("GetChannelMessagesParams"): return self

@@ -1,24 +1,26 @@
 # Represents a Discord Invite
-class_name Invite extends Dataclass
+#
+# If invite metadata is provided the following properties will be set: `max_uses`, `max_age`, `temporary`, `created_at`
+class_name Invite extends DiscordDataclass
 
 var code: String # The invite code (unique Id)
-var guild = null # Partial [Guild] The guild this invite is for
-var channel = null # Partial [Channel] The channel this invite is for
-var inviter = null # [User] The user who created the invite
+var guild = null # Partial [Guild] The guild this invite is for `optional`
+var channel = null # Partial [Channel] The channel this invite is for `nullable`
+var inviter = null # [User] The user who created the invite `optional`
 var type = null # (Undocumented)
-var target_type = null # [InviteTargetTypes] The type of target for this voice channel invite
-var target_user = null # [User] The user whose stream to display for this voice channel stream invite
-var target_application = null # Partial [Application] The embedded application to open for this voice channel embedded application invite
-var approximate_presence_count = null # [int] Approximate count of online members, returned from the GET /invites/<code> endpoint when with_counts is true
-var approximate_member_count = null # [int] Approximate count of total members, returned from the GET /invites/<code> endpoint when with_counts is true
-var expires_at = null # [String] The expiration date of this invite, returned from the GET /invites/<code> endpoint when with_expiration is true
-var guild_scheduled_event = null # [GuildScheduledEvent] Guild scheduled event data, only included if `guild_scheduled_event_id` contains a valid guild scheduled event id
+var target_type = null # [InviteTargetTypes] The type of target for this voice channel invite `optional`
+var target_user = null # [User] The user whose stream to display for this voice channel stream invite `optional`
+var target_application = null # Partial [Application] The embedded application to open for this voice channel embedded application invite `optional`
+var approximate_presence_count = null # [int] Approximate count of online members, returned from the GET /invites/<code> endpoint when with_counts is true `optional`
+var approximate_member_count = null # [int] Approximate count of total members, returned from the GET /invites/<code> endpoint when with_counts is true `optional`
+var expires_at = null # [String] The expiration date of this invite, returned from the GET /invites/<code> endpoint when with_expiration is true `optional` `nullable`
+var guild_scheduled_event = null # [GuildScheduledEvent] Guild scheduled event data, only included if `guild_scheduled_event_id` contains a valid guild scheduled event id `optional`
 
-var uses = null # [int] Number of times this invite has been used
-var max_uses = null # [int] Max number of times this invite can be used
-var max_age = null # [int] Duration (in seconds) after which the invite expires
-var temporary = null # [bool] Whether this invite only grants temporary membership
-var created_at = null # [String] When this invite was created
+var uses = null # [int] Number of times this invite has been used `optional` `invite_metdata`
+var max_uses = null # [int] Max number of times this invite can be used `optional` `invite_metdata`
+var max_age = null # [int] Duration (in seconds) after which the invite expires `optional` `invite_metdata`
+var temporary = null # [bool] Whether this invite only grants temporary membership `optional` `invite_metdata`
+var created_at = null # [String] When this invite was created `optional` `invite_metdata`
 
 
 # @hidden
@@ -47,20 +49,14 @@ func from_dict(p_dict: Dictionary):
 
 # @hidden
 func to_dict() -> Dictionary:
-	var dict = .to_dict().duplicate(true)
+	var dict = .to_dict()
 
-	if dict.has("guild"):
-		dict.guild = dict.guild.to_dict()
-	if dict.has("channel") and dict.channel != null:
-		dict.channel = dict.channel.to_dict()
-	if dict.has("inviter"):
-		dict.inviter = dict.inviter.to_dict()
-	if dict.has("target_user"):
-		dict.target_user = dict.target_user.to_dict()
-	if dict.has("target_application"):
-		dict.target_application = dict.target_application.to_dict()
-	if dict.has("guild_scheduled_event"):
-		dict.guild_scheduled_event = dict.guild_scheduled_event.to_dict()
+	DiscordUtils.try_dataclass_to_dict(dict, "guild")
+	DiscordUtils.try_dataclass_to_dict(dict, "channel")
+	DiscordUtils.try_dataclass_to_dict(dict, "inviter")
+	DiscordUtils.try_dataclass_to_dict(dict, "target_user")
+	DiscordUtils.try_dataclass_to_dict(dict, "target_application")
+	DiscordUtils.try_dataclass_to_dict(dict, "guild_scheduled_event")
 
 	return dict
 

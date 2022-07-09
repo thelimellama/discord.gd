@@ -5,10 +5,10 @@
 #
 # - You can have up to 5 Action Rows per message
 # - An Action Row cannot contain another Action Row
-class_name MessageActionRow extends Dataclass
+class_name MessageActionRow extends DiscordDataclass
 
-var type: int # [MessageComponentTypes] The type of message component
-var components: Array # [Array] of components of other types
+var type: int # [MessageComponentTypes] Type is 1 for message action row
+var components: Array # [Array] of components of other types like [MessageButton], [MessageSelectMenu], and [MessageTextInput]
 
 
 # @hidden
@@ -29,15 +29,13 @@ func from_dict(p_dict: Dictionary):
 			MessageComponentTypes.TEXT_INPUT:
 				components.append(MessageTextInput.new().from(data))
 
-
 	return self
 
 
 # @hidden
 func to_dict() -> Dictionary:
-	var dict = .to_dict().duplicate(true)
+	var dict = .to_dict()
 
-	for i in components.size():
-		dict.components[i] = components[i].to_dict()
+	DiscordUtils.try_array_dataclass_to_dict(dict, "components")
 
 	return dict

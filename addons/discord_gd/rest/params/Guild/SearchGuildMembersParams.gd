@@ -1,10 +1,10 @@
 # Params for search guild members
-class_name SearchGuildMembersParams extends Dataclass
+class_name SearchGuildMembersParams extends DiscordDataclass
 
 
 var query: String # Query string to match username(s) and nickname(s) against
-var limit = null # [int] Max number of members to return (1-1000) (default 1)
+var limit = null # [int] Max number of members to return (1-1000) (default 1) `optional`
 
 
 # @hidden
-func _init().("SearchGuildMembersParams", {include_null_in_dict = false}): return self
+func _init().("SearchGuildMembersParams"): return self

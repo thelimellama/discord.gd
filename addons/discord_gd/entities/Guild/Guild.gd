@@ -1,20 +1,20 @@
 # Represents a Discord Guild
-class_name Guild extends Dataclass
+class_name Guild extends DiscordDataclass
 
 var id: String # Guild id
 var name: String # Guild name (2-100 characters, excluding trailing and leading whitespace)
-var icon = null # [String] Icon hash
-var icon_hash = null # [String] Icon hash, returned when in the template object
-var splash = null # [String] Splash hash
-var discovery_splash = null # [String] Discovery splash hash; only present for guilds with the `DISCOVERABLE` feature
-var owner = null # [bool] True if the user is the owner of the guild
+var icon = null # [String] Icon hash `nullable`
+var icon_hash = null # [String] Icon hash, returned when in the template object `optional` `nullable`
+var splash = null # [String] Splash hash `nullable`
+var discovery_splash = null # [String] Discovery splash hash; only present for guilds with the `DISCOVERABLE` feature `nullable`
+var owner = null # [bool] True if the user is the owner of the guild `optional`
 var owner_id: String # Id of owner
-var permissions = null # [Permissions] Total permissions for the user in the guild (excludes overwrites)
-var region = null # [String] Voice region id for the guild (deprecated)
-var afk_channel_id = null # [String] Id of afk channel
+var permissions = null # [Permissions] Total permissions for the user in the guild (excludes overwrites) `optional`
+var region = null # [String] Voice region id for the guild (deprecated) `optional` `nullable`
+var afk_channel_id = null # [String] Id of afk channel `nullable`
 var afk_timeout: int # Afk timeout in seconds
-var widget_enabled = null # [bool] True if the server widget is enabled
-var widget_channel_id = null # [String] The channel id that the widget will generate an invite to, or null if set to no invite
+var widget_enabled = null # [bool] True if the server widget is enabled `optional`
+var widget_channel_id = null # [String] The channel id that the widget will generate an invite to, or null if set to no invite `optional` `nullable`
 var verification_level: int # [GuildVerificationLevel] Verification level required for the guild
 var default_message_notifications: int # [DefaultMessageNotificationLevel] Default message notifications level
 var explicit_content_filter: int # [ExplicitContentFilterLevel] Explicit content filter level
@@ -22,32 +22,33 @@ var roles: Array # [Array] of [Role] Roles in the guild
 var emojis: Array # [Array] of [Emoji] Custom guild emojis
 var features: Array # [Array] of [GuildFeatures] Enabled guild features
 var mfa_level: int # [MFALevel] Required MFA level for the guild
-var application_id = null # [String] Application id of the guild creator if it is bot-created
-var system_channel_id = null # [String] The id of the channel where guild notices such as welcome messages and boost events are posted
+var application_id = null # [String] Application id of the guild creator if it is bot-created `nullable`
+var system_channel_id = null # [String] The id of the channel where guild notices such as welcome messages and boost events are posted `nullable`
 var system_channel_flags = null # [SystemChannelFlags] System channel flags
-var rules_channel_id = null # [String] The id of the channel where Community guilds can display rules and/or guidelines
-var max_presences = null # [int] The maximum number of presences for the guild (null is always returned, apart from the largest of guilds)
-var max_members = null # [int] The maximum number of members for the guild
-var vanity_url_code = null # [String] The vanity url code for the guild
-var description = null # [String] The description of a guild
-var banner = null # [String] Banner hash
+var rules_channel_id = null # [String] The id of the channel where Community guilds can display rules and/or guidelines `nullable`
+var max_presences = null # [int] The maximum number of presences for the guild (null is always returned, apart from the largest of guilds) `optional` `nullable`
+var max_members = null # [int] The maximum number of members for the guild `optional`
+var vanity_url_code = null # [String] The vanity url code for the guild `nullable`
+var description = null # [String] The description of a guild `nullable`
+var banner = null # [String] Banner hash `nullable`
 var premium_tier: int # [PremiumTier] (Server Boost level)
-var premium_subscription_count = null # [int] The number of boosts this guild currently has
+var premium_subscription_count = null # [int] The number of boosts this guild currently has `optional`
 var preferred_locale: String # The preferred locale of a Community guild; used in server discovery and notices from Discord, and sent in interactions; defaults to "en-US"
-var public_updates_channel_id = null # [String] The id of the channel where admins and moderators of Community guilds receive notices from Discord
-var max_video_channel_users = null # [int] The maximum amount of users in a video channel
-var approximate_member_count = null # [int] Approximate number of members in this guild, returned from the GET /guilds/<id> endpoint when with_counts is true
-var approximate_presence_count = null # [int] Approximate number of non-offline members in this guild, returned from the GET /guilds/<id> endpoint when with_counts is true
-var welcome_screen = null # [WelcomeScreen] The welcome screen of a Community guild, shown to new members, returned in an Invite's guild object
+var public_updates_channel_id = null # [String] The id of the channel where admins and moderators of Community guilds receive notices from Discord `nullable`
+var max_video_channel_users = null # [int] The maximum amount of users in a video channel `optional`
+var approximate_member_count = null # [int] Approximate number of members in this guild, returned from the GET /guilds/<id> endpoint when with_counts is true `optional`
+var approximate_presence_count = null # [int] Approximate number of non-offline members in this guild, returned from the GET /guilds/<id> endpoint when with_counts is true `optional`
+var welcome_screen = null # [WelcomeScreen] The welcome screen of a Community guild, shown to new members, returned in an Invite's guild object `optional`
 var nsfw = null # [bool] (Undocumented)
 var nsfw_level: int # [GuildNSFWlevel] Guild NSFW Level
-var stickers = null # [Array] of [Sticker] Custom guild stickers
+var stickers = null # [Array] of [Sticker] Custom guild stickers `optional`
 var premium_progress_bar_enabled: bool # Whether the guild has the boost progress bar enabled
 
-var joined_at = null # (Undocumented)
-var hub_type = null # (Undocumented)
-var flags = null # (Undocumented)
-var channels = null # [Array] of [Channel] (Undocumented)
+var joined_at = null # [String] (Undocumented) `optional`
+var hub_type = null # (Undocumented) `optional`
+var flags = null # (Undocumented) `optional`
+var channels = null # [Array] of [Channel] (Undocumented) `optional`
+
 
 # @hidden
 func _init().("Guild"): return self
@@ -75,7 +76,6 @@ func from_dict(p_dict: Dictionary):
 		stickers = []
 		for data in p_dict.stickers:
 			stickers.append(Sticker.new().from_dict(data))
-
 	if p_dict.has("channels"):
 		channels = []
 		for data in p_dict.channels:
@@ -85,25 +85,14 @@ func from_dict(p_dict: Dictionary):
 
 # @hidden
 func to_dict() -> Dictionary:
-	var dict = .to_dict().duplicate(true)
+	var dict = .to_dict()
 
-	if dict.has("permissions"):
-		dict.permissions = str(dict.permissions.bitfield)
-	if dict.has("roles"):
-		for i in dict.roles.size():
-			dict.roles[i] = dict.roles[i].to_dict()
-	if dict.has("emojis"):
-		for i in dict.emojis.size():
-			dict.emojis[i] = dict.emojis[i].to_dict()
-	if dict.has("system_channel_flags"):
-		dict.system_channel_flags = dict.system_channel_flags.bitfield
-	if dict.has("welcome_screen"):
-		dict.welcome_screen = dict.welcome_screen.to_dict()
-	if dict.has("stickers"):
-		for i in dict.stickers.size():
-			dict.stickers[i] = dict.stickers[i].to_dict()
-	if dict.has("channels"):
-		for i in dict.channels.size():
-			dict.channels[i] = dict.channels[i].to_dict()
+	DiscordUtils.try_bitfield_to_int(dict, "permissions", true)
+	DiscordUtils.try_bitfield_to_int(dict, "system_channel_flags")
+	DiscordUtils.try_array_dataclass_to_dict(dict, "roles")
+	DiscordUtils.try_array_dataclass_to_dict(dict, "emojis")
+	DiscordUtils.try_array_dataclass_to_dict(dict, "stickers")
+	DiscordUtils.try_array_dataclass_to_dict(dict, "channels")
+	DiscordUtils.try_dataclass_to_dict(dict, "welcome_screen")
 
 	return dict

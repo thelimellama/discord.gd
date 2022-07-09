@@ -1,5 +1,5 @@
 # Represents a list of Discord allowed mention types
-class_name AllowedMentionTypes
+class_name AllowedMentionsTypes
 
 const ROLES = "roles" # Controls role mentions
 const USERS = "users" # Controls user mentions

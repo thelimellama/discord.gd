@@ -42,7 +42,9 @@ func _on_rerun_btn_pressed() -> void:
 #	params_create_automod.name = "Test Rule 01"
 #	params_create_automod.trigger_type = AutoModerationTriggerTypes.SPAM
 #	params_create_automod.actions = [AutoModerationAction.new().from_dict({type = AutoModerationActionTypes.BLOCK_MESSAGE})]
+#	Print(params_create_automod)
 #	Print(params_create_automod.to_dict())
+#	Print(params_create_automod)
 #	Print(yield(rest.create_guild_auto_moderation_rule("330264450148073474", params_create_automod), "completed"))
 
 #	var params_modify_automod = ModifyGuildAutoModerationRuleParams.new()
@@ -79,15 +81,16 @@ func _on_rerun_btn_pressed() -> void:
 #	params_create_message.embeds = [embed]
 #	Print(yield(rest.create_message("369423865618628608", params_create_message), "completed"))
 
-	var file1 = DiscordFile.new().load_file("res://icon.png")
-	Print(yield(rest.create_message("369423865618628608", {
-		embeds = [ {image = { url = "attachment://icon.png"}}],
-		files = [file1]
-	}), "completed"))
+#	var file1 = DiscordFile.new().load_file("res://icon.png")
+#	Print(yield(rest.create_message("369423865618628608", {
+#		embeds = [ {image = { url = "attachment://icon.png"}}],
+#		files = [file1]
+#	}), "completed"))
 
 #	Print(yield(rest.crosspost_message("994518610028548127", "994519585246162984"), "completed"))
-#	Print(yield(rest.edit_message("369423865618628608", "994547930046418954", {
+#	Print(yield(rest.edit_message("369423865618628608", "995041106272194611", {
 #		content = null, # Removes the message content
+#		attachments = null,
 #		embeds = [Embed.new().from_dict({title = "title", description = "he desc"}).to_dict()]
 #	}), "completed"))
 #	Print(yield(rest.delete_message("369423865618628608", "994552474205687858"), "completed"))

@@ -1,7 +1,7 @@
 # Represents a Discord guild ban
-class_name GuildBan extends Dataclass
+class_name GuildBan extends DiscordDataclass
 
-var reason = null # [String] The reason for the ban
+var reason = null # [String] The reason for the ban `nullable`
 var user: User # [User] The banned user
 
 # @hidden
@@ -20,9 +20,8 @@ func from_dict(p_dict: Dictionary):
 
 # @hidden
 func to_dict() -> Dictionary:
-	var dict = .to_dict().duplicate(true)
+	var dict = .to_dict()
 
-	if dict.has("user") and dict.user != null:
-		dict.user = dict.user.to_dict()
+	DiscordUtils.try_dataclass_to_dict(dict, "user")
 
 	return dict

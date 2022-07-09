@@ -1,10 +1,10 @@
 # Represents a Discord embed video
-class_name EmbedVideo extends Dataclass
+class_name EmbedVideo extends DiscordDataclass
 
-var url = null # Source url of video
-var proxy_url = null # [String]	A proxied url of the video
-var height = null # [int] Height of video
-var width = null # [int] Width of video
+var url = null # Source url of video `optional`
+var proxy_url = null # [String]	A proxied url of the video `optional`
+var height = null # [int] Height of video `optional`
+var width = null # [int] Width of video `optional`
 
 
 # @hidden

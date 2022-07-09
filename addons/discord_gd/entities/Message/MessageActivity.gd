@@ -1,8 +1,8 @@
 # Represents a Discord message activity
-class_name MessageActivity extends Dataclass
+class_name MessageActivity extends DiscordDataclass
 
 var type: int # [MessageActivityTypes] Type of message activity
-var party_id = null # [String] Party_id from a Rich Presence event
+var party_id = null # [String] Party_id from a Rich Presence event `optional`
 
 
 # @hidden

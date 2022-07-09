@@ -1,7 +1,7 @@
 # Represents a Discord welcome screen
-class_name WelcomeScreen extends Dataclass
+class_name WelcomeScreen extends DiscordDataclass
 
-var description = null # [String] The server description shown in the welcome screen
+var description = null # [String] The server description shown in the welcome screen `nullable`
 var welcome_channels: Array # [Array] of [WelcomeScreenChannel] The channels shown in the welcome screen, up to 5
 
 
@@ -13,8 +13,8 @@ func _init().("WelcomeScreen"): return self
 func from_dict(p_dict: Dictionary):
 	.from_dict(p_dict)
 
-	welcome_channels = []
 	if p_dict.has("welcome_channels"):
+		welcome_channels = []
 		for data in p_dict.welcome_channels:
 			welcome_channels.append(WelcomeScreenChannel.new().from_dict(data))
 
@@ -23,10 +23,8 @@ func from_dict(p_dict: Dictionary):
 
 # @hidden
 func to_dict() -> Dictionary:
-	var dict = .to_dict().duplicate(true)
+	var dict = .to_dict()
 
-	if dict.has("welcome_channels"):
-		for i in dict.welcome_channels.size():
-			dict.welcome_channels[i] = dict.welcome_channels[i].to_dict()
+	DiscordUtils.try_array_dataclass_to_dict(dict, "welcome_channels")
 
 	return dict
