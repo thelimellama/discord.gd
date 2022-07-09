@@ -18,6 +18,10 @@ var flags = null # [UserFlags] The flags on a user's account `optional`
 var premium_type = null # [int] The type of Nitro subscription on a user's account `optional`
 var public_flags = null # [UserFlags] The public flags on a user's account `optional`
 
+var banner_color = null # [String] Hex color string of the user's banner `optional`
+var bio = null # [String] (Undocumented) `optional`
+var pronouns = null # [String] (Undocumented) `optional`
+var token = null # [Strin] (Undocumented) `optional`
 
 # @hidden
 func _init().("User"): return self

@@ -444,6 +444,7 @@ func delete_reactions(p_channel_id: String, p_message_id: String, p_emoji: Strin
 		return data.is_no_content()
 	return false
 
+
 # Follow a News Channel to send messages to a target channel
 #
 # Needs the MANAGE_WEBHOOKS permission in the target channel.
@@ -944,7 +945,7 @@ func search_guild_members(p_guild_id: String, p_params = {}) -> Array:
 
 # Adds a user to a guild
 #
-# Needs a valid oauth2 access token for the user with the `guilds.join` scope. The bot must belong to the same application user for authorization and the bot must be a member of the guild with `CREATE_INSTANT_INVITE` permission
+# Needs a valid OAuth2 access token for the user with the `guilds.join` scope. The bot must belong to the same application user for authorization and the bot must be a member of the guild with `CREATE_INSTANT_INVITE` permission
 #
 # For guilds with Membership Screening enabled, this will default to adding new members as pending in the [GuildMember]. Members that are pending will have to complete membership screening before they become full members that can talk
 # @returns [GuildMember] | [HTTPResponse] if error
@@ -1578,6 +1579,7 @@ func modify_guild_template(p_guild_id: String, p_template_code: String, p_params
 #! Invite
 #! ----------
 
+
 # Get the invite with given code
 # @returns [Invite] | [HTTPResponse] if error
 func get_invite(p_invite_code: String, p_params = {}) -> Invite:
@@ -1668,6 +1670,7 @@ func delete_stage_instance(p_channel_id: String) -> bool:
 #! Sticker
 #! ----------
 
+
 # Get a sticker with given id
 # @returns [Invite] | [HTTPResponse] if error
 func get_sticker(p_sticker_id: String) -> Sticker:
@@ -1736,6 +1739,131 @@ func delete_guild_sticker(p_guild_id: String, p_sticker_id: String) -> bool:
 			return data
 		return data.is_no_content()
 	return false
+
+
+#! ----------
+#! User
+#! ----------
+
+
+# Get the user of the requester's account
+#
+# For OAuth2, this requires the `identify` scope, which will return the object without an email, and optionally the `email` scope, which returns the object with an email.
+# @returns [User] | [HTTPResponse] if error
+func get_current_user() -> User:
+	var data = yield(_send_request(ENDPOINTS.USER_ME), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return User.new().from_dict(data)
+
+
+# Modify the requester's user account settings
+# @returns [User] | [HTTPResponse] if error
+func modify_current_user(p_params = {}) -> User:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = ModifyCurrentUserParams.new().from_dict(p_params)
+	elif not p_params is ModifyCurrentUserParams:
+		DiscordUtils.perror("DiscordRESTClient:modify_current_user:params must be a Dictionary or ModifyCurrentUserParams")
+
+	var data = yield(_send_patch_request(ENDPOINTS.USER_ME, p_params.to_dict()), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return User.new().from_dict(data)
+
+
+# Get a user by id
+# @returns [User] | [HTTPResponse] if error
+func get_user(p_user_id: String) -> User:
+	var data = yield(_send_request(ENDPOINTS.USER % p_user_id), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return User.new().from_dict(data)
+
+
+# Get a list of partial [Guild] the current user is a member of
+#
+# Partial guild properties: `id`, `name`, `icon`, `owner`, `permissions`, `features`
+#
+# This methods returns 200 guilds by default, which is the maximum number of guilds a non-bot user can join
+# @returns [Array] of [Guild] | [HTTPResponse] if error
+func get_current_user_guilds(p_params = {}) -> Array:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = GetCurrentUserGuildsParams.new().from_dict(p_params)
+	elif not p_params is GetCurrentUserGuildsParams:
+		DiscordUtils.perror("DiscordRESTClient:get_current_user_guilds:params must be a Dictionary or GetCurrentUserGuildsParams")
+
+	var endpoint = ENDPOINTS.USER_ME_GUILDS
+	var query_string = DiscordUtils.query_string_from_dict(p_params.to_dict())
+	if query_string: endpoint += "?" + query_string
+
+	var data = yield(_send_request(endpoint), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	var ret = []
+	for elm in data:
+		ret.append(Guild.new().from_dict(elm))
+	return ret
+
+
+# Get the guild member for the current user in a guild
+#
+# Needs the `guilds.members.read` OAuth2 scope
+# @returns [User] | [HTTPResponse] if error
+func get_current_guild_member(p_guild_id: String) -> GuildMember:
+	var data = yield(_send_request(ENDPOINTS.USER_ME_GUILD_MEMBER % p_guild_id), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return GuildMember.new().from_dict(data)
+
+
+# Leave a guild.
+# @returns [bool] | [HTTPResponse] if error
+func leave_guild(p_guild_id: String) -> bool:
+	var data = yield(_send_delete_request(ENDPOINTS.USER_ME_GUILD % p_guild_id), "completed")
+	if data is HTTPResponse:
+		if data.is_error():
+			return data
+		return data.is_no_content()
+	return false
+
+
+# Create a new DM channel with a user
+# @returns [Channel] | [HTTPResponse] if error
+func create_dm(p_user_id: String) -> Channel:
+	var data = yield(_send_post_request(ENDPOINTS.USER_ME_CHANNELS, {recipient_id = p_user_id}), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return Channel.new().from_dict(data)
+
+
+# Create a new group DM channel with multiple users
+#
+# This method is limited to 10 active group DMs. DMs created with this endpoint will not be shown in the Discord client
+# @returns [Channel] | [HTTPResponse] if error
+func create_group_dm(p_params = {}) -> Channel:
+	if typeof(p_params) == TYPE_DICTIONARY:
+		p_params = CreateGroupDmParams.new().from_dict(p_params)
+	elif not p_params is CreateGroupDmParams:
+		DiscordUtils.perror("DiscordRESTClient:create_group_dm:params must be a Dictionary or CreateGroupDmParams")
+
+	var data = yield(_send_post_request(ENDPOINTS.USER_ME_CHANNELS, p_params.to_dict()), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	return Channel.new().from_dict(data)
+
+
+# Get a list of the user's connection
+#
+# Needs the `connections` OAuth2 scope
+# @returns [Array] of [UserConnection] | [HTTPResponse] if error
+func get_current_user_connections() -> Array:
+	var data = yield(_send_request(ENDPOINTS.USER_ME_CONNECTIONS), "completed")
+	if data is HTTPResponse and data.is_error():
+		return data
+	var ret = []
+	for elm in data:
+		ret.append(UserConnection.new().from_dict(elm))
+	return ret
 
 
 # @hidden
@@ -1851,6 +1979,16 @@ const ENDPOINTS: Dictionary = {
 	STICKERPACKS = "/sticker-packs",
 	GUILD_STICKERS = "/guilds/%s/stickers",
 	GUILD_STICKER = "/guilds/%s/stickers/%s",
+
+	# User
+	USERS = "/users/",
+	USER = "/users/%s",
+	USER_ME = "/users/@me",
+	USER_ME_CHANNELS = "/users/@me/channels",
+	USER_ME_CONNECTIONS = "/users/@me/connections",
+	USER_ME_GUILDS = "/users/@me/guilds",
+	USER_ME_GUILD = "/users/@me/guilds/%s",
+	USER_ME_GUILD_MEMBER = "/users/@me/guilds/%s/member",
 }
 
 var _base_url: String

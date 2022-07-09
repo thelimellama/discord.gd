@@ -7,7 +7,7 @@ var icon = null # [String] The icon hash of the app `nullable`
 var description: String # The description of the app
 var rpc_origins = null # [Array] of [String] An array of rpc origin urls, if rpc is enabled `optional`
 var bot_public: bool # When false only app owner can join the app's bot to guilds
-var bot_require_code_grant: bool # When true the app's bot will only join upon completion of the full oauth2 code grant flow
+var bot_require_code_grant: bool # When true the app's bot will only join upon completion of the full OAuth2 code grant flow
 var terms_of_service_url = null # [String] The url of the app's terms of service `optional`
 var privacy_policy_url = null # [String] The url of the app's privacy policy `optional`
 var owner = null # [User] Partial user object containing info on the owner of the application `optional`

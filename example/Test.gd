@@ -315,3 +315,20 @@ func _on_rerun_btn_pressed() -> void:
 #		description = "edited desc"
 #	}), "completed"))
 #	Print(yield(rest.delete_guild_sticker("330264450148073474", "860415820748292129"), "completed"))
+
+
+
+#	Print(yield(rest.get_current_user(), "completed"))
+#	Print(yield(rest.get_user("321233875776962560"), "completed"))
+#	Print(yield(rest.modify_current_user({
+#		avatar = DiscordFile.new().load_file("res://icon.png").to_data_uri()
+#	}), "completed"))
+#	Print(yield(rest.get_current_user_guilds({limit = 1}), "completed"))
+#	Print(yield(rest.get_current_guild_member("330264450148073474"), "completed")) # TODO: test this method
+
+#	Print(yield(rest.leave_guild("930050630368768010"), "completed"))
+
+#	Print(yield(rest.create_dm("321233875776962560"), "completed"))
+#	Print(yield(rest.create_group_dm({}), "completed")) # TODO: test this method
+
+	Print(yield(rest.get_current_user_connections(), "completed"))

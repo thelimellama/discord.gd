@@ -34,6 +34,12 @@ func load_file(p_path: String):
 	return self
 
 
+# Encode the [DiscordFile] to a Data URI scheme encoded string
+# @returns [String]
+func to_data_uri() -> String:
+	return "data:%s;base64,%s" % [content_type, Marshalls.raw_to_base64(contents)]
+
+
 func _set_content_type(p_extension: String):
 	var _extension_to_content_type = {
 		"png" : "image/png",
