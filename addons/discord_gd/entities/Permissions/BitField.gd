@@ -1,9 +1,10 @@
-# Data structure that makes it easy to interact with a bitfield.
+# Class that makes it easy to interact with a bitfield
 #
 # This class is to be used by extending this class and defining the `default_bit` property and `FLAGS` enum
 #
 # BitFieldResolvable: [BitField] | [String] | [int] | [Array] of BitFieldResolvable
 class_name BitField
+
 
 # Bitfield of the packed bits
 var bitfield: int
@@ -15,24 +16,24 @@ var ALL: int
 #! var default_bit() = 0
 #! var FLAGS = {}
 
-# Adds bits to these ones.
+# Adds bits to these ones
 # @param bits: BitFieldResolvable | [Array] of BitFieldResolvable Bits to add
 # @returns self
 func add(bits):
 	if not typeof(bits) == TYPE_ARRAY:
 		bits = [bits]
-	var total = get_default_bit()
+	var total = 0
 	for bit in bits:
 		total |= resolve(bit)
 	bitfield |= total
 	return self
 
 
-# Checks whether the bitfield has a bit, or any of multiple bits.
+# Checks whether the bitfield has a bit, or any of multiple bits
 # @param bit: BitFieldResolvable Bit(s) to check for
 # @returns bool
-func any(bit) -> bool:
-	return (bitfield & resolve(bit)) != get_default_bit()
+func any(bits) -> bool:
+	return (bitfield & resolve(bits)) != get_default_bit()
 
 
 # Checks if this bitfield equals another
@@ -42,7 +43,7 @@ func equals(bit) -> bool:
 	return bitfield == resolve(bit)
 
 
-# Checks whether the bitfield has a bit, or multiple bits.
+# Checks whether the bitfield has a bit, or multiple bits
 # @param bit: BitFieldResolvable Bit(s) to check for
 # @returns bool
 func has(bit) -> bool:
@@ -50,14 +51,14 @@ func has(bit) -> bool:
 	return (bitfield & bit) == bit
 
 
-# Gets all given bits that are missing from the bitfield.
+# Gets all given bits that are missing from the bitfield
 # @param bits: BitFieldResolvable Bit(s) to check for
 # @returns [Array] of [String]
 func missing(bits) -> Array:
 	return get_script().new(bits).remove(self).to_array()
 
 
-# Removes bits from these.
+# Removes bits from these
 # @param bits: BitFieldResolvable Bits to remove
 # @returns self
 func remove(bits):
@@ -67,7 +68,7 @@ func remove(bits):
 	if not typeof(bits) == TYPE_ARRAY:
 		bits = [bits]
 
-	var total = get_default_bit()
+	var total = 0
 	for bit in bits:
 		total |= resolve(bit)
 	bitfield &= ~total
@@ -92,7 +93,7 @@ func serialize() -> Dictionary:
 	return serialized
 
 
-# Gets an [Array] of bitfield names based on the bits available.
+# Gets an [Array] of bitfield names based on the bits available
 # @returns [Array] of [String]
 func to_array() -> Array:
 	var ret = []
@@ -111,13 +112,10 @@ func to_array() -> Array:
 	return ret
 
 
-# Resolves bitfields to their numeric form.
+# Resolves bitfields to their numeric form
 # @param bit: BitFieldResolvable Bit(s) to resolve
 # @returns int
 func resolve(bit) -> int:
-#	if typeof(get_default_bit()) == TYPE_INT or typeof(get_default_bit()) == TYPE_REAL:
-#		set("default_bit", int(get_default_bit()))
-
 	var typeof_bit = typeof(bit)
 
 	if typeof_bit == TYPE_INT or typeof_bit == TYPE_REAL:
@@ -131,10 +129,9 @@ func resolve(bit) -> int:
 		return bit.bitfield
 
 	if typeof_bit == TYPE_ARRAY:
-		var ret = get_default_bit()
-
+		var ret = 0
 		for b in bit:
-			ret = ret | resolve(b)
+			ret |= resolve(b)
 		return ret
 
 	if typeof_bit == TYPE_STRING and bit.length() > 0:
@@ -142,7 +139,7 @@ func resolve(bit) -> int:
 		if _FLAGS.has(bit):
 			return _FLAGS[bit]
 
-		if not is_nan(float(bit)):
+		if bit.is_valid_integer():
 			return int(bit)
 
 	DiscordUtils.perror("%s:resolve:Unable to resolve the bitfield: %s" % [get_class(), bit])
@@ -156,8 +153,6 @@ func resolve(bit) -> int:
 func _init(name: String, bits = get_default_bit()):
 	__name__ = name
 
-	if bits == null:
-		bits = get_default_bit()
 	bitfield = resolve(bits)
 
 	var values = get_flags().values()
@@ -169,12 +164,16 @@ func _init(name: String, bits = get_default_bit()):
 	return self
 
 
+var __name__: String
+
+
+func _to_string():
+	return __name__ + "(" + str(bitfield) + ")"
+
+
 # @hidden
-func _to_dict():
-	if typeof(bitfield) == TYPE_INT:
-		return bitfield
-	else:
-		return str(bitfield)
+func get_class():
+	return __name__
 
 
 # @hidden
@@ -185,9 +184,3 @@ func get_flags() -> Dictionary:
 # @hidden
 func get_default_bit() -> int:
 	return get("default_bit")
-
-
-var __name__: String
-
-func _to_string():
-	return __name__ + "(" + str(bitfield) + ")"
