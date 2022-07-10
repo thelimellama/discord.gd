@@ -1,6 +1,8 @@
 # Data structure that makes it easy to interact with a bitfield.
 #
-# BitFieldResolvable: [BitField] | [String] | int | [Array] of BitFieldResolvable
+# This class is to be used by extending this class and defining the `default_bit` property and `FLAGS` enum
+#
+# BitFieldResolvable: [BitField] | [String] | [int] | [Array] of BitFieldResolvable
 class_name BitField
 
 # Bitfield of the packed bits
@@ -52,14 +54,14 @@ func has(bit) -> bool:
 # @param bits: BitFieldResolvable Bit(s) to check for
 # @returns [Array] of [String]
 func missing(bits) -> Array:
-	return self.get_script().new(bits).remove(self).to_array()
+	return get_script().new(bits).remove(self).to_array()
 
 
 # Removes bits from these.
 # @param bits: BitFieldResolvable Bits to remove
 # @returns self
 func remove(bits):
-	if typeof(bits) == TYPE_OBJECT and bits.is_class(self.get_class()):
+	if typeof(bits) == TYPE_OBJECT and bits.is_class(get_class()):
 		bits = bits.bitfield
 
 	if not typeof(bits) == TYPE_ARRAY:
@@ -116,48 +118,43 @@ func resolve(bit) -> int:
 #	if typeof(get_default_bit()) == TYPE_INT or typeof(get_default_bit()) == TYPE_REAL:
 #		set("default_bit", int(get_default_bit()))
 
-	if typeof(bit) == TYPE_INT or typeof(bit) == TYPE_REAL:
+	var typeof_bit = typeof(bit)
+
+	if typeof_bit == TYPE_INT or typeof_bit == TYPE_REAL:
 		return int(bit)
 
-	if typeof(get_default_bit()) == typeof(bit):
+	if typeof(get_default_bit()) == typeof_bit:
 		if bit >= get_default_bit():
 			return bit
 
-	if typeof(bit) == TYPE_OBJECT and bit.is_class(self.get_class()):
+	if typeof_bit == TYPE_OBJECT and bit.is_class(get_class()):
 		return bit.bitfield
 
-	if (typeof(bit) == TYPE_ARRAY):
+	if typeof_bit == TYPE_ARRAY:
 		var ret = get_default_bit()
 
 		for b in bit:
 			ret = ret | resolve(b)
 		return ret
 
-	if (Helpers.is_valid_str(bit)):
+	if typeof_bit == TYPE_STRING and bit.length() > 0:
 		var _FLAGS = get_flags()
-		if (_FLAGS.has(bit)):
+		if _FLAGS.has(bit):
 			return _FLAGS[bit]
 
-		if (not is_nan(float(bit))):
+		if not is_nan(float(bit)):
 			return int(bit)
 
-	assert(false, 'Bitfield is invalid.')
+	DiscordUtils.perror("%s:resolve:Unable to resolve the bitfield: %s" % [get_class(), bit])
 	return -1
 
-# @hidden
-func get_flags() -> Dictionary:
-	return get("FLAGS")
 
-
-# @hidden
-func get_default_bit() -> int:
-	return get("default_bit")
-
-
-# @param bits: BitFieldResolvable Bit(s) to set
+# Create a new [BitField]
+# @param name: String Name of the bitfield
+# @param bits?: BitFieldResolvable The bit(s) to set
 # @returns self
-func _init(p_name: String, bits = get_default_bit()):
-	__name__ = p_name
+func _init(name: String, bits = get_default_bit()):
+	__name__ = name
 
 	if bits == null:
 		bits = get_default_bit()
@@ -178,6 +175,17 @@ func _to_dict():
 		return bitfield
 	else:
 		return str(bitfield)
+
+
+# @hidden
+func get_flags() -> Dictionary:
+	return get("FLAGS")
+
+
+# @hidden
+func get_default_bit() -> int:
+	return get("default_bit")
+
 
 var __name__: String
 
