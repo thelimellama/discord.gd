@@ -24,6 +24,7 @@ class_name MessageFlags extends BitField
 var default_bit = 0
 
 enum FLAGS {
+	NONE = 0,
 	CROSSPOSTED = 1 << 0,
 	IS_CROSSPOST = 1 << 1,
 	SUPPRESS_EMBEDS = 1 << 2,

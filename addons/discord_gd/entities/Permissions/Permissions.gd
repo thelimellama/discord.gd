@@ -87,6 +87,7 @@ class_name Permissions extends BitField
 var default_bit = 137543277633
 
 enum FLAGS {
+	NONE = 0,
 	CREATE_INSTANT_INVITE = 1 << 0,
 	KICK_MEMBERS = 1 << 1,
 	BAN_MEMBERS = 1 << 2,

@@ -34,6 +34,7 @@ class_name UserFlags extends BitField
 var default_bit = 0
 
 enum FLAGS {
+	NONE = 0,
 	STAFF = 1 << 0,
 	PARTNER = 1 << 1,
 	HYPESQUAD = 1 << 2,

@@ -22,6 +22,7 @@ class_name ApplicationFlags extends BitField
 var default_bit = 0
 
 enum FLAGS {
+	NONE = 0,
 	GATEWAY_PRESENCE = 1 << 12,
 	GATEWAY_PRESENCE_LIMITED = 1 << 13,
 	GATEWAY_GUILD_MEMBERS = 1 << 14,

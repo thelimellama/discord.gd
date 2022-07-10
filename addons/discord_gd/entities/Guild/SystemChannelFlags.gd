@@ -14,6 +14,7 @@ class_name SystemChannelFlags extends BitField
 var default_bit = 0
 
 enum FLAGS {
+	NONE = 0,
 	SUPPRESS_JOIN_NOTIFICATIONS = 1 << 0,
 	SUPPRESS_PREMIUM_SUBSCRIPTIONS = 1 << 1,
 	SUPPRESS_GUILD_REMINDER_NOTIFICATIONS = 1 << 2,

@@ -8,6 +8,7 @@ class_name ChannelFlags extends BitField
 var default_bit = 0
 
 enum FLAGS {
+	NONE = 0,
 	PINNED = 1 << 1,
 }
 
