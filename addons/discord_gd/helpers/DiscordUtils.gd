@@ -54,3 +54,7 @@ static func try_files_from_dict(p_dict: Dictionary, p_key: String, p_output_arra
 				perror("DiscordUtils:try_files_from_dict:Got non DiscordFile in files array: %s" % data)
 			else:
 				p_output_array.append(data)
+
+
+static func datetime_to_iso_string(p_datetime: Dictionary, p_timezone: String = "+0000") -> String:
+	return "%d-%02d-%02dT%02d:%02d:%02d%s" % [p_datetime.year, p_datetime.month, p_datetime.day, p_datetime.hour, p_datetime.minute, p_datetime.second, p_timezone]

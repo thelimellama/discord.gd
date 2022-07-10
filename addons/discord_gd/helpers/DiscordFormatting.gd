@@ -26,13 +26,10 @@ static func format_role(p_role_id: String) -> String:
 
 
 # Formats a custom emoji name, id
-static func format_custom_emoji(p_name: String, p_id: String) -> String:
-	return "<:%s:%s>" % [p_name, p_id]
-
-
-# Formats an animated custom emoji name, id
-static func format_custom_emoji_animated(p_name: String, p_id: String) -> String:
-	return "<a:%s:%s>" % [p_name, p_id]
+static func format_custom_emoji(p_name: String, p_id: String, is_animated = false) -> String:
+	var anim = ""
+	if is_animated: anim = "a"
+	return "<%s:%s:%s>" % [anim, p_name, p_id]
 
 
 # Formats a unix timestamp (with optional style [TimestampStyles])
