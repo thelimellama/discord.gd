@@ -2014,7 +2014,7 @@ const ENDPOINTS: Dictionary = {
 var _base_url: String
 var _auth_header = ""
 var _headers = [
-	"User-Agent: DiscordBot (%s %s, Godot:%s)" % [DiscordMetadata.LIBRARY, DiscordMetadata.LIBRARY_URL, Engine.get_version_info()["string"]],
+	"User-Agent: DiscordBot (%s %s, Godot:%s)" % [DiscordMetadata.LIBRARY, DiscordMetadata.LIBRARY_URL, Engine.get_version_info().string],
 	"Accept: application/json"
 ]
 

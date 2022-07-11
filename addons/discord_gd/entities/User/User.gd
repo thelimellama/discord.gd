@@ -21,7 +21,7 @@ var public_flags = null # [UserFlags] The public flags on a user's account `opti
 var banner_color = null # [String] Hex color string of the user's banner `optional`
 var bio = null # [String] (Undocumented) `optional`
 var pronouns = null # [String] (Undocumented) `optional`
-var token = null # [Strin] (Undocumented) `optional`
+var token = null # [String] The token of the user (Only available on the current user) `optional`
 
 # @hidden
 func _init().("User"): return self

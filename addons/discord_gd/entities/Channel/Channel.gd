@@ -34,6 +34,7 @@ var member_ids_preview = null # [Array] of [String] (Undocumented) `optional`
 var available_tags = null # (Undocumented) `optional`
 var template = null # (Undocumented) `optional`
 var default_reaction_emoji = null # (Undocumented) `optional`
+var newly_created = null # [bool] Included when a thread is created in `THREAD_CREATE`
 
 # @hidden
 func _init().("Channel"): return self

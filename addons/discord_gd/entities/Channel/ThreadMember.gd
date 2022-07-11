@@ -9,5 +9,7 @@ var flags: int # Any user-thread settings, currently only used for notifications
 var muted = null # [bool] (Undocumented) `optional`
 var mute_config = null # (Undocumented) `optional`
 
+var guild_id = null # [String] Only sent in the `THREAD_MEMBER_UPDATE` event `optional`
+
 # @hidden
 func _init().("ThreadMember"): return self

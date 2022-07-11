@@ -8,7 +8,7 @@ var headers: PoolStringArray
 var body: PoolByteArray
 
 # API Error
-var code: int # [DiscordJsonErrorCodes] The error code sent by Discord API
+var code: int # [JsonErrorCodes] The error code sent by Discord API
 var errors: Dictionary
 var message: String
 

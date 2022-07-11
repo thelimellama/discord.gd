@@ -338,3 +338,7 @@ func _on_rerun_btn_pressed() -> void:
 #	Print(yield(rest.get_voice_regions(), "completed"))
 
 #	Print(Snowflake.new().from_dict({increment = 1, timestamp_ms = 1501620762534, worker_id = 2}))
+
+	var intents = GatewayIntents.new(GatewayIntents.new().ALL)
+	print(1 << 0)
+	print(1 << 1)

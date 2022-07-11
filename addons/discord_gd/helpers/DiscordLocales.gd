@@ -64,11 +64,10 @@ const Locales = {
 	Turkish: "Turkish",
 	Ukrainian: "Ukrainian",
 	Vietnamese: "Vietnamese",
-	Unknown: "unknown",
 }
 
 # Get the language name from a locale code (case sensitive)
 static func from_code(p_locale_code: String) -> String:
 	if not Locales.has(p_locale_code):
-		return Unknown
+		return ""
 	return Locales[p_locale_code]

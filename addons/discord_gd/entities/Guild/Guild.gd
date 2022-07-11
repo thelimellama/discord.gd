@@ -44,10 +44,21 @@ var nsfw_level: int # [GuildNSFWlevel] Guild NSFW Level
 var stickers = null # [Array] of [Sticker] Custom guild stickers `optional`
 var premium_progress_bar_enabled: bool # Whether the guild has the boost progress bar enabled
 
-var joined_at = null # [String] (Undocumented) `optional`
+#! The following fields are only set in `GUILD_CREATE` event
+var joined_at = null # [String] When this guild was joined at
+var large = null # [bool] True if this is considered a large guild
+var unavailable = null # [bool] True if this guild is unavailable due to an outage
+var member_count = null # [int] Total number of members in this guild
+var voice_states = null # [Array] of partial [VoiceState] States of members currently in voice channels; lacks the `guild_id` key
+var members = null # Array of [GuildMember] Users in the guild
+var channels = null # [Array] of [Channel] Channels in the guild
+var threads = null # [Array] of [Channel] All active threads in the guild that current user has permission to view
+var presences = null # [Array] of partial [PresenceUpdateEvent] Presences of the members in the guild, will only include non-offline members if the size is greater than large threshold
+var stage_instances = null # [Array] of [StageInstance] Stage instances in the guild
+var guild_scheduled_events = null # [Array] of [GuildScheduledEvent] The scheduled events in the guild
+
 var hub_type = null # (Undocumented) `optional`
 var flags = null # (Undocumented) `optional`
-var channels = null # [Array] of [Channel] (Undocumented) `optional`
 
 
 # @hidden
@@ -76,10 +87,34 @@ func from_dict(p_dict: Dictionary):
 		stickers = []
 		for data in p_dict.stickers:
 			stickers.append(Sticker.new().from_dict(data))
+	if p_dict.has("voice_states"):
+		voice_states = []
+		for data in p_dict.voice_states:
+			voice_states.append(VoiceState.new().from_dict(data))
+	if p_dict.has("members"):
+		members = []
+		for data in p_dict.members:
+			members.append(GuildMember.new().from_dict(data))
 	if p_dict.has("channels"):
 		channels = []
 		for data in p_dict.channels:
 			channels.append(Channel.new().from_dict(data))
+	if p_dict.has("threads"):
+		threads = []
+		for data in p_dict.threads:
+			threads.append(Channel.new().from_dict(data))
+	if p_dict.has("presences"):
+		presences = []
+		for data in p_dict.presences:
+			presences.append(PresenceUpdateEvent.new().from_dict(data))
+	if p_dict.has("stage_instances"):
+		stage_instances = []
+		for data in p_dict.stage_instances:
+			stage_instances.append(StageInstance.new().from_dict(data))
+	if p_dict.has("guild_scheduled_events"):
+		guild_scheduled_events = []
+		for data in p_dict.guild_scheduled_events:
+			guild_scheduled_events.append(GuildScheduledEvent.new().from_dict(data))
 	return self
 
 
@@ -92,7 +127,13 @@ func to_dict() -> Dictionary:
 	DiscordUtils.try_array_dataclass_to_dict(dict, "roles")
 	DiscordUtils.try_array_dataclass_to_dict(dict, "emojis")
 	DiscordUtils.try_array_dataclass_to_dict(dict, "stickers")
-	DiscordUtils.try_array_dataclass_to_dict(dict, "channels")
 	DiscordUtils.try_dataclass_to_dict(dict, "welcome_screen")
+	DiscordUtils.try_array_dataclass_to_dict(dict, "voice_states")
+	DiscordUtils.try_array_dataclass_to_dict(dict, "members")
+	DiscordUtils.try_array_dataclass_to_dict(dict, "channels")
+	DiscordUtils.try_array_dataclass_to_dict(dict, "threads")
+	DiscordUtils.try_array_dataclass_to_dict(dict, "presences")
+	DiscordUtils.try_array_dataclass_to_dict(dict, "stage_instances")
+	DiscordUtils.try_array_dataclass_to_dict(dict, "guild_scheduled_events")
 
 	return dict
